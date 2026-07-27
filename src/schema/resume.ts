@@ -13,7 +13,7 @@ const ExperienceSchema = z.object({
   role: z.string(),
   company: z.string(),
   startDate: z.string(),
-  endDate: z.string(),
+  endDate: z.string().optional(),
   type: z.enum(["full-time", "contract"]).optional(),
   bullets: z.array(z.string()),
 });
