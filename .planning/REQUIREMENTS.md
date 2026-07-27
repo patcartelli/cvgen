@@ -80,27 +80,27 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CLI-01 | TBD | Pending |
-| CLI-02 | TBD | Pending |
-| CLI-03 | TBD | Pending |
-| CLI-04 | TBD | Pending |
-| SCHEMA-01 | TBD | Pending |
-| PARSE-01 | TBD | Pending |
-| PARSE-02 | TBD | Pending |
-| PARSE-03 | TBD | Pending |
-| RENDER-01 | TBD | Pending |
-| RENDER-02 | TBD | Pending |
-| RENDER-03 | TBD | Pending |
-| SEC-01 | TBD | Pending |
-| DEVX-01 | TBD | Pending |
-| DEVX-02 | TBD | Pending |
-| DEVX-03 | TBD | Pending |
+| CLI-01 | Phase 4 | Pending |
+| CLI-02 | Phase 4 | Pending |
+| CLI-03 | Phase 4 | Pending |
+| CLI-04 | Phase 4 | Pending |
+| SCHEMA-01 | Phase 1 | Pending |
+| PARSE-01 | Phase 2 | Pending |
+| PARSE-02 | Phase 2 | Pending |
+| PARSE-03 | Phase 2 | Pending |
+| RENDER-01 | Phase 3 | Pending |
+| RENDER-02 | Phase 3 | Pending |
+| RENDER-03 | Phase 3 | Pending |
+| SEC-01 | Phase 2 | Pending |
+| DEVX-01 | Phase 2 | Pending |
+| DEVX-02 | Phase 4 | Pending |
+| DEVX-03 | Phase 4 | Pending |
 
 **Coverage:**
 - v1 requirements: 15 total
-- Mapped to phases: 0 (pending roadmap creation)
-- Unmapped: 15 ⚠️ (expected — roadmapper fills this in next)
+- Mapped to phases: 15 (Phase 1: 1, Phase 2: 5, Phase 3: 3, Phase 4: 6)
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-07-27*
-*Last updated: 2026-07-27 after initial definition*
+*Last updated: 2026-07-27 after roadmap creation (traceability mapped)*
