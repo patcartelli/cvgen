@@ -7,6 +7,7 @@ cvgen goes from an empty repo to a working CLI that turns an Obsidian-native mar
 ## Phases
 
 **Phase Numbering:**
+
 - Integer phases (1, 2, 3): Planned milestone work
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
@@ -20,52 +21,72 @@ Decimal phases appear between their surrounding integers in numeric order.
 ## Phase Details
 
 ### Phase 1: Scaffold, Schema & Secret Hygiene
+
 **Goal**: The Zod schema that every later stage depends on is locked, and the public repo is safe to develop in from the first commit.
 **Depends on**: Nothing (first phase)
 **Requirements**: SCHEMA-01
 **Success Criteria** (what must be TRUE):
+
   1. Type-check, lint, and format commands (tsc, Biome) run clean on the scaffolded repo with zero errors
   2. A Zod schema validates a fictional `fixtures/sample-resume.json` (contact, summary, experience, education, skills) and rejects a deliberately malformed copy of it
   3. A committed file containing an API-key-shaped secret is caught by the pre-commit secret scanner before it reaches history
   4. `.gitignore` and `.env.example` exist and no real secrets or personal data appear anywhere in repo history
+
 **Plans**: 3 plans
 Plans:
+**Wave 1**
+
 - [ ] 01-01-PLAN.md — Repo scaffold: package.json (ESM CLI + pinned deps), tsconfig (NodeNext strict), biome.json, .gitignore, .env.example; npm install; verify empty-tree tsc + biome pass
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 01-02-PLAN.md — Zod ResumeSchema (D-09..D-14) + validate stub + CLI shebang stub + valid/malformed fixtures + smoke-test script proving pass/fail (satisfies SCHEMA-01)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 01-03-PLAN.md — Install gitleaks, activate simple-git-hooks pre-commit (D-15..D-17); prove positive control (fake key blocked) and negative control (clean commit succeeds); scan history
 
 ### Phase 2: Markdown to Structured JSON Extraction
+
 **Goal**: Users can turn a markdown resume note into validated structured JSON via the Claude API, safely and inspectably, without touching a renderer.
 **Depends on**: Phase 1
 **Requirements**: PARSE-01, PARSE-02, PARSE-03, SEC-01, DEVX-01
 **Success Criteria** (what must be TRUE):
+
   1. Running extraction against a fixture markdown resume produces JSON that validates against the Phase 1 schema
   2. When a required section is missing or malformed in the input note, the user sees a human-readable error naming the specific section, not a raw stack trace
   3. The Claude API key is read only from an environment variable — running with it unset produces a clear failure message and the CLI never prompts for or persists a key
   4. Running with `--validate-only`/`--dry-run` prints the extracted, validated JSON to stdout and performs no PDF rendering
+
 **Plans**: TBD
 
 ### Phase 3: Designed & ATS PDF Rendering
+
 **Goal**: Validated resume JSON can be rendered into a portfolio-quality designed PDF and a genuinely distinct, machine-readable ATS-clean PDF.
 **Depends on**: Phase 1 (schema; does not require Phase 2 to be complete — built and tested against the fixture)
 **Requirements**: RENDER-01, RENDER-02, RENDER-03
 **Success Criteria** (what must be TRUE):
+
   1. Rendering the sample fixture through the designed pipeline produces a single-column, image-free typographic PDF
   2. Rendering the same fixture through the ATS pipeline produces a visually distinct single-column PDF using system-safe fonts, with no layout tables and no hidden/near-invisible text
   3. Extracting text from the ATS-clean PDF (e.g. via pdftotext/pdf-parse) returns all resume content in correct linear reading order
   4. Re-running either renderer against the same input writes predictable, non-destructive filenames (e.g. `<slug>-resume.pdf` / `<slug>-resume-ats.pdf`) without clobbering differently-named prior output
+
 **Plans**: TBD
 
 ### Phase 4: CLI Integration, Debug Tooling & Portfolio Readiness
+
 **Goal**: A user runs one command against a real markdown resume note and reliably gets both PDFs, with clear errors, help text, debug visibility, and an onboarding path.
 **Depends on**: Phase 2, Phase 3
 **Requirements**: CLI-01, CLI-02, CLI-03, CLI-04, DEVX-02, DEVX-03
 **Success Criteria** (what must be TRUE):
+
   1. Running `cvgen <path-to-markdown-file>` end-to-end writes both the designed and ATS PDFs to disk from a single invocation
   2. Running cvgen against a nonexistent or unreadable path fails with a clear human-readable message (not a stack trace) and exits non-zero; a successful run exits 0
   3. Running `cvgen --help` prints usage and an example invocation
   4. Running with `--verbose`/`--debug` shows the raw Claude API response alongside the validated JSON
   5. Running `cvgen init` generates an example Obsidian note demonstrating the expected frontmatter/heading convention
+
 **Plans**: TBD
 
 ## Progress
