@@ -40,7 +40,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 01-02-PLAN.md — Zod ResumeSchema (D-09..D-14) + validate stub + CLI shebang stub + valid/malformed fixtures + smoke-test script proving pass/fail (satisfies SCHEMA-01)
+- [x] 01-02-PLAN.md — Zod ResumeSchema (D-09..D-14) + validate stub + CLI shebang stub + valid/malformed fixtures + smoke-test script proving pass/fail (satisfies SCHEMA-01)
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -96,7 +96,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Scaffold, Schema & Secret Hygiene | 1/3 | In Progress|  |
+| 1. Scaffold, Schema & Secret Hygiene | 2/3 | In Progress|  |
 | 2. Markdown to Structured JSON Extraction | 0/TBD | Not started | - |
 | 3. Designed & ATS PDF Rendering | 0/TBD | Not started | - |
 | 4. CLI Integration, Debug Tooling & Portfolio Readiness | 0/TBD | Not started | - |

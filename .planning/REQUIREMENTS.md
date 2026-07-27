@@ -14,7 +14,7 @@
 
 ### Schema
 
-- [ ] **SCHEMA-01**: A Zod schema defines the structured resume data contract (contact, summary, experience, education, skills) that parsing and both renderers depend on
+- [x] **SCHEMA-01**: A Zod schema defines the structured resume data contract (contact, summary, experience, education, skills) that parsing and both renderers depend on
 
 ### Parsing
 
@@ -84,7 +84,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CLI-02 | Phase 4 | Pending |
 | CLI-03 | Phase 4 | Pending |
 | CLI-04 | Phase 4 | Pending |
-| SCHEMA-01 | Phase 1 | Pending |
+| SCHEMA-01 | Phase 1 | Complete |
 | PARSE-01 | Phase 2 | Pending |
 | PARSE-02 | Phase 2 | Pending |
 | PARSE-03 | Phase 2 | Pending |
