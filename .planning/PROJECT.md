@@ -12,7 +12,7 @@ Running the CLI against a markdown resume note reliably produces a portfolio-qua
 
 ### Validated
 
-(None yet — ship to validate)
+- [x] Repo has TypeScript config, lint, and format tooling configured out of the box — Validated in Phase 01: scaffold-schema-secret-hygiene (2026-07-27)
 
 ### Active
 
