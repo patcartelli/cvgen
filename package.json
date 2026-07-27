@@ -10,7 +10,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.scripts.json",
     "lint": "biome check .",
     "format": "biome format --write .",
     "check": "biome check --write .",
