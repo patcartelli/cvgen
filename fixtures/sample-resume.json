@@ -1,0 +1,47 @@
+{
+  "contact": {
+    "name": "Alex Rivera",
+    "email": "alex@example.com",
+    "phone": "(555) 000-0000",
+    "location": "San Francisco, CA",
+    "linkedin": "linkedin.com/in/alexrivera",
+    "github": "github.com/alexrivera"
+  },
+  "summary": "Senior software engineer with 10 years building distributed systems.",
+  "coreCompetencies": ["TypeScript", "Systems Design", "API Design", "Team Leadership"],
+  "experience": [
+    {
+      "role": "Senior Engineer",
+      "company": "Acme Corp",
+      "startDate": "Jan 2022",
+      "endDate": "Present",
+      "type": "full-time",
+      "bullets": [
+        "Reduced API latency by 40% through query optimization.",
+        "Led a team of 5 engineers to deliver project on time."
+      ]
+    },
+    {
+      "role": "Platform Consultant",
+      "company": "Tech Partners LLC",
+      "startDate": "Mar 2020",
+      "endDate": "Dec 2021",
+      "type": "contract",
+      "bullets": [
+        "Designed event-driven microservices architecture for fintech client.",
+        "Delivered streaming data pipeline processing 50k events per second."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "B.S. Computer Science",
+      "institution": "UCLA",
+      "year": "2014"
+    }
+  ],
+  "skills": [
+    { "category": "Languages", "items": ["TypeScript", "Python", "Go"] },
+    { "category": "Tools", "items": ["Docker", "Git", "Postgres"] }
+  ]
+}
