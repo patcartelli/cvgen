@@ -13,7 +13,7 @@ cvgen goes from an empty repo to a working CLI that turns an Obsidian-native mar
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Scaffold, Schema & Secret Hygiene** - Repo tooling, the Zod resume schema, and public-repo secret hygiene exist before any Claude-API code is written
+- [x] **Phase 1: Scaffold, Schema & Secret Hygiene** - Repo tooling, the Zod resume schema, and public-repo secret hygiene exist before any Claude-API code is written (completed 2026-07-27)
 - [ ] **Phase 2: Markdown to Structured JSON Extraction** - CLI can turn a markdown resume into schema-validated JSON via Claude, safely and inspectably
 - [ ] **Phase 3: Designed & ATS PDF Rendering** - Validated resume JSON renders into two structurally distinct, single-column PDFs
 - [ ] **Phase 4: CLI Integration, Debug Tooling & Portfolio Readiness** - The full `cvgen <path>` command works end-to-end with clear errors, help text, debug flags, and an init scaffold
@@ -44,7 +44,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 01-03-PLAN.md — Install gitleaks, activate simple-git-hooks pre-commit (D-15..D-17); prove positive control (fake key blocked) and negative control (clean commit succeeds); scan history
+- [x] 01-03-PLAN.md — Install gitleaks, activate simple-git-hooks pre-commit (D-15..D-17); prove positive control (fake key blocked) and negative control (clean commit succeeds); scan history
 
 ### Phase 2: Markdown to Structured JSON Extraction
 
@@ -96,7 +96,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Scaffold, Schema & Secret Hygiene | 2/3 | In Progress|  |
+| 1. Scaffold, Schema & Secret Hygiene | 3/3 | Complete   | 2026-07-27 |
 | 2. Markdown to Structured JSON Extraction | 0/TBD | Not started | - |
 | 3. Designed & ATS PDF Rendering | 0/TBD | Not started | - |
 | 4. CLI Integration, Debug Tooling & Portfolio Readiness | 0/TBD | Not started | - |
