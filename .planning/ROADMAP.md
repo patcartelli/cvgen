@@ -28,7 +28,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. A Zod schema validates a fictional `fixtures/sample-resume.json` (contact, summary, experience, education, skills) and rejects a deliberately malformed copy of it
   3. A committed file containing an API-key-shaped secret is caught by the pre-commit secret scanner before it reaches history
   4. `.gitignore` and `.env.example` exist and no real secrets or personal data appear anywhere in repo history
-**Plans**: TBD
+**Plans**: 3 plans
+Plans:
+- [ ] 01-01-PLAN.md — Repo scaffold: package.json (ESM CLI + pinned deps), tsconfig (NodeNext strict), biome.json, .gitignore, .env.example; npm install; verify empty-tree tsc + biome pass
+- [ ] 01-02-PLAN.md — Zod ResumeSchema (D-09..D-14) + validate stub + CLI shebang stub + valid/malformed fixtures + smoke-test script proving pass/fail (satisfies SCHEMA-01)
+- [ ] 01-03-PLAN.md — Install gitleaks, activate simple-git-hooks pre-commit (D-15..D-17); prove positive control (fake key blocked) and negative control (clean commit succeeds); scan history
 
 ### Phase 2: Markdown to Structured JSON Extraction
 **Goal**: Users can turn a markdown resume note into validated structured JSON via the Claude API, safely and inspectably, without touching a renderer.
@@ -71,8 +75,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Scaffold, Schema & Secret Hygiene | 0/TBD | Not started | - |
+| 1. Scaffold, Schema & Secret Hygiene | 0/3 | Not started | - |
 | 2. Markdown to Structured JSON Extraction | 0/TBD | Not started | - |
 | 3. Designed & ATS PDF Rendering | 0/TBD | Not started | - |
 | 4. CLI Integration, Debug Tooling & Portfolio Readiness | 0/TBD | Not started | - |
-</content>
