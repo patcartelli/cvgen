@@ -1,4 +1,4 @@
-import { readFileSync } from "fs";
+import { readFileSync } from "node:fs";
 import { ResumeSchema } from "../src/schema/resume.js";
 
 const valid = JSON.parse(readFileSync("fixtures/sample-resume.json", "utf8"));
