@@ -36,7 +36,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 Plans:
 **Wave 1**
 
-- [ ] 01-01-PLAN.md — Repo scaffold: package.json (ESM CLI + pinned deps), tsconfig (NodeNext strict), biome.json, .gitignore, .env.example; npm install; verify empty-tree tsc + biome pass
+- [x] 01-01-PLAN.md — Repo scaffold: package.json (ESM CLI + pinned deps), tsconfig (NodeNext strict), biome.json, .gitignore, .env.example; npm install; verify empty-tree tsc + biome pass
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -96,7 +96,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Scaffold, Schema & Secret Hygiene | 0/3 | Not started | - |
+| 1. Scaffold, Schema & Secret Hygiene | 1/3 | In Progress|  |
 | 2. Markdown to Structured JSON Extraction | 0/TBD | Not started | - |
 | 3. Designed & ATS PDF Rendering | 0/TBD | Not started | - |
 | 4. CLI Integration, Debug Tooling & Portfolio Readiness | 0/TBD | Not started | - |
