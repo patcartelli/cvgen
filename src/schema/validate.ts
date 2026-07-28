@@ -8,9 +8,7 @@ function formatZodErrors(
   return issues
     .map((issue) => {
       const path = issue.path
-        .map((p, i) =>
-          typeof p === "number" ? `[${p}]` : i === 0 ? String(p) : `.${String(p)}`,
-        )
+        .map((p, i) => (typeof p === "number" ? `[${p}]` : i === 0 ? String(p) : `.${String(p)}`))
         .join("");
       return `  ${path || "(root)"}: ${issue.message}`;
     })
