@@ -25,9 +25,10 @@ const fixturePath = resolve(projectRoot, "fixtures/sample-resume.md");
 function runCli(
   args: string[],
   env: NodeJS.ProcessEnv = process.env,
+  cwd: string = projectRoot,
 ): { stdout: string; stderr: string; status: number } {
   const result = spawnSync("npx", ["tsx", cliSrcPath, ...args], {
-    cwd: projectRoot,
+    cwd,
     env,
     encoding: "utf8",
     timeout: 15000,
@@ -89,7 +90,9 @@ describe("CLI entry point (src/cli/index.ts)", () => {
   // Test 3: File path but ANTHROPIC_API_KEY unset → error naming the missing key, exit 1, no prompt
   // ---------------------------------------------------------------------------
   it("Test 3: file path but no ANTHROPIC_API_KEY → error mentions 'ANTHROPIC_API_KEY' and 'not set', exits 1", () => {
-    const { stdout, stderr, status } = runCli([fixturePath, "--validate-only"], envWithoutKey());
+    // Use a temp cwd with no .env file so process.loadEnvFile(".env") cannot repopulate the key
+    const noDotEnvDir = mkdtempSync(join(tmpdir(), "cvgen-no-env-"));
+    const { stdout, stderr, status } = runCli([fixturePath, "--validate-only"], envWithoutKey(), noDotEnvDir);
     assert.equal(status, 1, `expected exit 1, got ${status}. stderr: ${stderr}`);
     assert.ok(
       stderr.includes("ANTHROPIC_API_KEY"),
