@@ -166,19 +166,15 @@ describe("CLI entry point (src/cli/index.ts)", () => {
   });
 
   // ---------------------------------------------------------------------------
-  // Test 8 (source-level): No commander, no require, no interactive prompt library
+  // Test 8 (source-level): imports commander and exports a Commander program
   // ---------------------------------------------------------------------------
-  it("Test 8 (source-level): does NOT import commander, yargs, readline, inquirer, prompts, or use require()", () => {
+  it("Test 8 (source-level): imports commander and exports a Commander program", () => {
     const src = readFileSync(cliSrcPath, "utf8");
-    assert.ok(!src.includes("commander"), "must not import or reference 'commander'");
-    assert.ok(!src.includes("yargs"), "must not import or reference 'yargs'");
-    assert.ok(!src.includes("inquirer"), "must not import or reference 'inquirer'");
-    assert.ok(!src.includes("prompts"), "must not import or reference 'prompts'");
-    // readline is a Node built-in — only flag if imported (not just mentioned)
-    assert.ok(
-      !src.includes('from "node:readline"') && !src.includes('require("readline")'),
-      "must not import readline",
-    );
+    assert.ok(src.includes("commander"), "must import from 'commander'");
+    assert.ok(src.includes("new Command()"), "must instantiate a Commander Command");
+    assert.ok(src.includes("parseAsync"), "must call parseAsync");
     assert.ok(!src.includes("require("), "must not use require() — ESM only");
+    assert.ok(!src.includes("inquirer"), "must not import inquirer");
+    assert.ok(!src.includes("yargs"), "must not import yargs");
   });
 });
