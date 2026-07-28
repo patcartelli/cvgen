@@ -63,20 +63,16 @@ function designedHtmlTemplate(data: ResumeData): string {
   const experienceHtml = experience
     .map((exp) => {
       const endDate = exp.endDate ? escapeHtml(exp.endDate) : "Present";
-      const typeBadge = exp.type ? `<span class="type-badge">${escapeHtml(exp.type)}</span>` : "";
-      const bulletsHtml = exp.bullets.map((b) => `<li>${escapeHtml(b)}</li>`).join("\n          ");
+      const typeBadge = exp.type ? ` <span class="type-badge">(${escapeHtml(exp.type)})</span>` : "";
+      const bulletsHtml = exp.bullets.map((b) => `<li>${escapeHtml(b)}</li>`).join("\n            ");
       return `<div class="experience-entry">
-        <div class="exp-header">
-          <span class="role">${escapeHtml(exp.role)}</span>
-          <span class="dates">${escapeHtml(exp.startDate)} — ${endDate}</span>
+        <div class="exp-date">${escapeHtml(exp.startDate)} – ${endDate}</div>
+        <div class="exp-main">
+          <div class="exp-title">${escapeHtml(exp.company)} — ${escapeHtml(exp.role)}${typeBadge}</div>
+          <ul>
+            ${bulletsHtml}
+          </ul>
         </div>
-        <div class="exp-subheader">
-          <span class="company">${escapeHtml(exp.company)}</span>
-          ${typeBadge}
-        </div>
-        <ul>
-          ${bulletsHtml}
-        </ul>
       </div>`;
     })
     .join("\n    ");
@@ -85,9 +81,11 @@ function designedHtmlTemplate(data: ResumeData): string {
     .map(
       (edu) =>
         `<div class="edu-entry">
-        <span class="degree">${escapeHtml(edu.degree)}</span>
-        <span class="institution">${escapeHtml(edu.institution)}</span>
-        <span class="year">${escapeHtml(edu.year)}</span>
+        <div class="edu-year">${escapeHtml(edu.year)}</div>
+        <div class="edu-main">
+          <div class="degree">${escapeHtml(edu.degree)}</div>
+          <div class="institution">${escapeHtml(edu.institution)}</div>
+        </div>
       </div>`,
     )
     .join("\n    ");
@@ -96,7 +94,7 @@ function designedHtmlTemplate(data: ResumeData): string {
     .map(
       (sg) =>
         `<div class="skill-group">
-        <span class="skill-category">${escapeHtml(sg.category)}:</span>
+        <span class="skill-category">${escapeHtml(sg.category)}</span>
         <span class="skill-items">${sg.items.map((i) => escapeHtml(i)).join(", ")}</span>
       </div>`,
     )
@@ -119,127 +117,107 @@ function designedHtmlTemplate(data: ResumeData): string {
     }
 
     :root {
-      --accent: #2d4a6b;
-      --text: #1a1a1a;
-      --muted: #555;
+      --accent: #FEAC03;
+      --text: #232323;
+      --muted: #555555;
       --border: #e0e0e0;
     }
 
     body {
       font-family: 'Inter', sans-serif;
-      font-size: 10.5pt;
+      font-size: 14px;
+      line-height: 21px;
       color: var(--text);
-      line-height: 1.5;
     }
 
     .container {
       max-width: 100%;
     }
 
-    /* Contact block */
+    /* Contact block — accent appears once as a thin bottom rule */
     .contact-block {
-      margin-bottom: 1.2em;
-      border-bottom: 2px solid var(--accent);
-      padding-bottom: 0.8em;
+      padding-bottom: 1.2em;
+      border-bottom: 1px solid var(--accent);
     }
 
     .candidate-name {
-      font-size: 22pt;
-      font-weight: 700;
-      color: var(--accent);
-      letter-spacing: -0.02em;
-      margin-bottom: 0.3em;
+      font-size: 20px;
+      line-height: 30px;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 0.4em;
     }
 
     .contact-details {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.3em 1.2em;
-      font-size: 9pt;
+      font-size: 12px;
+      line-height: 21px;
       color: var(--muted);
     }
 
-    /* Section headers */
+    /* Section headers — 48px above, content butts up below (4px or 24px per element) */
     .section-header {
-      font-size: 10pt;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--accent);
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 0.2em;
-      margin-top: 1em;
-      margin-bottom: 0.5em;
+      font-size: 14px;
+      line-height: 21px;
+      font-weight: 400;
+      color: var(--text);
+      margin-top: 48px;
+      margin-bottom: 0;
       break-after: avoid;
       break-inside: avoid;
     }
 
-    /* Summary */
+    /* Summary paragraph — 4px below heading */
     section > p {
+      margin-top: 4px;
       color: var(--text);
-      margin-bottom: 0.5em;
     }
 
     /* Core Competencies */
     .competencies {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.3em 0.5em;
-      margin-bottom: 0.3em;
+      gap: 0.3em 0.4em;
     }
 
     .chip {
-      background: #eef2f7;
-      color: var(--accent);
-      font-size: 8.5pt;
-      font-weight: 500;
-      padding: 0.15em 0.6em;
-      border-radius: 3px;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      font-size: 12px;
+      line-height: 21px;
+      font-weight: 400;
+      padding: 0.1em 0.65em;
+      border-radius: 20px;
     }
 
-    /* Experience */
+    /* Experience — two-column grid: date left, content right */
     .experience-entry {
-      margin-bottom: 0.9em;
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 0 1.5em;
+      margin-top: 24px;
+      margin-bottom: 0;
       break-inside: avoid;
     }
 
-    .exp-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-    }
-
-    .role {
-      font-weight: 600;
-      font-size: 10.5pt;
-    }
-
-    .dates {
-      font-size: 9pt;
+    .exp-date {
+      font-size: 12px;
+      line-height: 21px;
       color: var(--muted);
       white-space: nowrap;
     }
 
-    .exp-subheader {
-      display: flex;
-      align-items: center;
-      gap: 0.5em;
-      margin-bottom: 0.3em;
-    }
-
-    .company {
-      font-size: 9.5pt;
-      color: var(--muted);
+    .exp-title {
+      font-size: 14px;
+      line-height: 21px;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 0.1em;
     }
 
     .type-badge {
-      font-size: 7.5pt;
-      font-weight: 500;
+      font-size: 12px;
+      line-height: 21px;
       color: var(--muted);
-      border: 1px solid var(--border);
-      padding: 0.05em 0.4em;
-      border-radius: 2px;
-      text-transform: lowercase;
     }
 
     ul {
@@ -248,8 +226,10 @@ function designedHtmlTemplate(data: ResumeData): string {
     }
 
     li {
-      font-size: 10pt;
-      margin-bottom: 0.15em;
+      font-size: 12px;
+      line-height: 18px;
+      color: var(--muted);
+      margin-bottom: 0.1em;
       orphans: 3;
       widows: 3;
     }
@@ -259,41 +239,51 @@ function designedHtmlTemplate(data: ResumeData): string {
       widows: 3;
     }
 
-    /* Education */
+    /* Education — two-column grid matching experience */
     .edu-entry {
-      display: flex;
-      gap: 0.5em 1em;
-      flex-wrap: wrap;
-      align-items: baseline;
-      margin-bottom: 0.3em;
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 0 1.5em;
+      margin-bottom: 0.5em;
+      break-inside: avoid;
+    }
+
+    .edu-year {
+      font-size: 12px;
+      line-height: 21px;
+      color: var(--muted);
     }
 
     .degree {
-      font-weight: 600;
+      font-size: 14px;
+      line-height: 21px;
+      font-weight: 400;
     }
 
     .institution {
+      font-size: 12px;
+      line-height: 21px;
       color: var(--muted);
     }
 
-    .year {
-      font-size: 9pt;
-      color: var(--muted);
-    }
-
-    /* Skills */
+    /* Skills — two-column grid matching experience */
     .skill-group {
-      margin-bottom: 0.25em;
-      font-size: 10pt;
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 0 1.5em;
+      margin-bottom: 0.3em;
+      font-size: 14px;
+      line-height: 21px;
     }
 
     .skill-category {
-      font-weight: 600;
-      margin-right: 0.3em;
+      font-size: 12px;
+      line-height: 21px;
+      color: var(--muted);
     }
 
     .skill-items {
-      color: var(--muted);
+      color: var(--text);
     }
   </style>
 </head>
@@ -301,13 +291,7 @@ function designedHtmlTemplate(data: ResumeData): string {
   <div class="container">
     <div class="contact-block">
       <div class="candidate-name">${escapeHtml(contact.name)}</div>
-      <div class="contact-details">
-        <span>${escapeHtml(contact.email)}</span>
-        <span>${escapeHtml(contact.phone)}</span>
-        <span>${escapeHtml(contact.location)}</span>
-        <span>${escapeHtml(contact.linkedin)}</span>
-        <span>${escapeHtml(contact.github)}</span>
-      </div>
+      <div class="contact-details">${[contact.email, contact.phone, contact.location, contact.linkedin, contact.github].map(escapeHtml).join(" | ")}</div>
     </div>
 
     ${summaryHtml}
