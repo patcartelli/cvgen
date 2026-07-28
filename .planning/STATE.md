@@ -2,35 +2,33 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: milestone_complete
-stopped_at: Milestone complete (Phase 04 was final phase)
-last_updated: 2026-07-28T21:26:35.399Z
-last_activity: 2026-07-28 -- Phase 04 execution started
+status: Awaiting next milestone
+stopped_at: Phase 03 complete — UAT 6/6 passed; ready to plan Phase 04
+last_updated: "2026-07-28T21:44:45.589Z"
+last_activity: 2026-07-28 — Milestone v1.0 completed and archived
 progress:
   total_phases: 4
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 9
   completed_plans: 9
-  percent: 75
+  percent: 100
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-07-27)
+See: .planning/PROJECT.md (updated 2026-07-28)
 
 **Core value:** Running the CLI against a markdown resume note reliably produces a portfolio-quality PDF and a separate ATS-safe PDF — without the user touching a template or text editor.
-**Current focus:** Milestone complete
+**Current focus:** v1.0 shipped — planning next milestone
 
 ## Current Position
 
-Phase: 04
-Plan: Not started
-Status: Milestone complete
-Last activity: 2026-07-28
-
-Progress: [█████████░] 87%
+Phase: Milestone v1.0 complete
+Plan: —
+Status: Awaiting next milestone
+Last activity: 2026-07-28 — Milestone v1.0 completed and archived
 
 ## Performance Metrics
 
@@ -80,14 +78,17 @@ None yet.
 
 ## Deferred Items
 
-Items acknowledged and carried forward from previous milestone close:
+Items acknowledged and deferred at milestone close on 2026-07-28:
 
-| Category | Item | Status | Deferred At |
-|----------|------|--------|-------------|
-| Rendering | Config file for render preferences (margins, page size, ATS-safe font choice) | v2 | Init |
-| Trust | Section-level parse-confidence/provenance flags | v2 | Init |
-| Product Direction | Web UI | v2 | Init |
-| Product Direction | Job-posting-targeted tailoring | v2 | Init |
+| Category | Item | Status |
+|----------|------|--------|
+| verification_gap | Phase 02: 02-VERIFICATION.md human_needed — extraction pipeline validated end-to-end in Phase 04 UAT instead | acknowledged |
+| Rendering | Config file for render preferences (margins, page size, ATS-safe font choice) | v2 |
+| Trust | Section-level parse-confidence/provenance flags | v2 |
+| Product Direction | Web UI | v2 |
+| Product Direction | Job-posting-targeted tailoring | v2 |
+| code_review | CR-01: rawResponse typed as Message not ParsedMessage — affects --verbose output completeness | v1.1 |
+| code_review | WR-04: two conflicting test runners (tsx --test + vitest.config.ts) | v1.1 |
 
 ## Session Continuity
 
@@ -95,3 +96,7 @@ Last session: 2026-07-28
 Stopped at: Phase 03 complete — UAT 6/6 passed; ready to plan Phase 04
 Resume file: none
 </content>
+
+## Operator Next Steps
+
+- Start the next milestone with /gsd-new-milestone
