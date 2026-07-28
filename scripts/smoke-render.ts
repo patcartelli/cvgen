@@ -12,8 +12,10 @@ import type { ResumeData } from "../src/schema/resume.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-// Load fixture data
-const fixturePath = resolve(__dirname, "../fixtures/sample-resume.json");
+// Load fixture data — optionally accept a path as the first CLI arg
+const fixturePath = process.argv[2]
+  ? resolve(process.argv[2])
+  : resolve(__dirname, "../fixtures/sample-resume.json");
 const data = JSON.parse(await readFile(fixturePath, "utf8")) as ResumeData;
 
 // Create a temp directory for output (not cleaned up — lets operator open PDFs for inspection)
