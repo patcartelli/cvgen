@@ -10,7 +10,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.scripts.json",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.scripts.json && tsc --noEmit -p tsconfig.test.json",
     "lint": "biome check .",
     "format": "biome format --write .",
     "check": "biome check --write .",
@@ -22,6 +22,7 @@
     "pre-commit": "npx biome check --write . && gitleaks protect -v --staged"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.115.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
