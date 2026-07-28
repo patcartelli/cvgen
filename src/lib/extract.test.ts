@@ -61,10 +61,7 @@ describe("extract.ts structural assertions (no live API call)", () => {
     assert.ok(md.includes("name: Alex Rivera"), "must have name: Alex Rivera");
     assert.ok(md.includes("email: alex@example.com"), "must have email: alex@example.com");
     assert.ok(md.includes("phone: (555) 000-0000"), "must have phone: (555) 000-0000");
-    assert.ok(
-      md.includes("location: San Francisco, CA"),
-      "must have location: San Francisco, CA",
-    );
+    assert.ok(md.includes("location: San Francisco, CA"), "must have location: San Francisco, CA");
     assert.ok(
       md.includes("linkedin: linkedin.com/in/alexrivera"),
       "must have linkedin: linkedin.com/in/alexrivera",
