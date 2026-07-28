@@ -1,10 +1,16 @@
 // src/lib/extract.ts
 import Anthropic from "@anthropic-ai/sdk";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod.js";
+import type { Message } from "@anthropic-ai/sdk/resources/messages.js";
 import type { ResumeData } from "../schema/resume.js";
 import { ResumeSchema } from "../schema/resume.js";
 
-export async function extractResume(markdown: string): Promise<ResumeData> {
+export interface ExtractResult {
+  data: ResumeData;
+  rawResponse: Message;
+}
+
+export async function extractResume(markdown: string): Promise<ExtractResult> {
   const client = new Anthropic();
   // SDK reads ANTHROPIC_API_KEY from process.env at construction time
 
@@ -22,5 +28,5 @@ export async function extractResume(markdown: string): Promise<ResumeData> {
     );
   }
 
-  return response.parsed_output;
+  return { data: response.parsed_output, rawResponse: response };
 }
