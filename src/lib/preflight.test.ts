@@ -4,9 +4,8 @@
 
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-
-import { preflightCheck } from "./preflight.js";
 import type { PreflightError } from "./preflight.js";
+import { preflightCheck } from "./preflight.js";
 
 // Helper: build a minimal valid markdown string
 function buildMarkdown({
@@ -35,7 +34,11 @@ describe("preflightCheck", () => {
   // Test 2: Empty string → 9 errors (6 frontmatter + 3 section)
   it("Test 2: returns 9 errors for an empty string (6 frontmatter + 3 section)", () => {
     const errors = preflightCheck("");
-    assert.equal(errors.length, 9, `expected 9 errors, got ${errors.length}: ${JSON.stringify(errors)}`);
+    assert.equal(
+      errors.length,
+      9,
+      `expected 9 errors, got ${errors.length}: ${JSON.stringify(errors)}`,
+    );
     const frontmatterErrors = errors.filter((e: PreflightError) => e.type === "frontmatter");
     const sectionErrors = errors.filter((e: PreflightError) => e.type === "section");
     assert.equal(frontmatterErrors.length, 6);
@@ -48,7 +51,11 @@ describe("preflightCheck", () => {
       fields: ["name", "email", "phone", "location", "github"], // linkedin omitted
     });
     const errors = preflightCheck(markdown);
-    assert.equal(errors.length, 1, `expected 1 error, got ${errors.length}: ${JSON.stringify(errors)}`);
+    assert.equal(
+      errors.length,
+      1,
+      `expected 1 error, got ${errors.length}: ${JSON.stringify(errors)}`,
+    );
     assert.equal(errors[0]?.type, "frontmatter");
     assert.equal(errors[0]?.missing, "linkedin");
     assert.equal(errors[0]?.message, "Missing required frontmatter field: linkedin");
@@ -60,7 +67,11 @@ describe("preflightCheck", () => {
       headings: ["## Experience", "## Skills"], // ## Education omitted
     });
     const errors = preflightCheck(markdown);
-    assert.equal(errors.length, 1, `expected 1 error, got ${errors.length}: ${JSON.stringify(errors)}`);
+    assert.equal(
+      errors.length,
+      1,
+      `expected 1 error, got ${errors.length}: ${JSON.stringify(errors)}`,
+    );
     assert.equal(errors[0]?.type, "section");
     assert.equal(errors[0]?.missing, "## Education");
     assert.equal(errors[0]?.message, "Missing required section: ## Education");
