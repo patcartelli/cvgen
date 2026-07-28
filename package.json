@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.115.0",
+    "commander": "^15.0.0",
     "puppeteer": "^25.4.0",
     "zod": "^4.4.3"
   },
