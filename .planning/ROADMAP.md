@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Scaffold, Schema & Secret Hygiene** - Repo tooling, the Zod resume schema, and public-repo secret hygiene exist before any Claude-API code is written (completed 2026-07-27)
 - [x] **Phase 2: Markdown to Structured JSON Extraction** - CLI can turn a markdown resume into schema-validated JSON via Claude, safely and inspectably (completed 2026-07-28)
 - [x] **Phase 3: Designed & ATS PDF Rendering** - Validated resume JSON renders into two structurally distinct, single-column PDFs (completed 2026-07-28)
-- [ ] **Phase 4: CLI Integration, Debug Tooling & Portfolio Readiness** - The full `cvgen <path>` command works end-to-end with clear errors, help text, debug flags, and an init scaffold
+- [x] **Phase 4: CLI Integration, Debug Tooling & Portfolio Readiness** - The full `cvgen <path>` command works end-to-end with clear errors, help text, debug flags, and an init scaffold (completed 2026-07-28)
 
 ## Phase Details
 
@@ -111,7 +111,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 04-02-PLAN.md — Replace src/cli/index.ts with full Commander 15 program (main pipeline + --verbose + --validate-only/--dry-run + cvgen init subcommand); rewrite index.test.ts Test 8 to assert Commander IS present; blocking human end-to-end UAT (satisfies CLI-01, CLI-02, CLI-03, CLI-04, DEVX-02, DEVX-03)
+- [x] 04-02-PLAN.md — Replace src/cli/index.ts with full Commander 15 program (main pipeline + --verbose + --validate-only/--dry-run + cvgen init subcommand); rewrite index.test.ts Test 8 to assert Commander IS present; blocking human end-to-end UAT (satisfies CLI-01, CLI-02, CLI-03, CLI-04, DEVX-02, DEVX-03)
 
 ## Progress
 
@@ -123,4 +123,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. Scaffold, Schema & Secret Hygiene | 3/3 | Complete   | 2026-07-27 |
 | 2. Markdown to Structured JSON Extraction | 2/2 | Complete   | 2026-07-28 |
 | 3. Designed & ATS PDF Rendering | 2/2 | Complete   | 2026-07-28 |
-| 4. CLI Integration, Debug Tooling & Portfolio Readiness | 1/2 | In Progress|  |
+| 4. CLI Integration, Debug Tooling & Portfolio Readiness | 2/2 | Complete   | 2026-07-28 |
