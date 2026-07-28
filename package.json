@@ -35,8 +35,7 @@
     "pdf-parse": "^2.4.5",
     "simple-git-hooks": "^2.13.1",
     "tsx": "^4.23.1",
-    "typescript": "^6.0.3",
-    "vitest": "^3.2.7"
+    "typescript": "^6.0.3"
   },
   "allowScripts": {
     "puppeteer@25.4.0": true
