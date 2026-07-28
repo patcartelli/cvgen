@@ -28,7 +28,7 @@ Render validated `ResumeData` JSON into two structurally distinct, single-column
 - **D-O02:** Slug is derived from the **input filename stem** — `my-resume.md` → `my-resume-resume.pdf` / `my-resume-resume-ats.pdf`. No dependency on extracted content.
 
 ### Test Strategy
-- **D-T01:** ATS text-extraction correctness (success criterion #3) is verified via an **automated Vitest test using `pdf-parse`** (dev dependency). The test renders the ATS PDF from the fixture, extracts text with pdf-parse, and asserts all expected resume content appears in correct linear reading order.
+- **D-T01:** ATS text-extraction correctness (success criterion #3) is verified via an **automated `node:test` test using `pdf-parse`** (dev dependency). The test renders the ATS PDF from the fixture, extracts text with pdf-parse, and asserts all expected resume content appears in correct linear reading order. (Override: `node:test` replaces the originally-specified Vitest — every existing test in the codebase uses `node:test`; Vitest is not installed.)
 - **D-T02:** Designed PDF visual correctness is verified **manually** — open the file and inspect it. No automated appearance test in Phase 3.
 
 ### Claude's Discretion
