@@ -58,7 +58,15 @@ Plans:
   3. The Claude API key is read only from an environment variable — running with it unset produces a clear failure message and the CLI never prompts for or persists a key
   4. Running with `--validate-only`/`--dry-run` prints the extracted, validated JSON to stdout and performs no PDF rendering
 
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+**Wave 1**
+
+- [ ] 02-01-PLAN.md — Lib layer: validateResume path-based Zod errors, preflightCheck for frontmatter/section headings, extractResume Claude API wrapper (messages.parse + zodOutputFormat), and happy-path markdown fixture (satisfies PARSE-01, PARSE-02, PARSE-03)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 02-02-PLAN.md — CLI entry replacement: env load, ANTHROPIC_API_KEY guard, --validate-only/--dry-run argv routing, pipeline orchestration; ends with blocking human end-to-end verification against real API (satisfies SEC-01, DEVX-01, PARSE-03)
 
 ### Phase 3: Designed & ATS PDF Rendering
 
@@ -97,6 +105,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Scaffold, Schema & Secret Hygiene | 3/3 | Complete   | 2026-07-27 |
-| 2. Markdown to Structured JSON Extraction | 0/TBD | Not started | - |
+| 2. Markdown to Structured JSON Extraction | 0/2 | Not started | - |
 | 3. Designed & ATS PDF Rendering | 0/TBD | Not started | - |
 | 4. CLI Integration, Debug Tooling & Portfolio Readiness | 0/TBD | Not started | - |
