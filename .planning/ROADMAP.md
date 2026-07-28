@@ -14,7 +14,7 @@ cvgen goes from an empty repo to a working CLI that turns an Obsidian-native mar
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Scaffold, Schema & Secret Hygiene** - Repo tooling, the Zod resume schema, and public-repo secret hygiene exist before any Claude-API code is written (completed 2026-07-27)
-- [ ] **Phase 2: Markdown to Structured JSON Extraction** - CLI can turn a markdown resume into schema-validated JSON via Claude, safely and inspectably
+- [x] **Phase 2: Markdown to Structured JSON Extraction** - CLI can turn a markdown resume into schema-validated JSON via Claude, safely and inspectably (completed 2026-07-28)
 - [ ] **Phase 3: Designed & ATS PDF Rendering** - Validated resume JSON renders into two structurally distinct, single-column PDFs
 - [ ] **Phase 4: CLI Integration, Debug Tooling & Portfolio Readiness** - The full `cvgen <path>` command works end-to-end with clear errors, help text, debug flags, and an init scaffold
 
@@ -66,7 +66,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 02-02-PLAN.md — CLI entry replacement: env load, ANTHROPIC_API_KEY guard, --validate-only/--dry-run argv routing, pipeline orchestration; ends with blocking human end-to-end verification against real API (satisfies SEC-01, DEVX-01, PARSE-03)
+- [x] 02-02-PLAN.md — CLI entry replacement: env load, ANTHROPIC_API_KEY guard, --validate-only/--dry-run argv routing, pipeline orchestration; ends with blocking human end-to-end verification against real API (satisfies SEC-01, DEVX-01, PARSE-03)
 
 ### Phase 3: Designed & ATS PDF Rendering
 
@@ -105,6 +105,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Scaffold, Schema & Secret Hygiene | 3/3 | Complete   | 2026-07-27 |
-| 2. Markdown to Structured JSON Extraction | 1/2 | In Progress|  |
+| 2. Markdown to Structured JSON Extraction | 2/2 | Complete   | 2026-07-28 |
 | 3. Designed & ATS PDF Rendering | 0/TBD | Not started | - |
 | 4. CLI Integration, Debug Tooling & Portfolio Readiness | 0/TBD | Not started | - |
