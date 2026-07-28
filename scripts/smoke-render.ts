@@ -38,9 +38,7 @@ const designedStat = await stat(designed);
 const atsStat = await stat(ats);
 
 if (designedStat.size <= 1000) {
-  throw new Error(
-    `Designed PDF too small (${designedStat.size} bytes): ${designed}`,
-  );
+  throw new Error(`Designed PDF too small (${designedStat.size} bytes): ${designed}`);
 }
 if (atsStat.size <= 1000) {
   throw new Error(`ATS PDF too small (${atsStat.size} bytes): ${ats}`);

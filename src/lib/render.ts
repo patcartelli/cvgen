@@ -44,8 +44,7 @@ function escapeHtml(str: string): string {
 // ---------------------------------------------------------------------------
 
 function designedHtmlTemplate(data: ResumeData): string {
-  const { contact, summary, coreCompetencies, experience, education, skills } =
-    data;
+  const { contact, summary, coreCompetencies, experience, education, skills } = data;
 
   const competenciesHtml =
     coreCompetencies && coreCompetencies.length > 0
@@ -64,12 +63,8 @@ function designedHtmlTemplate(data: ResumeData): string {
   const experienceHtml = experience
     .map((exp) => {
       const endDate = exp.endDate ? escapeHtml(exp.endDate) : "Present";
-      const typeBadge = exp.type
-        ? `<span class="type-badge">${escapeHtml(exp.type)}</span>`
-        : "";
-      const bulletsHtml = exp.bullets
-        .map((b) => `<li>${escapeHtml(b)}</li>`)
-        .join("\n          ");
+      const typeBadge = exp.type ? `<span class="type-badge">${escapeHtml(exp.type)}</span>` : "";
+      const bulletsHtml = exp.bullets.map((b) => `<li>${escapeHtml(b)}</li>`).join("\n          ");
       return `<div class="experience-entry">
         <div class="exp-header">
           <span class="role">${escapeHtml(exp.role)}</span>
@@ -351,8 +346,7 @@ function designedHtmlTemplate(data: ResumeData): string {
 // ---------------------------------------------------------------------------
 
 function atsHtmlTemplate(data: ResumeData): string {
-  const { contact, summary, coreCompetencies, experience, education, skills } =
-    data;
+  const { contact, summary, coreCompetencies, experience, education, skills } = data;
 
   const summaryHtml = summary
     ? `<section>
@@ -373,9 +367,7 @@ function atsHtmlTemplate(data: ResumeData): string {
     .map((exp) => {
       const endDate = exp.endDate ? escapeHtml(exp.endDate) : "Present";
       const typeLabel = exp.type ? ` (${escapeHtml(exp.type)})` : "";
-      const bulletsHtml = exp.bullets
-        .map((b) => `<li>${escapeHtml(b)}</li>`)
-        .join("\n        ");
+      const bulletsHtml = exp.bullets.map((b) => `<li>${escapeHtml(b)}</li>`).join("\n        ");
       return `<div class="experience-entry">
       <p><strong>${escapeHtml(exp.role)}</strong>${typeLabel} | ${escapeHtml(exp.company)} | ${escapeHtml(exp.startDate)} &mdash; ${endDate}</p>
       <ul>
