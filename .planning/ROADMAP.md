@@ -107,7 +107,7 @@ Plans:
 Plans:
 **Wave 1**
 
-- [ ] 04-01-PLAN.md — Install commander@15.0.0; update extractResume return type to ExtractResult ({ data, rawResponse }); add source assertion Test 8 to extract.test.ts confirming new interface (satisfies DEVX-02 extract layer)
+- [x] 04-01-PLAN.md — Install commander@15.0.0; update extractResume return type to ExtractResult ({ data, rawResponse }); add source assertion Test 8 to extract.test.ts confirming new interface (satisfies DEVX-02 extract layer)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -123,4 +123,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. Scaffold, Schema & Secret Hygiene | 3/3 | Complete   | 2026-07-27 |
 | 2. Markdown to Structured JSON Extraction | 2/2 | Complete   | 2026-07-28 |
 | 3. Designed & ATS PDF Rendering | 2/2 | Complete   | 2026-07-28 |
-| 4. CLI Integration, Debug Tooling & Portfolio Readiness | 0/2 | Planned | - |
+| 4. CLI Integration, Debug Tooling & Portfolio Readiness | 1/2 | In Progress|  |
