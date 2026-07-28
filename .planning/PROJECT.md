@@ -14,14 +14,16 @@ Running the CLI against a markdown resume note reliably produces a portfolio-qua
 
 - [x] Repo has TypeScript config, lint, and format tooling configured out of the box — Validated in Phase 01: scaffold-schema-secret-hygiene (2026-07-27)
 
+### Validated
+
+- [x] User can run `cvgen <path> --validate-only` to extract structured JSON from a markdown resume via Claude API — Validated in Phase 02: markdown-to-structured-json-extraction (2026-07-28)
+- [x] CLI parses the markdown resume via the Claude API into structured JSON (contact, summary, experience, education, skills) — Validated in Phase 02: markdown-to-structured-json-extraction (2026-07-28)
+- [x] CLI reads the Claude API key from an environment variable (never hardcoded, never prompted interactively) — Validated in Phase 02: markdown-to-structured-json-extraction (2026-07-28)
+
 ### Active
 
-- [ ] User can run a CLI command with a path to a markdown file as input
-- [ ] CLI parses the markdown resume via the Claude API into structured JSON (contact info, summary, experience, education, skills)
 - [ ] CLI renders the structured JSON into a designed single-column typographic PDF (no images, no multi-column layout)
 - [ ] CLI renders the structured JSON into a simplified single-column ATS-clean PDF, visually distinct from the designed PDF
-- [ ] CLI reads the Claude API key from an environment variable (never hardcoded, never prompted interactively)
-- [ ] Repo has TypeScript config, lint, and format tooling configured out of the box
 
 ### Out of Scope
 
@@ -70,4 +72,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-07-27 after initialization*
+*Last updated: 2026-07-28 after Phase 02 completion — extraction pipeline working end-to-end*
