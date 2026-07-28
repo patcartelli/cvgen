@@ -20,10 +20,14 @@ Running the CLI against a markdown resume note reliably produces a portfolio-qua
 - [x] CLI parses the markdown resume via the Claude API into structured JSON (contact, summary, experience, education, skills) — Validated in Phase 02: markdown-to-structured-json-extraction (2026-07-28)
 - [x] CLI reads the Claude API key from an environment variable (never hardcoded, never prompted interactively) — Validated in Phase 02: markdown-to-structured-json-extraction (2026-07-28)
 
-### Active
+### Validated
 
-- [ ] CLI renders the structured JSON into a designed single-column typographic PDF (no images, no multi-column layout)
-- [ ] CLI renders the structured JSON into a simplified single-column ATS-clean PDF, visually distinct from the designed PDF
+- [x] CLI renders the structured JSON into a designed single-column typographic PDF (no images, no multi-column layout) — Validated in Phase 03: designed-ats-pdf-rendering (2026-07-28)
+- [x] CLI renders the structured JSON into a simplified single-column ATS-clean PDF, visually distinct from the designed PDF — Validated in Phase 03: designed-ats-pdf-rendering (2026-07-28)
+- [x] Single `cvgen <path>` command writes both PDFs to disk and exits cleanly — Validated in Phase 04: cli-integration-debug-tooling-portfolio-readiness (2026-07-28)
+- [x] Invalid/missing path and missing API key exit 1 with human-readable errors (no stack traces) — Validated in Phase 04: cli-integration-debug-tooling-portfolio-readiness (2026-07-28)
+- [x] `--verbose` dumps raw Claude response and validated JSON to stderr — Validated in Phase 04: cli-integration-debug-tooling-portfolio-readiness (2026-07-28)
+- [x] `cvgen init` creates a valid example note with all required frontmatter fields and sections — Validated in Phase 04: cli-integration-debug-tooling-portfolio-readiness (2026-07-28)
 
 ### Out of Scope
 
@@ -72,4 +76,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-07-28 after Phase 02 completion — extraction pipeline working end-to-end*
+*Last updated: 2026-07-28 after Phase 04 completion — full CLI shipped, v1.0 milestone complete*
