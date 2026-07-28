@@ -4,15 +4,14 @@
 // NOTE: ATS extraction tests launch Puppeteer once (shared browser in before/after).
 
 import assert from "node:assert/strict";
-import { readFile, mkdtemp } from "node:fs/promises";
+import { mkdtemp, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join, resolve, dirname, basename } from "node:path";
+import { basename, dirname, join, resolve } from "node:path";
+import { after, before, describe, it } from "node:test";
 import { fileURLToPath } from "node:url";
-import { describe, it, before, after } from "node:test";
-
-import puppeteer from "puppeteer";
-import type { Browser } from "puppeteer";
 import { PDFParse } from "pdf-parse";
+import type { Browser } from "puppeteer";
+import puppeteer from "puppeteer";
 
 import type { ResumeData } from "../schema/resume.js";
 import { renderAts, resolveOutputPaths } from "./render.js";
@@ -69,11 +68,7 @@ describe("resolveOutputPaths", () => {
       "/x/2026.q3-resume-resume.pdf",
       "only trailing .md must be stripped from stem",
     );
-    assert.equal(
-      paths.ats,
-      "/x/2026.q3-resume-resume-ats.pdf",
-      "ats path must use same stem",
-    );
+    assert.equal(paths.ats, "/x/2026.q3-resume-resume-ats.pdf", "ats path must use same stem");
   });
 });
 
@@ -163,10 +158,7 @@ describe("renderAts pdf-parse extraction", () => {
       extractedText.includes("Senior Engineer"),
       `ATS PDF text must include role "Senior Engineer"`,
     );
-    assert.ok(
-      extractedText.includes("Acme Corp"),
-      `ATS PDF text must include company "Acme Corp"`,
-    );
+    assert.ok(extractedText.includes("Acme Corp"), `ATS PDF text must include company "Acme Corp"`);
     assert.ok(
       extractedText.includes("Platform Consultant"),
       `ATS PDF text must include role "Platform Consultant"`,
@@ -195,14 +187,8 @@ describe("renderAts pdf-parse extraction", () => {
       extractedText.includes("B.S. Computer Science"),
       `ATS PDF text must include degree "B.S. Computer Science"`,
     );
-    assert.ok(
-      extractedText.includes("UCLA"),
-      `ATS PDF text must include institution "UCLA"`,
-    );
-    assert.ok(
-      extractedText.includes("2014"),
-      `ATS PDF text must include year "2014"`,
-    );
+    assert.ok(extractedText.includes("UCLA"), `ATS PDF text must include institution "UCLA"`);
+    assert.ok(extractedText.includes("2014"), `ATS PDF text must include year "2014"`);
   });
 
   // Test G: skill categories and at least one item per category present
@@ -215,14 +201,8 @@ describe("renderAts pdf-parse extraction", () => {
       extractedText.includes("TypeScript"),
       `ATS PDF text must include skill item "TypeScript"`,
     );
-    assert.ok(
-      extractedText.includes("Tools"),
-      `ATS PDF text must include skill category "Tools"`,
-    );
-    assert.ok(
-      extractedText.includes("Docker"),
-      `ATS PDF text must include skill item "Docker"`,
-    );
+    assert.ok(extractedText.includes("Tools"), `ATS PDF text must include skill category "Tools"`);
+    assert.ok(extractedText.includes("Docker"), `ATS PDF text must include skill item "Docker"`);
   });
 
   // Test H: linear reading order — direct proof of ROADMAP Success Criterion #3 (T-03-04 mitigation)
