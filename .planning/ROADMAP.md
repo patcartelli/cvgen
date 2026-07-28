@@ -80,7 +80,15 @@ Plans:
   3. Extracting text from the ATS-clean PDF (e.g. via pdftotext/pdf-parse) returns all resume content in correct linear reading order
   4. Re-running either renderer against the same input writes predictable, non-destructive filenames (e.g. `<slug>-resume.pdf` / `<slug>-resume-ats.pdf`) without clobbering differently-named prior output
 
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+**Wave 1**
+
+- [ ] 03-01-PLAN.md — Install puppeteer 25.4.0 + pdf-parse 2.4.5; create src/lib/render.ts (renderDesigned, renderAts, resolveOutputPaths) + scripts/smoke-render.ts driver proving both PDFs render from fixture (satisfies RENDER-01, RENDER-02, RENDER-03)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 03-02-PLAN.md — src/lib/render.test.ts: node:test + pdf-parse ATS extraction proving linear reading order + resolveOutputPaths unit tests; blocking human-verify checkpoint on designed PDF (D-T02) (satisfies RENDER-02, RENDER-03)
 
 ### Phase 4: CLI Integration, Debug Tooling & Portfolio Readiness
 
@@ -106,5 +114,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Scaffold, Schema & Secret Hygiene | 3/3 | Complete   | 2026-07-27 |
 | 2. Markdown to Structured JSON Extraction | 2/2 | Complete   | 2026-07-28 |
-| 3. Designed & ATS PDF Rendering | 0/TBD | Not started | - |
+| 3. Designed & ATS PDF Rendering | 0/2 | Planned | - |
 | 4. CLI Integration, Debug Tooling & Portfolio Readiness | 0/TBD | Not started | - |
