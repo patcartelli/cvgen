@@ -84,7 +84,7 @@ Plans:
 Plans:
 **Wave 1**
 
-- [ ] 03-01-PLAN.md — Install puppeteer 25.4.0 + pdf-parse 2.4.5; create src/lib/render.ts (renderDesigned, renderAts, resolveOutputPaths) + scripts/smoke-render.ts driver proving both PDFs render from fixture (satisfies RENDER-01, RENDER-02, RENDER-03)
+- [x] 03-01-PLAN.md — Install puppeteer 25.4.0 + pdf-parse 2.4.5; create src/lib/render.ts (renderDesigned, renderAts, resolveOutputPaths) + scripts/smoke-render.ts driver proving both PDFs render from fixture (satisfies RENDER-01, RENDER-02, RENDER-03)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -114,5 +114,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Scaffold, Schema & Secret Hygiene | 3/3 | Complete   | 2026-07-27 |
 | 2. Markdown to Structured JSON Extraction | 2/2 | Complete   | 2026-07-28 |
-| 3. Designed & ATS PDF Rendering | 0/2 | Planned | - |
+| 3. Designed & ATS PDF Rendering | 1/2 | In Progress|  |
 | 4. CLI Integration, Debug Tooling & Portfolio Readiness | 0/TBD | Not started | - |
