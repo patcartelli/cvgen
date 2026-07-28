@@ -1,0 +1,161 @@
+{
+  "contact": {
+    "name": "Patrick Cartelli",
+    "email": "Patrick@studiocartelli.com",
+    "phone": "+1 914 819 2011",
+    "location": "South Orange, NJ",
+    "linkedin": "studiocartelli.com",
+    "github": "github.com/patcartelli"
+  },
+  "summary": "Senior Product Designer operating at principal scope with 15 years designing enterprise data platforms where complex workflows become manageable, including supply-side and partner-facing systems at Wellhub and Vividly. At Dataminr, led end-to-end redesign of a multi-tenant configuration system serving 100,000+ security analysts: 65% reduction in manager configuration time and 45% drop in support tickets. At Vividly, owned multi-product-area design for a financial analytics platform tracking thousands of products, promotions, and budgets, while leading a design system team of 2 designers and 5 engineers. Bringing that research-first, system-level approach to supply-side partner-facing UX. Portfolio and case studies at studiocartelli.com.",
+  "coreCompetencies": [
+    "Supply-Side Platform Design",
+    "Multi-Product-Area Ownership",
+    "Design Systems Leadership",
+    "Partner-Facing UX",
+    "Strategic Stakeholder Influence",
+    "AI-First Design Tools",
+    "User Research & Discovery",
+    "Data-Informed Decision Making"
+  ],
+  "experience": [
+    {
+      "company": "Studio Cartelli",
+      "role": "Founder & Product Design Consultant",
+      "startDate": "February 2026",
+      "bullets": [
+        "Founded a consultancy delivering production-ready design systems for technical founders building B2B SaaS, applying enterprise-scale practices from Dataminr and Vividly to fixed 2–4 week sprints.",
+        "Build every engagement around developer-ready components and documented specs instead of standalone screens, so client engineering teams can implement without back-and-forth."
+      ]
+    },
+    {
+      "company": "Bluefish AI",
+      "role": "Senior Product Designer",
+      "type": "contract",
+      "startDate": "April 2026",
+      "endDate": "June 2026",
+      "bullets": [
+        "Shipped a complete Figma design system and documentation.",
+        "Grew the Figma component library 4x, from 32 to 140 components.",
+        "Designed and shipped skills for Claude and Figma, a four-mode tool (spec, build, explore, prototype) for product designers, from brief through delivery.",
+        "In an early case, cut prototype-to-handoff time in half, letting the engineering team ship in half the time.",
+        "Adoption spread organically, with engineers using the tool across their own repos."
+      ]
+    },
+    {
+      "company": "Parental Leave",
+      "role": "",
+      "startDate": "July 2025",
+      "endDate": "January 2026",
+      "bullets": []
+    },
+    {
+      "company": "Vividly",
+      "role": "Senior Product Designer",
+      "startDate": "June 2023",
+      "endDate": "July 2025",
+      "bullets": [
+        "Owned the multi-product-area design for a financial analytics platform, tracking metrics across thousands of products, promotions, budgets, and financial forecasts.",
+        "Reduced manual workflows from days to hours through customized reports, aggregated metrics, and advanced filtering.",
+        "Led design system team of 2 designers and 5 engineers to unify design and functionality throughout the platform.",
+        "Introduced historical and predicted trend analysis to forecasting workflows.",
+        "Added bulk actions, automations, and improved validation to complex data tables, cutting user-error support requests ~35% and reducing staff time spent on manual corrections by 4 hours/week.",
+        "Introduced pre/post-mortems, phased project timelines, and formalized project documentation.",
+        "Improved the platform to support third-party API integrations."
+      ]
+    },
+    {
+      "company": "Innodata",
+      "role": "Senior Product Designer",
+      "type": "contract",
+      "startDate": "January 2023",
+      "endDate": "May 2023",
+      "bullets": [
+        "Led design for a human-in-the-loop medical document and data analysis tool.",
+        "Led mixed-method discovery (interviews and surveys across sorting, analyst, and QA roles) that diagnosed a recurring data-entry error pattern and defined an automation-first redesign with measurable success criteria (throughput, model confidence, override rate)."
+      ]
+    },
+    {
+      "company": "Spark Hire",
+      "role": "Senior Product Designer",
+      "type": "contract",
+      "startDate": "January 2023",
+      "endDate": "May 2023",
+      "bullets": [
+        "Built the company's first design system, improving overall platform consistency.",
+        "Redesigned onboarding, reducing setup abandonment. Previously a common drop-off point for new users.",
+        "Shipped a reference checking feature closing a competitive gap. This helped close deals with new buyers."
+      ]
+    },
+    {
+      "company": "Dataminr",
+      "role": "Senior Product Designer",
+      "startDate": "June 2020",
+      "endDate": "October 2022",
+      "bullets": [
+        "Redesigned platform configuration serving 100,000+ security analysts: 65% reduction in manager configuration time and 45% drop in support tickets.",
+        "Led discovery across 8 security managers at 5 enterprise customers that reframed organizational debate through evidence-based stakeholder workshops, securing roadmap resources.",
+        "Designed progressive disclosure patterns reducing analyst alert noise 20% and duplicate workarounds 50%. Patterns deployed across 4 product interfaces.",
+        "Navigated 18–24 month migration risk through research-backed recommendation, preserving user mental models while unblocking enterprise expansion into 10,000+ user accounts.",
+        "Led discovery and design for a human-in-the-loop training tool for threat identification improvements.",
+        "Positioned monitoring improvements as a key differentiator in public-sector RFPs, removing the primary barrier to contract renewals."
+      ]
+    },
+    {
+      "company": "Wellhub",
+      "role": "Product Designer",
+      "startDate": "September 2019",
+      "endDate": "April 2020",
+      "bullets": [
+        "Designed AI and ML features including a class recommendation engine.",
+        "Designed and helped ship an ML-based outlier-detection model to flag fraudulent partner check-ins (irregular timing, inconsistent usage patterns, account anomalies), giving Wellhub visibility for the first time into fraud exposure across a partner payout pool worth six figures annually.",
+        "Documented data flows for customers, users, and internal systems using service blueprints.",
+        "Partnered with product design and research teams in Brazil to localize designs, documentation, and surveys to American English.",
+        "Presented AI team processes and research at company retreat."
+      ]
+    },
+    {
+      "company": "Signafire",
+      "role": "Product Designer",
+      "startDate": "January 2019",
+      "endDate": "July 2019",
+      "bullets": [
+        "Designed interfaces for a data analytics platform serving a concentrated client base of major automotive manufacturers, managing large-scale data lakes.",
+        "Owned end-to-end design for data collection and bespoke alerting features, replacing a semi-automated process for a ~30-person analyst team.",
+        "Conducted user research and testing sessions to validate problems and solutions.",
+        "Mentored a junior designer on product design processes. Mentee was promoted within the year."
+      ]
+    },
+    {
+      "company": "W. W. Norton & Co.",
+      "role": "UX Designer & Web Designer",
+      "startDate": "December 2010",
+      "endDate": "December 2018",
+      "bullets": [
+        "Led end-to-end design of a learning management system used by 15+ universities, supporting students, instructors, and administrators.",
+        "Established an accessibility-focused design system and designed digital asset management workflows."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "B.F.A. New Media Design",
+      "institution": "Rochester Institute of Technology",
+      "year": "2004–2008"
+    }
+  ],
+  "skills": [
+    {
+      "category": "Design",
+      "items": ["Information Architecture", "Interaction Design", "Data Visualization", "Design Systems", "User Research", "Usability Testing", "Accessibility", "Prototyping", "Workshop Facilitation", "Product Strategy"]
+    },
+    {
+      "category": "AI/ML",
+      "items": ["Human-in-the-Loop Product Design", "Agentic UX", "Claude", "ChatGPT"]
+    },
+    {
+      "category": "Tools",
+      "items": ["Figma", "FigJam", "Adobe", "Affinity", "Claude Code", "Cursor", "Linear", "HTML", "Git"]
+    }
+  ]
+}
