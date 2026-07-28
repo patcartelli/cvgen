@@ -83,11 +83,11 @@ function designedHtmlTemplate(data: ResumeData): string {
     .map(
       (edu) =>
         `<div class="edu-entry">
-        <div class="edu-year">${escapeHtml(edu.year)}</div>
         <div class="edu-main">
           <div class="degree">${escapeHtml(edu.degree)}</div>
           <div class="institution">${escapeHtml(edu.institution)}</div>
         </div>
+        <div class="edu-year">${escapeHtml(edu.year)}</div>
       </div>`,
     )
     .join("\n    ");
@@ -238,19 +238,22 @@ function designedHtmlTemplate(data: ResumeData): string {
       widows: 3;
     }
 
-    /* Education — two-column grid matching experience */
+    /* Education — two-column grid matching experience: content left, year right */
     .edu-entry {
       display: grid;
-      grid-template-columns: 150px 1fr;
+      grid-template-columns: 1fr auto;
       gap: 0 1.5em;
       margin-bottom: 0.5em;
       break-inside: avoid;
+      align-items: start;
     }
 
     .edu-year {
       font-size: 12px;
       line-height: 21px;
       color: var(--muted);
+      white-space: nowrap;
+      text-align: right;
     }
 
     .degree {
