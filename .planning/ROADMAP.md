@@ -123,4 +123,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. Scaffold, Schema & Secret Hygiene | 3/3 | Complete   | 2026-07-27 |
 | 2. Markdown to Structured JSON Extraction | 2/2 | Complete   | 2026-07-28 |
 | 3. Designed & ATS PDF Rendering | 2/2 | Complete   | 2026-07-28 |
-| 4. CLI Integration, Debug Tooling & Portfolio Readiness | 0/2 | Not started | - |
+| 4. CLI Integration, Debug Tooling & Portfolio Readiness | 0/2 | Planned | - |

@@ -566,22 +566,22 @@ Note: `flag: 'wx'` prevents silently overwriting an existing resume file. If the
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Should `--debug` be implemented as an explicit Commander flag or dropped?**
    - What we know: DEVX-02 says `--verbose`/`--debug` — both are mentioned
    - What's unclear: `node --debug` is a Node runtime inspector flag; behavior under `tsx` is untested
-   - Recommendation: Implement `--verbose` as the primary flag; add `--debug` but note in the plan that if it conflicts with Node's inspector, it will be silently dropped. Test during UAT.
+   - RESOLVED: `--debug` is dropped. `--verbose` alone satisfies DEVX-02. Node's runtime intercepts `--debug` before Commander sees it; implementing it would be silently broken under `tsx`. See Pitfall 6.
 
 2. **Should `extractResume` return type change break `--validate-only` path?**
    - What we know: Phase 2 CLI uses `const data = await extractResume(markdown)` and prints `data`
    - What's unclear: If the return type becomes `{ data, rawResponse }`, does any existing test break?
-   - Recommendation: Extract tests (Test 2–4) are source-level assertions, not runtime calls — they are unaffected. CLI must destructure `const { data, rawResponse } = await extractResume(markdown)`. Plan must update both files together.
+   - RESOLVED: No breakage. Extract tests (Test 2–4) are source-level assertions, not runtime calls — unaffected. CLI destructures `const { data, rawResponse } = await extractResume(markdown)`. Both files updated together in Plan 04-01 + 04-02.
 
 3. **Should the Puppeteer browser launch show a progress indicator?**
    - What we know: Puppeteer launch + two renders takes 3–8 seconds on a typical machine
    - What's unclear: User experience without feedback (no spinner library is installed)
-   - Recommendation: A simple `console.error('Rendering...')` before `puppeteer.launch()` is sufficient for a CLI tool. No spinner library needed; keep it simple.
+   - RESOLVED: `console.error('Rendering...')` before `puppeteer.launch()` is sufficient. No spinner library needed; keeps dependencies minimal.
 
 ---
 
