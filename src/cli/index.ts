@@ -48,6 +48,7 @@ program
   .name("cvgen")
   .description("Turn an Obsidian markdown resume note into two polished PDFs")
   .version("0.1.0")
+  .showHelpAfterError(true)
   .argument("<file>", "path to Obsidian markdown resume note")
   .option("--verbose", "dump raw Claude API response and validated JSON to stderr")
   .option("--validate-only", "extract and validate JSON, skip PDF rendering")
@@ -62,10 +63,7 @@ Examples:
   cvgen init ./my-resume.md`,
   )
   .action(
-    async (
-      file: string,
-      options: { verbose: boolean; validateOnly: boolean; dryRun: boolean },
-    ) => {
+    async (file: string, options: { verbose: boolean; validateOnly: boolean; dryRun: boolean }) => {
       // Step A — env load (.env is optional; ANTHROPIC_API_KEY may already be in environment)
       try {
         process.loadEnvFile(".env");
@@ -140,9 +138,7 @@ Examples:
 
 program
   .command("init")
-  .description(
-    "Generate an example Obsidian resume note with the expected frontmatter/headings",
-  )
+  .description("Generate an example Obsidian resume note with the expected frontmatter/headings")
   .argument("[output]", "path to write the example note", "./resume-example.md")
   .action(async (output: string) => {
     const outPath = resolve(output);
