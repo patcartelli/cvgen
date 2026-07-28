@@ -103,7 +103,15 @@ Plans:
   4. Running with `--verbose`/`--debug` shows the raw Claude API response alongside the validated JSON
   5. Running `cvgen init` generates an example Obsidian note demonstrating the expected frontmatter/heading convention
 
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+**Wave 1**
+
+- [ ] 04-01-PLAN.md — Install commander@15.0.0; update extractResume return type to ExtractResult ({ data, rawResponse }); add source assertion Test 8 to extract.test.ts confirming new interface (satisfies DEVX-02 extract layer)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 04-02-PLAN.md — Replace src/cli/index.ts with full Commander 15 program (main pipeline + --verbose + --validate-only/--dry-run + cvgen init subcommand); rewrite index.test.ts Test 8 to assert Commander IS present; blocking human end-to-end UAT (satisfies CLI-01, CLI-02, CLI-03, CLI-04, DEVX-02, DEVX-03)
 
 ## Progress
 
@@ -115,4 +123,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. Scaffold, Schema & Secret Hygiene | 3/3 | Complete   | 2026-07-27 |
 | 2. Markdown to Structured JSON Extraction | 2/2 | Complete   | 2026-07-28 |
 | 3. Designed & ATS PDF Rendering | 2/2 | Complete   | 2026-07-28 |
-| 4. CLI Integration, Debug Tooling & Portfolio Readiness | 0/TBD | Not started | - |
+| 4. CLI Integration, Debug Tooling & Portfolio Readiness | 0/2 | Not started | - |
