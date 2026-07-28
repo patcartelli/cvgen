@@ -96,4 +96,21 @@ describe("extract.ts structural assertions (no live API call)", () => {
       `fixture should pass preflight with no errors, got: ${JSON.stringify(errors)}`,
     );
   });
+
+  // Test 8: extract.ts exports ExtractResult interface with rawResponse and data fields
+  it("Test 8: extract.ts exports ExtractResult interface with rawResponse and data: response.parsed_output fields", async () => {
+    const src = await readFile(extractSrcPath, "utf8");
+    assert.ok(
+      src.includes("ExtractResult"),
+      "extract.ts must export ExtractResult interface",
+    );
+    assert.ok(
+      src.includes("rawResponse"),
+      "ExtractResult must have rawResponse field",
+    );
+    assert.ok(
+      src.includes("data: response.parsed_output"),
+      "return statement must set data from response.parsed_output",
+    );
+  });
 });
