@@ -17,7 +17,8 @@
     "prepare": "simple-git-hooks",
     "dev": "tsx src/cli/index.ts",
     "validate-fixtures": "tsx scripts/validate-fixtures.ts",
-    "smoke-render": "tsx scripts/smoke-render.ts"
+    "smoke-render": "tsx scripts/smoke-render.ts",
+    "test": "tsx --test src/**/*.test.ts"
   },
   "simple-git-hooks": {
     "pre-commit": "npx biome check --write . && gitleaks protect -v --staged"
@@ -33,7 +34,8 @@
     "pdf-parse": "^2.4.5",
     "simple-git-hooks": "^2.13.1",
     "tsx": "^4.23.1",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vitest": "^3.2.7"
   },
   "allowScripts": {
     "puppeteer@25.4.0": true
