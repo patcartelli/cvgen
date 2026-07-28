@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Scaffold, Schema & Secret Hygiene** - Repo tooling, the Zod resume schema, and public-repo secret hygiene exist before any Claude-API code is written (completed 2026-07-27)
 - [x] **Phase 2: Markdown to Structured JSON Extraction** - CLI can turn a markdown resume into schema-validated JSON via Claude, safely and inspectably (completed 2026-07-28)
-- [ ] **Phase 3: Designed & ATS PDF Rendering** - Validated resume JSON renders into two structurally distinct, single-column PDFs
+- [x] **Phase 3: Designed & ATS PDF Rendering** - Validated resume JSON renders into two structurally distinct, single-column PDFs (completed 2026-07-28)
 - [ ] **Phase 4: CLI Integration, Debug Tooling & Portfolio Readiness** - The full `cvgen <path>` command works end-to-end with clear errors, help text, debug flags, and an init scaffold
 
 ## Phase Details
@@ -88,7 +88,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 03-02-PLAN.md — src/lib/render.test.ts: node:test + pdf-parse ATS extraction proving linear reading order + resolveOutputPaths unit tests; blocking human-verify checkpoint on designed PDF (D-T02) (satisfies RENDER-02, RENDER-03)
+- [x] 03-02-PLAN.md — src/lib/render.test.ts: node:test + pdf-parse ATS extraction proving linear reading order + resolveOutputPaths unit tests; blocking human-verify checkpoint on designed PDF (D-T02) (satisfies RENDER-02, RENDER-03)
 
 ### Phase 4: CLI Integration, Debug Tooling & Portfolio Readiness
 
@@ -114,5 +114,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Scaffold, Schema & Secret Hygiene | 3/3 | Complete   | 2026-07-27 |
 | 2. Markdown to Structured JSON Extraction | 2/2 | Complete   | 2026-07-28 |
-| 3. Designed & ATS PDF Rendering | 1/2 | In Progress|  |
+| 3. Designed & ATS PDF Rendering | 2/2 | Complete   | 2026-07-28 |
 | 4. CLI Integration, Debug Tooling & Portfolio Readiness | 0/TBD | Not started | - |
