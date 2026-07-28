@@ -1,43 +1,24 @@
 ---
 phase: 04-cli-integration-debug-tooling-portfolio-readiness
-verified: 2026-07-28T20:30:00Z
-status: gaps_found
-score: 4/5
+verified: 2026-07-28T21:00:00Z
+status: passed
+score: 5/5
 overrides_applied: 0
-gaps:
-  - truth: "All 8 CLI tests in index.test.ts pass (including rewritten Test 8 asserting Commander is present)"
-    status: failed
-    reason: >
-      Test 3 exits 0 instead of 1. The test spawns the CLI as a subprocess with ANTHROPIC_API_KEY
-      deleted from the environment, but the CLI calls process.loadEnvFile(".env") inside the action
-      handler — this loads the real project .env file (which contains a valid key) into the
-      subprocess's process.env, bypassing the key guard. The CLI then succeeds, exits 0, and the
-      assertion `status === 1` fails. npm test exits 1 (37/38 pass, 1 fail).
-    artifacts:
-      - path: "src/cli/index.test.ts"
-        issue: "Test 3 does not account for .env auto-load in the CLI subprocess"
-      - path: "src/cli/index.ts"
-        issue: >
-          process.loadEnvFile('.env') runs relative to the subprocess's CWD (project root),
-          which always has a .env. The test has no mechanism to prevent this load.
-    missing:
-      - >
-        Fix Test 3 so the subprocess cannot access the .env file. Options:
-        (a) run the subprocess with cwd set to a temp directory that has no .env,
-        (b) pass HOME=/nonexistent or a temp HOME so .env is not found relative to cwd,
-        (c) pass an additional env var that the CLI checks to skip .env loading in test mode,
-        (d) copy the fixture to a temp dir and invoke with cwd=tempDir where no .env exists.
-        The simplest fix is to set the subprocess's CWD to a temp dir with just the fixture
-        so process.loadEnvFile(".env") throws (caught by the try/catch), leaving
-        ANTHROPIC_API_KEY unset and triggering the key guard as expected.
+re_verification:
+  previous_status: gaps_found
+  previous_score: 4/5
+  gaps_closed:
+    - "All 8 CLI tests in index.test.ts pass (including rewritten Test 8 asserting Commander is present)"
+  gaps_remaining: []
+  regressions: []
 ---
 
 # Phase 4: CLI Integration, Debug Tooling & Portfolio Readiness — Verification Report
 
 **Phase Goal:** A user runs one command against a real markdown resume note and reliably gets both PDFs, with clear errors, help text, debug visibility, and an onboarding path.
-**Verified:** 2026-07-28T20:30:00Z
-**Status:** gaps_found
-**Re-verification:** No — initial verification
+**Verified:** 2026-07-28T21:00:00Z
+**Status:** passed
+**Re-verification:** Yes — after gap closure
 
 ---
 
@@ -53,7 +34,7 @@ gaps:
 | 4 | Running with `--verbose` shows the raw Claude API response alongside the validated JSON | VERIFIED | Lines 109–114 of `src/cli/index.ts`: verbose branch prints `--- raw Claude response ---` + rawResponse + `--- validated JSON ---` + data to stderr; UAT check 5 confirmed by human |
 | 5 | Running `cvgen init` generates an example Obsidian note with required frontmatter/heading convention | VERIFIED | Lines 139–154: `cvgen init` subcommand writes INIT_TEMPLATE with all 6 frontmatter fields and all 3 required sections; UAT check 7 confirmed |
 
-**Score:** 4/5 truths verified (all 5 goal truths are VERIFIED; 1 BLOCKER gap blocks npm test)
+**Score:** 5/5 truths verified
 
 ---
 
@@ -63,15 +44,27 @@ gaps:
 |---|-------|--------|----------|
 | P01-1 | `commander` in package.json dependencies and node_modules | VERIFIED | `"commander": "^15.0.0"` in dependencies; `node_modules/commander` v15.0.0 installed |
 | P01-2 | `extractResume` returns `{ data: ResumeData; rawResponse: Message }` (ExtractResult) | VERIFIED | `src/lib/extract.ts` line 8–11: `export interface ExtractResult { data: ResumeData; rawResponse: Message }`, return at line 31 confirmed |
-| P01-3 | All existing extract.ts tests still pass after return type change | VERIFIED | `npx tsx --test src/lib/extract.test.ts` exits 0 — 7/7 pass |
+| P01-3 | All existing extract.ts tests still pass after return type change | VERIFIED | All 8 extract.test.ts tests pass (38/38 total) |
 | P02-1 | Running `cvgen fixtures/sample-resume.md` writes both PDFs to disk and exits 0 | VERIFIED | End-to-end pipeline wired; UAT human-verified |
 | P02-2 | Running against nonexistent path prints human-readable error and exits 1 | VERIFIED | Test 4 passes; `program.error()` used — no stack trace |
 | P02-3 | Running `cvgen --help` prints 'Usage:', all defined options, and an example invocation | VERIFIED | Tests 1–2 pass; `addHelpText` with Examples block confirmed in source |
 | P02-4 | Running `cvgen fixtures/sample-resume.md --verbose` prints raw Claude response and validated JSON to stderr | VERIFIED | Source confirmed; UAT human-verified |
 | P02-5 | Running `cvgen init` writes a markdown file with required frontmatter fields and section headings | VERIFIED | INIT_TEMPLATE contains name/email/phone/location/linkedin/github and ## Experience/## Education/## Skills |
-| P02-6 | All 8 CLI tests in index.test.ts pass (including rewritten Test 8 asserting Commander is present) | FAILED | `npm test` exits 1: Test 3 fails — exits 0 instead of 1 because `.env` loaded by subprocess overrides deleted ANTHROPIC_API_KEY |
+| P02-6 | All 8 CLI tests in index.test.ts pass (including rewritten Test 8 asserting Commander is present) | VERIFIED | `npm test` exits 0: 38/38 pass. Test 3 fixed by adding optional `cwd` parameter to `runCli` and passing a `mkdtempSync` temp dir with no `.env` file, preventing `process.loadEnvFile(".env")` from repopulating the key |
 
-**Score (plan must-haves):** 8/9 verified
+**Score (plan must-haves):** 9/9 verified
+
+---
+
+### Gap Closure Detail
+
+**Previously failing:** Test 3 — file path but no ANTHROPIC_API_KEY → exits 1.
+
+**Root cause (confirmed):** `process.loadEnvFile(".env")` resolves relative to the subprocess's CWD. When CWD was `projectRoot`, it loaded the real `.env` and repopulated `ANTHROPIC_API_KEY`, causing the key guard to silently pass and the CLI to exit 0.
+
+**Fix applied:** `runCli` now accepts an optional third parameter `cwd: string = projectRoot`. Test 3 creates a `mkdtempSync` temp directory (no `.env` present) and passes it as `cwd`. With no `.env` in that directory, `process.loadEnvFile(".env")` throws, the catch block absorbs it, `ANTHROPIC_API_KEY` stays unset, the key guard fires, and the CLI exits 1 as expected.
+
+**Verification:** `npm test` — 38/38 pass, exit 0. Test 3 output: `✔ Test 3: file path but no ANTHROPIC_API_KEY → error mentions 'ANTHROPIC_API_KEY' and 'not set', exits 1 (855.677834ms)`.
 
 ---
 
@@ -84,7 +77,7 @@ gaps:
 | `src/lib/extract.ts` | ExtractResult interface + updated return type | VERIFIED | Lines 8–31 confirmed — exports ExtractResult, returns `{ data, rawResponse }` |
 | `src/lib/extract.test.ts` | Test 8 asserting ExtractResult interface | VERIFIED | Lines 101–109 — asserts ExtractResult, rawResponse, data: response.parsed_output |
 | `src/cli/index.ts` | Commander 15 program with main action, init subcommand, --verbose, --validate-only/--dry-run | VERIFIED | 159-line file, full pipeline wired — confirmed by source read |
-| `src/cli/index.test.ts` | Updated test suite with rewritten Test 8 asserting Commander is imported | VERIFIED | Lines 171–179 — asserts commander, new Command(), parseAsync, no require/inquirer/yargs |
+| `src/cli/index.test.ts` | Updated test suite with rewritten Test 8 asserting Commander is imported; `runCli` accepts optional `cwd` | VERIFIED | Lines 25–41 — `runCli` signature accepts `cwd: string = projectRoot`; lines 93–107 — Test 3 passes `noDotEnvDir` |
 
 ---
 
@@ -116,9 +109,9 @@ gaps:
 | Commander importable | `ls node_modules/commander/index.js` | exists | PASS |
 | CLI shebang on line 1 | source read — line 1 | `#!/usr/bin/env node` | PASS |
 | ExtractResult interface exported | source grep | found at line 8–11 | PASS |
-| All extract tests pass | `npx tsx --test src/lib/extract.test.ts` | 7/7 pass, exit 0 | PASS |
-| CLI tests | `npx tsx --test src/cli/index.test.ts` | 7/8 pass — Test 3 FAILS | FAIL |
-| Full test suite | `npm test` | 37/38 pass, exit 1 | FAIL |
+| All extract tests pass | `npx tsx --test src/lib/extract.test.ts` | 8/8 pass, exit 0 | PASS |
+| CLI tests | `npx tsx --test src/cli/index.test.ts` | 8/8 pass | PASS |
+| Full test suite | `npm test` | 38/38 pass, exit 0 | PASS |
 
 ---
 
@@ -158,25 +151,15 @@ No stubs or placeholder returns found in `src/cli/index.ts` or `src/lib/extract.
 
 ### Human Verification Required
 
-The human UAT checkpoint (Task 3 in Plan 02) was completed and approved. The SUMMARY.md records "all 8 checks approved." No additional human verification is needed for functional behavior — the one remaining gap is programmatically identified (Test 3 failure).
+None. The human UAT checkpoint (Task 3 in Plan 02) was completed and approved prior to initial verification. All automated checks now pass. No additional human verification is needed.
 
 ---
 
 ## Gaps Summary
 
-### BLOCKER: Test 3 failure — `npm test` exits non-zero
-
-**Truth failed:** "All 8 CLI tests in index.test.ts pass"
-
-**Root cause:** `src/cli/index.ts` calls `process.loadEnvFile(".env")` unconditionally inside the action handler. When `index.test.ts` Test 3 spawns the CLI as a subprocess with `ANTHROPIC_API_KEY` deleted from the environment, the subprocess inherits the project root as its CWD. The `process.loadEnvFile(".env")` call finds and loads the `.env` file located at the project root, which contains a valid `ANTHROPIC_API_KEY`. This repopulates the key into the subprocess's `process.env`, causing the `if (!process.env.ANTHROPIC_API_KEY)` guard to not fire. The CLI proceeds with extraction, exits 0, and the test's `assert.equal(status, 1)` fails.
-
-**Fix required:** Update `index.test.ts` Test 3 so the CLI subprocess cannot load the `.env` file. The simplest approach is to set `cwd` in the `spawnSync` options to a temp directory (e.g., a `mkdtempSync` directory) that does not contain a `.env` file. The CLI's `process.loadEnvFile(".env")` will then throw (because no `.env` exists relative to the temp CWD), the catch block will absorb the error, `ANTHROPIC_API_KEY` will remain unset, and the key guard will fire correctly, exiting 1.
-
-Alternative: create a helper in the test file that runs the CLI with `cwd` pointing to a temp dir for key-guard tests only.
-
-**Impact:** `npm test` exits 1 today. The phase goal's must-have that all 8 tests pass is not met.
+None. All must-haves verified. The one gap identified in initial verification (Test 3 failure due to `.env` isolation) has been resolved. `npm test` exits 0 with 38/38 passing.
 
 ---
 
-_Verified: 2026-07-28T20:30:00Z_
+_Verified: 2026-07-28T21:00:00Z_
 _Verifier: Claude (gsd-verifier)_
