@@ -92,7 +92,11 @@ describe("CLI entry point (src/cli/index.ts)", () => {
   it("Test 3: file path but no ANTHROPIC_API_KEY → error mentions 'ANTHROPIC_API_KEY' and 'not set', exits 1", () => {
     // Use a temp cwd with no .env file so process.loadEnvFile(".env") cannot repopulate the key
     const noDotEnvDir = mkdtempSync(join(tmpdir(), "cvgen-no-env-"));
-    const { stdout, stderr, status } = runCli([fixturePath, "--validate-only"], envWithoutKey(), noDotEnvDir);
+    const { stdout, stderr, status } = runCli(
+      [fixturePath, "--validate-only"],
+      envWithoutKey(),
+      noDotEnvDir,
+    );
     assert.equal(status, 1, `expected exit 1, got ${status}. stderr: ${stderr}`);
     assert.ok(
       stderr.includes("ANTHROPIC_API_KEY"),

@@ -1,7 +1,8 @@
 // src/lib/extract.ts
+
+import type { ParsedMessage } from "@anthropic-ai/sdk";
 import Anthropic from "@anthropic-ai/sdk";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod.js";
-import type { ParsedMessage } from "@anthropic-ai/sdk";
 import type { ResumeData } from "../schema/resume.js";
 import { ResumeSchema } from "../schema/resume.js";
 
