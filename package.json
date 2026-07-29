@@ -5,6 +5,9 @@
   "engines": {
     "node": ">=22.12.0"
   },
+  "files": [
+    "dist"
+  ],
   "bin": {
     "cvgen": "dist/cli/index.js"
   },

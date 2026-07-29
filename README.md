@@ -13,6 +13,7 @@ Turn an Obsidian markdown resume note into two polished PDFs — a portfolio-qua
 git clone https://github.com/patcartelli/cvgen.git
 cd cvgen
 npm install
+npm run build   # compile TypeScript to dist/
 npm link        # makes `cvgen` available as a global command
 ```
 
