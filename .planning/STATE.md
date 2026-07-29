@@ -5,7 +5,7 @@ milestone_name: milestone
 status: Awaiting next milestone
 stopped_at: Phase 03 complete — UAT 6/6 passed; ready to plan Phase 04
 last_updated: "2026-07-28T21:44:45.589Z"
-last_activity: 2026-07-28 — Milestone v1.0 completed and archived
+last_activity: 2026-07-29 — Completed quick task 260729-ez3: README, dist rebuild, GitHub Actions CI
 progress:
   total_phases: 4
   completed_phases: 4
@@ -76,6 +76,12 @@ None yet.
 - Phase 3 (rendering): ATS text-extraction verification and Puppeteer font-bundling are narrow/under-documented areas (research confidence MEDIUM) — worth a focused research pass before implementation
 - TypeScript 7.0 ecosystem gap: if Biome is used, TS7 is safe; if ESLint is added later, pin TypeScript to ^6.0.3 — verify at Phase 1 execution time, don't trust research doc version numbers indefinitely
 
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260729-ez3 | Three portfolio-polish tasks: README.md, rebuild dist, GitHub Actions CI | 2026-07-29 | 5b463e6 | [260729-ez3-three-portfolio-polish-tasks-readme-md-r](./quick/260729-ez3-three-portfolio-polish-tasks-readme-md-r/) |
+
 ## Deferred Items
 
 Items acknowledged and deferred at milestone close on 2026-07-28:
@@ -92,8 +98,8 @@ Items acknowledged and deferred at milestone close on 2026-07-28:
 
 ## Session Continuity
 
-Last session: 2026-07-28
-Stopped at: Phase 03 complete — UAT 6/6 passed; ready to plan Phase 04
+Last session: 2026-07-29
+Stopped at: Quick task 260729-ez3 complete — all 3 portfolio-polish items done; repo is portfolio-ready
 Resume file: none
 </content>
 
