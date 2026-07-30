@@ -68,7 +68,15 @@ Cross-cutting constraints:
   1. Running `npm install -g .` (or `npm link`) and then `cvgen <path>` in any directory works without `npx tsx`
   2. `npm test` runs exactly one test runner with no conflicting script entries in package.json
   3. `rawResponse` on `ExtractResult` is typed as `ParsedMessage<ResumeData>` and `--verbose` output reflects the correct type
-**Plans**: TBD
+**Plans**: 2 plans (both Wave 1, parallel — no file overlap)
+Plans:
+- [ ] 07-01-PLAN.md — Reconcile REQUIREMENTS.md and PROJECT.md tracking: mark QUAL-01/QUAL-02 complete (already implemented in commits 9ba6e1d and fc9a507) and move TYPO-01/02/03 + CR-01/WR-04 bullets from Active to Validated
+- [ ] 07-02-PLAN.md — Add prepack script to package.json, rewrite README Usage section to reflect Phase 06 output routing, and human-verify `npm run build && npm link && cvgen --help` end-to-end (QUAL-03)
+
+Cross-cutting constraints:
+- Plan 01 modifies only tracking docs (REQUIREMENTS.md, PROJECT.md); Plan 02 modifies package.json + README.md — zero file overlap, safe to run in parallel
+- QUAL-01 and QUAL-02 require NO source code changes — tracking updates only (research confirms both are already implemented on main)
+- Plan 02 Task 3 is a `checkpoint:human-verify` — the phase is not autonomous end-to-end
 
 ## Progress
 
@@ -80,4 +88,4 @@ Cross-cutting constraints:
 | 4. CLI Integration, Debug Tooling & Portfolio Readiness | v1.0 | 2/2 | Complete | 2026-07-28 |
 | 5. Typography Polish | v1.1 | 1/1 | Complete    | 2026-07-30 |
 | 6. Output Directory Routing | v1.1 | 2/2 | Complete   | 2026-07-30 |
-| 7. Quality, Packaging & Global Install | v1.1 | 0/? | Not started | - |
+| 7. Quality, Packaging & Global Install | v1.1 | 0/2 | Ready to execute | - |
