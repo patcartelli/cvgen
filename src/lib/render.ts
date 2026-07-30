@@ -32,8 +32,8 @@ export function resolveOutputPaths(
 ): { designed: string; ats: string } {
   const stem = basename(inputMdPath, ".md");
   return {
-    designed: join(outputDir, stem + "-resume.pdf"),
-    ats: join(outputDir, stem + "-resume-ats.pdf"),
+    designed: join(outputDir, `${stem}-resume.pdf`),
+    ats: join(outputDir, `${stem}-resume-ats.pdf`),
   };
 }
 
