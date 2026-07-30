@@ -21,10 +21,11 @@ const data = JSON.parse(await readFile(fixturePath, "utf8")) as ResumeData;
 // Create a temp directory for output (not cleaned up — lets operator open PDFs for inspection)
 const tmp = await mkdtemp(join(tmpdir(), "cvgen-smoke-"));
 
-// Build a synthetic input md path inside the temp dir so resolveOutputPaths gives
-// the expected output names: sample-resume-resume.pdf / sample-resume-resume-ats.pdf
+// Build a synthetic input md path inside the temp dir; pass tmp as outputDir so
+// resolveOutputPaths writes sample-resume-resume.pdf / sample-resume-resume-ats.pdf
+// into the same temp directory (no prompts needed for the smoke script).
 const inputMdPath = join(tmp, "sample-resume.md");
-const { designed, ats } = resolveOutputPaths(inputMdPath);
+const { designed, ats } = resolveOutputPaths(inputMdPath, tmp);
 
 // Launch Puppeteer with a single shared Browser instance
 const browser = await puppeteer.launch({ headless: true });
