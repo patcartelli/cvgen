@@ -22,7 +22,7 @@ Running the CLI against a markdown resume note reliably produces a portfolio-qua
 
 ## Current State
 
-**v1.1 in progress — Phase 6 complete (2026-07-30).** Output directory routing: `cvgen <path>` now prompts "Is this resume tailored for a specific company?" and routes PDFs to `output/` (n) or `output/<Company-Slug>/` (y). `toCompanySlug` added to render.ts with D-01/D-02 regex rules. 44 automated tests. Next: Phase 7 (quality, packaging & global install).
+**v1.1 complete (2026-07-30).** All 7 phases shipped. `cvgen <path>` prompts for company routing, writes PDFs to `output/` or `output/<Company-Slug>/`, and is installable as a global command via `npm run build && npm link`. 44 automated tests. rawResponse typed as `ParsedMessage<ResumeData>`. Single test runner (`tsx --test`). `prepack` auto-builds before publish.
 
 Known tech debt being resolved in v1.1:
 - CR-01: `rawResponse` in `ExtractResult` typed as `Message` instead of `ParsedMessage<ResumeData>` — affects `--verbose` completeness
