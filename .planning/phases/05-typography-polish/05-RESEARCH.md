@@ -399,12 +399,13 @@ section > p {
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Summary paragraph line-height**
    - What we know: 12px body-small size is locked. `.competencies` uses 21px at 12px. `li` uses 18px at 12px.
    - What's unclear: Whether 21px feels too loose for a summary paragraph in the rendered PDF.
    - Recommendation: Plan with Option A (inherit 21px, no override). Run `smoke-render` and visually confirm. If too loose, add `line-height: 18px` as a single-property follow-on change.
+   - RESOLVED: Plan 05-01 defaults to Option A (inherit 21px body line-height); executor may apply Option B (18px) if operator signals after smoke-render.
 
 ---
 
