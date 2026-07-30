@@ -25,7 +25,7 @@ Full phase details: `.planning/milestones/v1.0-ROADMAP.md`
 
 - [x] **Phase 5: Typography Polish** — Designed PDF visual refinements (summary size, bullet color, header spacing) — completed 2026-07-30
 - [x] **Phase 6: Output Directory Routing** — CLI prompts for tailored vs. general and routes PDFs to correct directory (completed 2026-07-30)
-- [ ] **Phase 7: Quality, Packaging & Global Install** — Type fix, test runner consolidation, npm global install
+- [x] **Phase 7: Quality, Packaging & Global Install** — Type fix, test runner consolidation, npm global install (completed 2026-07-30)
 
 ## Phase Details
 
@@ -70,8 +70,8 @@ Cross-cutting constraints:
   3. `rawResponse` on `ExtractResult` is typed as `ParsedMessage<ResumeData>` and `--verbose` output reflects the correct type
 **Plans**: 2 plans (both Wave 1, parallel — no file overlap)
 Plans:
-- [ ] 07-01-PLAN.md — Reconcile REQUIREMENTS.md and PROJECT.md tracking: mark QUAL-01/QUAL-02 complete (already implemented in commits 9ba6e1d and fc9a507) and move TYPO-01/02/03 + CR-01/WR-04 bullets from Active to Validated
-- [ ] 07-02-PLAN.md — Add prepack script to package.json, rewrite README Usage section to reflect Phase 06 output routing, and human-verify `npm run build && npm link && cvgen --help` end-to-end (QUAL-03)
+- [x] 07-01-PLAN.md — Reconcile REQUIREMENTS.md and PROJECT.md tracking: mark QUAL-01/QUAL-02 complete (already implemented in commits 9ba6e1d and fc9a507) and move TYPO-01/02/03 + CR-01/WR-04 bullets from Active to Validated
+- [x] 07-02-PLAN.md — Add prepack script to package.json, rewrite README Usage section to reflect Phase 06 output routing, and human-verify `npm run build && npm link && cvgen --help` end-to-end (QUAL-03)
 
 Cross-cutting constraints:
 - Plan 01 modifies only tracking docs (REQUIREMENTS.md, PROJECT.md); Plan 02 modifies package.json + README.md — zero file overlap, safe to run in parallel
@@ -88,4 +88,4 @@ Cross-cutting constraints:
 | 4. CLI Integration, Debug Tooling & Portfolio Readiness | v1.0 | 2/2 | Complete | 2026-07-28 |
 | 5. Typography Polish | v1.1 | 1/1 | Complete    | 2026-07-30 |
 | 6. Output Directory Routing | v1.1 | 2/2 | Complete   | 2026-07-30 |
-| 7. Quality, Packaging & Global Install | v1.1 | 0/2 | Ready to execute | - |
+| 7. Quality, Packaging & Global Install | v1.1 | 2/2 | Complete   | 2026-07-30 |
