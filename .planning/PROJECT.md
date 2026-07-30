@@ -8,11 +8,23 @@ cvgen is a CLI tool that turns an Obsidian-native markdown resume note into two 
 
 Running the CLI against a markdown resume note reliably produces a portfolio-quality PDF and a separate ATS-safe PDF — without the user touching a template or text editor.
 
+## Current Milestone: v1.1 Typography & Workflow Improvements
+
+**Goal:** Polish the designed PDF's visual output and resolve v1.0 tech debt to make cvgen installable and clean.
+
+**Target features:**
+- Summary text scaled down to body-small size
+- Bullet points styled with subtle accent color (#2d4a6b)
+- Consistent bottom spacing under all section headers
+- CR-01: fix `rawResponse` type to `ParsedMessage<ResumeData>`
+- WR-04: consolidate test runners (remove tsx --test / vitest conflict)
+- npm publish / global install — `cvgen` as a real global command
+
 ## Current State
 
-**v1.0 shipped 2026-07-28.** Full pipeline working end-to-end: `cvgen <path>` runs preflight → Claude extraction → Puppeteer rendering → two PDFs on disk. 841 LOC TypeScript, 38 automated tests, 9 plans across 4 phases.
+**v1.1 in progress.** v1.0 shipped 2026-07-28: `cvgen <path>` runs preflight → Claude extraction → Puppeteer rendering → two PDFs on disk. 841 LOC TypeScript, 38 automated tests, 9 plans across 4 phases.
 
-Known tech debt from code review (non-blocking for v1.0):
+Known tech debt being resolved in v1.1:
 - CR-01: `rawResponse` in `ExtractResult` typed as `Message` instead of `ParsedMessage<ResumeData>` — affects `--verbose` completeness
 - WR-04: Two conflicting test runners (`tsx --test` vs `vitest.config.ts`) in package.json
 
@@ -31,11 +43,14 @@ Known tech debt from code review (non-blocking for v1.0):
 - [x] `--verbose` dumps raw Claude response and validated JSON to stderr — Phase 04 (2026-07-28)
 - [x] `cvgen init` creates a valid example note with all required frontmatter fields and sections — Phase 04 (2026-07-28)
 
-### Active (v1.1 candidates)
+### Active (v1.1)
 
-- [ ] Fix `rawResponse` type to `ParsedMessage<ResumeData>` for correct `--verbose` output (CR-01)
-- [ ] Remove vitest runner conflict — consolidate on one test runner (WR-04)
-- [ ] `npm publish` / `npm link` so `cvgen` can be run as a global command without `npx tsx`
+- [ ] Designed PDF: summary text scaled down to body-small size — v1.1
+- [ ] Designed PDF: bullet points styled with subtle accent color (#2d4a6b) — v1.1
+- [ ] Designed PDF: consistent bottom spacing under all section headers — v1.1
+- [ ] Fix `rawResponse` type to `ParsedMessage<ResumeData>` for correct `--verbose` output (CR-01) — v1.1
+- [ ] Remove vitest runner conflict — consolidate on one test runner (WR-04) — v1.1
+- [ ] `npm publish` / `npm link` so `cvgen` can be run as a global command without `npx tsx` — v1.1
 
 ### Out of Scope
 
@@ -76,4 +91,4 @@ Known tech debt from code review (non-blocking for v1.0):
 4. Audit Out of Scope reasoning
 
 ---
-*Last updated: 2026-07-28 after v1.0 milestone shipped*
+*Last updated: 2026-07-30 — v1.1 Typography & Workflow Improvements milestone started*
