@@ -14,7 +14,7 @@ import type { Browser } from "puppeteer";
 import puppeteer from "puppeteer";
 
 import type { ResumeData } from "../schema/resume.js";
-import { renderAts, resolveOutputPaths } from "./render.js";
+import { renderAts, resolveOutputPaths, toCompanySlug } from "./render.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, "../..");
@@ -24,24 +24,24 @@ const root = resolve(__dirname, "../..");
 // ---------------------------------------------------------------------------
 
 describe("resolveOutputPaths", () => {
-  // Test 1: absolute path — same directory as input, correct suffix pattern (D-O01 + D-O02)
-  it("Test 1: /tmp/foo/my-resume.md → my-resume-resume.pdf / my-resume-resume-ats.pdf in same dir", () => {
-    const paths = resolveOutputPaths("/tmp/foo/my-resume.md");
+  // Test 1: explicit outputDir — both paths land inside it with correct suffixes
+  it("Test 1: resolves designed and ats paths inside the given outputDir", () => {
+    const paths = resolveOutputPaths("/tmp/foo/my-resume.md", "/some/output/dir");
     assert.equal(
       paths.designed,
-      "/tmp/foo/my-resume-resume.pdf",
-      "designed path must be in same directory with -resume.pdf suffix",
+      "/some/output/dir/my-resume-resume.pdf",
+      "designed path must be inside outputDir with -resume.pdf suffix",
     );
     assert.equal(
       paths.ats,
-      "/tmp/foo/my-resume-resume-ats.pdf",
-      "ats path must be in same directory with -resume-ats.pdf suffix",
+      "/some/output/dir/my-resume-resume-ats.pdf",
+      "ats path must be inside outputDir with -resume-ats.pdf suffix",
     );
   });
 
-  // Test 2: relative path — dirname preserved, basenames use correct stem
-  it("Test 2: ./notes/alex.md → ./notes dir with alex-resume.pdf / alex-resume-ats.pdf", () => {
-    const paths = resolveOutputPaths("./notes/alex.md");
+  // Test 2: stem derived from inputMdPath basename regardless of outputDir
+  it("Test 2: stem derived from inputMdPath basename regardless of outputDir", () => {
+    const paths = resolveOutputPaths("./notes/alex.md", "/out");
     assert.equal(
       basename(paths.designed),
       "alex-resume.pdf",
@@ -52,7 +52,6 @@ describe("resolveOutputPaths", () => {
       "alex-resume-ats.pdf",
       "ats basename must be alex-resume-ats.pdf",
     );
-    // Both paths must share the same directory
     assert.equal(
       dirname(paths.designed),
       dirname(paths.ats),
@@ -60,15 +59,41 @@ describe("resolveOutputPaths", () => {
     );
   });
 
-  // Test 3: stem with internal dots — only trailing .md stripped (Node basename semantics)
-  it("Test 3: /x/2026.q3-resume.md → stem is 2026.q3-resume, suffix appended correctly", () => {
-    const paths = resolveOutputPaths("/x/2026.q3-resume.md");
+  // Test 3: stem with internal dots — only trailing .md stripped
+  it("Test 3: stem with internal dots — only trailing .md stripped", () => {
+    const paths = resolveOutputPaths("/x/2026.q3-resume.md", "/out");
     assert.equal(
       paths.designed,
-      "/x/2026.q3-resume-resume.pdf",
+      "/out/2026.q3-resume-resume.pdf",
       "only trailing .md must be stripped from stem",
     );
-    assert.equal(paths.ats, "/x/2026.q3-resume-resume-ats.pdf", "ats path must use same stem");
+    assert.equal(paths.ats, "/out/2026.q3-resume-resume-ats.pdf", "ats path must use same stem");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// toCompanySlug unit tests — pure function, no I/O
+// ---------------------------------------------------------------------------
+
+describe("toCompanySlug", () => {
+  it("spaces to hyphens, casing preserved (D-01)", () => {
+    assert.equal(toCompanySlug("Acme Corp"), "Acme-Corp");
+    assert.equal(toCompanySlug("Goldman Sachs"), "Goldman-Sachs");
+  });
+
+  it("strips special chars without replacement (D-02)", () => {
+    assert.equal(toCompanySlug("Goldman Sachs & Partners"), "Goldman-Sachs-Partners");
+    assert.equal(toCompanySlug("AT&T"), "ATT");
+    assert.equal(toCompanySlug("Company, Inc."), "Company-Inc");
+  });
+
+  it("trims leading/trailing whitespace and collapses internal spaces", () => {
+    assert.equal(toCompanySlug("  Spaces  Around  "), "Spaces-Around");
+  });
+
+  it("returns empty string for all-special or empty input (guard case)", () => {
+    assert.equal(toCompanySlug("!!!"), "");
+    assert.equal(toCompanySlug(""), "");
   });
 });
 
