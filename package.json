@@ -18,7 +18,7 @@
     "lint": "biome check .",
     "format": "biome format --write .",
     "check": "biome check --write .",
-    "prepare": "simple-git-hooks",
+    "prepare": "simple-git-hooks || true",
     "dev": "tsx src/cli/index.ts",
     "validate-fixtures": "tsx scripts/validate-fixtures.ts",
     "smoke-render": "tsx scripts/smoke-render.ts",
