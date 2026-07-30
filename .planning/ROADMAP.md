@@ -52,7 +52,7 @@ Plans:
   3. The output directory is created automatically if it does not exist
 **Plans**: 2 plans in 2 waves
 Plans:
-- [ ] 06-01-PLAN.md — Add toCompanySlug export and update resolveOutputPaths signature in render.ts; rewrite Tests 1–3 and add slug unit tests in render.test.ts; fix smoke-render.ts one-line call
+- [x] 06-01-PLAN.md — Add toCompanySlug export and update resolveOutputPaths signature in render.ts; rewrite Tests 1–3 and add slug unit tests in render.test.ts; fix smoke-render.ts one-line call
 **Wave 2** *(blocked on Wave 1 completion)*
 - [ ] 06-02-PLAN.md — Wire Step D.5 interactive prompts and mkdir into cli/index.ts; add integration tests for "n" and "y" prompt paths
 
@@ -79,5 +79,5 @@ Cross-cutting constraints:
 | 3. Designed & ATS PDF Rendering | v1.0 | 2/2 | Complete | 2026-07-28 |
 | 4. CLI Integration, Debug Tooling & Portfolio Readiness | v1.0 | 2/2 | Complete | 2026-07-28 |
 | 5. Typography Polish | v1.1 | 1/1 | Complete    | 2026-07-30 |
-| 6. Output Directory Routing | v1.1 | 0/2 | Not started | - |
+| 6. Output Directory Routing | v1.1 | 1/2 | In Progress|  |
 | 7. Quality, Packaging & Global Install | v1.1 | 0/? | Not started | - |
