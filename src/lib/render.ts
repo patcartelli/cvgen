@@ -123,6 +123,7 @@ function designedHtmlTemplate(data: ResumeData): string {
       --text: #232323;
       --muted: #555555;
       --border: #e0e0e0;
+      --bullet: #2d4a6b;
     }
 
     body {
@@ -160,21 +161,26 @@ function designedHtmlTemplate(data: ResumeData): string {
       margin: 0 4px;
     }
 
-    /* Section headers — 48px above, content butts up below (4px or 24px per element) */
+    /* Section headers — 48px above, 4px below (uniform gap to first content element) */
     .section-header {
       font-size: 14px;
       line-height: 21px;
       font-weight: 400;
       color: var(--text);
       margin-top: 48px;
-      margin-bottom: 0;
+      margin-bottom: 4px;
       break-after: avoid;
       break-inside: avoid;
     }
 
-    /* Summary + competencies paragraphs — 4px below heading, subtle color */
+    .section-header + .experience-entry {
+      margin-top: 0;
+    }
+
+    /* Summary paragraph — body-small size; spacing comes from .section-header margin-bottom */
     section > p {
-      margin-top: 4px;
+      margin-top: 0;
+      font-size: 12px;
       color: var(--muted);
     }
 
@@ -183,7 +189,7 @@ function designedHtmlTemplate(data: ResumeData): string {
       font-size: 12px;
       line-height: 21px;
       color: var(--muted);
-      margin-top: 4px;
+      margin-top: 0;
     }
 
     /* Experience — two-column grid: content left, date right */
@@ -231,6 +237,10 @@ function designedHtmlTemplate(data: ResumeData): string {
       margin-bottom: 0.1em;
       orphans: 3;
       widows: 3;
+    }
+
+    li::marker {
+      color: var(--bullet);
     }
 
     p {
