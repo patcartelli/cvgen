@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Typography & Workflow Improvements
-status: planning
-last_updated: "2026-07-30T16:20:01.526Z"
+status: ready
+last_updated: "2026-07-30"
 last_activity: 2026-07-30
 progress:
-  total_phases: 0
+  total_phases: 3
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -17,17 +17,22 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-07-28)
+See: .planning/PROJECT.md (updated 2026-07-30)
 
 **Core value:** Running the CLI against a markdown resume note reliably produces a portfolio-quality PDF and a separate ATS-safe PDF — without the user touching a template or text editor.
-**Current focus:** v1.0 shipped — planning next milestone
+**Current focus:** v1.1 — Roadmap defined, Phase 5 ready to plan
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 5 — Typography Polish (not started)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-07-30 — Milestone v1.1 started
+Status: Roadmap complete, awaiting `/gsd:plan-phase 5`
+Last activity: 2026-07-30 — v1.1 roadmap created (Phases 5–7)
+
+```
+v1.1 Progress  [░░░░░░░░░░░░░░░░░░░░]  0%
+Phase 5 ░  Phase 6 ░  Phase 7 ░
+```
 
 ## Performance Metrics
 
@@ -63,17 +68,16 @@ Recent decisions affecting current work:
 - Init: Dropped Next.js/Vercel from v1 in favor of a plain TypeScript CLI (STC-138 locked CLI-only; no web routes to serve)
 - Init: ATS-clean output is a second PDF (not .txt/.md) so it stays visually distinct but still machine-parseable
 - Init: Obsidian note frontmatter/heading convention designed fresh — no existing standard to target
-- [Phase ?]: T-01-04 mitigation
+- v1.1 roadmap: 3 phases (5–7) derived from 3 natural requirement clusters; coarse granularity applied
 
 ### Pending Todos
 
-None yet.
+None.
 
 ### Blockers/Concerns
 
-- Phase 2 (extraction): Obsidian note convention has no existing standard to lean on — budget iteration time against real messy notes rather than trusting the first schema draft
-- Phase 3 (rendering): ATS text-extraction verification and Puppeteer font-bundling are narrow/under-documented areas (research confidence MEDIUM) — worth a focused research pass before implementation
-- TypeScript 7.0 ecosystem gap: if Biome is used, TS7 is safe; if ESLint is added later, pin TypeScript to ^6.0.3 — verify at Phase 1 execution time, don't trust research doc version numbers indefinitely
+- Phase 6 (output routing): OUTPUT-01 introduces interactive prompts — need to verify Commander/readline approach doesn't conflict with existing test harness
+- Phase 7 (packaging): QUAL-03 requires confirming `bin` field in package.json and shebang on `dist/cli.js` are already correct from v1.0 build
 
 ### Quick Tasks Completed
 
@@ -92,16 +96,9 @@ Items acknowledged and deferred at milestone close on 2026-07-28:
 | Trust | Section-level parse-confidence/provenance flags | v2 |
 | Product Direction | Web UI | v2 |
 | Product Direction | Job-posting-targeted tailoring | v2 |
-| code_review | CR-01: rawResponse typed as Message not ParsedMessage — affects --verbose output completeness | v1.1 |
-| code_review | WR-04: two conflicting test runners (tsx --test + vitest.config.ts) | v1.1 |
 
 ## Session Continuity
 
-Last session: 2026-07-29
-Stopped at: Quick task 260729-ez3 complete — all 3 portfolio-polish items done; repo is portfolio-ready
+Last session: 2026-07-30
+Stopped at: v1.1 roadmap created — Phases 5, 6, 7 defined; ready to plan Phase 5
 Resume file: none
-</content>
-
-## Operator Next Steps
-
-- Start the next milestone with /gsd-new-milestone

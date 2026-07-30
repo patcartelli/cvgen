@@ -46,20 +46,20 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| TYPO-01 | TBD | Pending |
-| TYPO-02 | TBD | Pending |
-| TYPO-03 | TBD | Pending |
-| OUTPUT-01 | TBD | Pending |
-| OUTPUT-02 | TBD | Pending |
-| QUAL-01 | TBD | Pending |
-| QUAL-02 | TBD | Pending |
-| QUAL-03 | TBD | Pending |
+| TYPO-01 | Phase 5 | Pending |
+| TYPO-02 | Phase 5 | Pending |
+| TYPO-03 | Phase 5 | Pending |
+| OUTPUT-01 | Phase 6 | Pending |
+| OUTPUT-02 | Phase 6 | Pending |
+| QUAL-01 | Phase 7 | Pending |
+| QUAL-02 | Phase 7 | Pending |
+| QUAL-03 | Phase 7 | Pending |
 
 **Coverage:**
 - v1.1 requirements: 8 total
-- Mapped to phases: 0 (roadmap pending)
-- Unmapped: 8 ⚠
+- Mapped to phases: 8
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-07-30*
-*Last updated: 2026-07-30 after initial v1.1 definition*
+*Last updated: 2026-07-30 — phase assignments added (Phases 5–7)*
