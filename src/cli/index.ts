@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 
-import { readFile, writeFile } from "node:fs/promises";
-import { dirname, resolve } from "node:path";
+import { writeSync } from "node:fs";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { join, resolve } from "node:path";
+import { createInterface } from "node:readline";
 import { Command } from "commander";
 import puppeteer from "puppeteer";
 import { extractResume } from "../lib/extract.js";
 import { preflightCheck } from "../lib/preflight.js";
-import { renderAts, renderDesigned, resolveOutputPaths } from "../lib/render.js";
+import { renderAts, renderDesigned, resolveOutputPaths, toCompanySlug } from "../lib/render.js";
 
 const INIT_TEMPLATE = `---
 name: Your Name
@@ -102,6 +104,54 @@ Examples:
         program.error("Preflight checks failed.", { exitCode: 1 });
       }
 
+      // Step D.5 — prompt for output routing (readline released in finally — prevents process hang)
+      // Uses callback-based readline so the 'close' event (stdin EOF in piped contexts) races
+      // with the question callback — readline/promises silently drops pending questions on close.
+      const rl = createInterface({ input: process.stdin, output: process.stdout });
+      const ask = (prompt: string): Promise<string> =>
+        new Promise<string>((resolve) => {
+          const onClose = () => resolve("");
+          rl.once("close", onClose);
+          rl.question(prompt, (answer) => {
+            rl.removeListener("close", onClose);
+            resolve(answer);
+          });
+        });
+      let outputDir!: string; // assigned in all non-error try paths; emptySlug guard exits before use
+      let emptySlug = false;
+      try {
+        const tailored = await ask("Is this resume tailored for a specific company? (y/n): ");
+        if (tailored.trim().toLowerCase().startsWith("y")) {
+          const company = await ask("Company name: ");
+          const slug = toCompanySlug(company.trim());
+          if (!slug) {
+            emptySlug = true;
+          } else {
+            outputDir = join(process.cwd(), "output", slug);
+          }
+        } else {
+          outputDir = join(process.cwd(), "output");
+        }
+      } finally {
+        rl.close();
+      }
+      if (emptySlug) {
+        // writeSync commits to OS pipe buffer synchronously (no stream flush race).
+        // Destroying stdin lets the event loop drain so process.exitCode=1 takes effect cleanly
+        // rather than forcing process.exit() from inside the top-level-await async context (which
+        // emits "Unfinished Top-Level Await" exit code 13 and can drop buffered writes).
+        writeSync(process.stderr.fd, "error: Company name must contain at least one letter or digit.\n");
+        process.exitCode = 1;
+        process.stdin.destroy();
+        return;
+      }
+
+      // mkdir only when PDFs will actually be written
+      const isValidateOnly = options.validateOnly || options.dryRun;
+      if (!isValidateOnly) {
+        await mkdir(outputDir, { recursive: true });
+      }
+
       // Step E — extract via Claude
       const { data, rawResponse } = await extractResume(markdown);
 
@@ -113,17 +163,14 @@ Examples:
         console.error(JSON.stringify(data, null, 2));
       }
 
-      // Step G — validate-only routing
-      const isValidateOnly = options.validateOnly || options.dryRun;
+      // Step G — validate-only routing  (isValidateOnly computed at Step D.5 — reuse it here)
       if (isValidateOnly) {
         console.log(JSON.stringify(data, null, 2));
         process.exit(0);
       }
 
       // Step H — render both PDFs
-      // NOTE: outputDir will be replaced by Plan 02 interactive prompts; using dirname(absPath)
-      // as a temporary placeholder to keep tsc happy until Plan 02 updates this section.
-      const paths = resolveOutputPaths(absPath, dirname(absPath));
+      const paths = resolveOutputPaths(absPath, outputDir);
       console.error("Rendering...");
       const browser = await puppeteer.launch({ headless: true });
       try {
