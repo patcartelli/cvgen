@@ -70,6 +70,6 @@ Plans:
 | 2. Markdown to Structured JSON Extraction | v1.0 | 2/2 | Complete | 2026-07-28 |
 | 3. Designed & ATS PDF Rendering | v1.0 | 2/2 | Complete | 2026-07-28 |
 | 4. CLI Integration, Debug Tooling & Portfolio Readiness | v1.0 | 2/2 | Complete | 2026-07-28 |
-| 5. Typography Polish | v1.1 | 1/1 | Complete | 2026-07-30 |
+| 5. Typography Polish | v1.1 | 1/1 | Complete    | 2026-07-30 |
 | 6. Output Directory Routing | v1.1 | 0/? | Not started | - |
 | 7. Quality, Packaging & Global Install | v1.1 | 0/? | Not started | - |

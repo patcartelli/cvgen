@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Typography & Workflow Improvements
-status: executing
-stopped_at: Phase 5 Plan 01 complete — TYPO-01 TYPO-02 TYPO-03 closed
-last_updated: "2026-07-30T18:00:00.000Z"
+status: ready_to_plan
+stopped_at: Phase 5 complete (1/1) — ready to discuss Phase 6
+last_updated: 2026-07-30T17:15:51.438Z
 last_activity: 2026-07-30 -- Phase 5 Plan 01 human-verified and complete
 progress:
   total_phases: 3
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-30)
 
 **Core value:** Running the CLI against a markdown resume note reliably produces a portfolio-quality PDF and a separate ATS-safe PDF — without the user touching a template or text editor.
-**Current focus:** Phase 5 — typography-polish
+**Current focus:** Phase 6 — output directory routing
 
 ## Current Position
 
-Phase: 5 (typography-polish) — COMPLETE
-Plan: 1 of 1 complete
-Status: Phase 5 complete; Phase 6 (output-directory-routing) is next
-Last activity: 2026-07-30 -- Phase 5 Plan 01 human-verified and complete
+Phase: 6
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-07-30
 
 ```
 v1.1 Progress  [███████░░░░░░░░░░░░░]  33%
@@ -39,7 +39,7 @@ Phase 5 ✓  Phase 6 ░  Phase 7 ░
 
 **Velocity:**
 
-- Total plans completed: 7
+- Total plans completed: 8
 - Average duration: -
 - Total execution time: 0 hours
 
@@ -50,6 +50,7 @@ Phase 5 ✓  Phase 6 ░  Phase 7 ░
 | 01 | 3 | - | - |
 | 02 | 2 | - | - |
 | 04 | 2 | - | - |
+| 5 | 1 | - | - |
 
 **Recent Trend:**
 
