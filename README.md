@@ -34,10 +34,12 @@ cvgen init
 cvgen init path/to/my-resume.md   # write to a specific path
 ```
 
-Output files are written alongside the input file:
+cvgen prompts whether the resume is tailored for a specific company:
 
-- `resume-resume.pdf` — portfolio-quality typographic PDF
-- `resume-resume-ats.pdf` — simplified single-column ATS-safe PDF
+- Answering **n** → both PDFs written to `output/` relative to the current directory
+- Answering **y** → prompts for a company name; PDFs written to `output/<Company-Slug>/` relative to the current directory
+
+The output directory is created automatically if it does not exist.
 
 ## Environment
 
