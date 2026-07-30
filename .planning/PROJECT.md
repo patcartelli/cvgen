@@ -47,14 +47,14 @@ Known tech debt being resolved in v1.1:
 
 - [x] PDF output routed to `output/` or `output/<Company-Slug>/` relative to cwd based on interactive prompt — Phase 06 (2026-07-30)
 - [x] `toCompanySlug` converts company name to Title-Case-Hyphen slug (D-01: spaces→hyphens, D-02: strip non-alphanumeric) — Phase 06 (2026-07-30)
+- [x] Designed PDF: summary text scaled down to body-small size — Phase 05 (2026-07-30)
+- [x] Designed PDF: bullet points styled with subtle accent color (#2d4a6b) — Phase 05 (2026-07-30)
+- [x] Designed PDF: consistent bottom spacing under all section headers — Phase 05 (2026-07-30)
+- [x] Fix `rawResponse` type to `ParsedMessage<ResumeData>` for correct `--verbose` output (CR-01) — Phase 7 (2026-07-28)
+- [x] Remove vitest runner conflict — consolidate on one test runner (WR-04) — Phase 7 (2026-07-28)
 
 ### Active (v1.1)
 
-- [ ] Designed PDF: summary text scaled down to body-small size — v1.1
-- [ ] Designed PDF: bullet points styled with subtle accent color (#2d4a6b) — v1.1
-- [ ] Designed PDF: consistent bottom spacing under all section headers — v1.1
-- [ ] Fix `rawResponse` type to `ParsedMessage<ResumeData>` for correct `--verbose` output (CR-01) — v1.1
-- [ ] Remove vitest runner conflict — consolidate on one test runner (WR-04) — v1.1
 - [ ] `npm publish` / `npm link` so `cvgen` can be run as a global command without `npx tsx` — v1.1
 
 ### Out of Scope
