@@ -105,18 +105,35 @@ Examples:
       }
 
       // Step D.5 — prompt for output routing (readline released in finally — prevents process hang)
-      // Uses callback-based readline so the 'close' event (stdin EOF in piped contexts) races
-      // with the question callback — readline/promises silently drops pending questions on close.
+      // Pre-buffers all arriving 'line' events so piped input (e.g. printf "y\nAcme Corp\n" | ...)
+      // is never lost to a race between the 'close' event and the next ask() call.
+      // In TTY mode, 'line' events fire only when the user presses Enter — same behaviour as before.
       const rl = createInterface({ input: process.stdin, output: process.stdout });
-      const ask = (prompt: string): Promise<string> =>
-        new Promise<string>((resolve) => {
-          const onClose = () => resolve("");
-          rl.once("close", onClose);
-          rl.question(prompt, (answer) => {
-            rl.removeListener("close", onClose);
-            resolve(answer);
-          });
+      const lineBuffer: string[] = [];
+      let waitingResolver: ((line: string) => void) | null = null;
+      rl.on("line", (line) => {
+        if (waitingResolver !== null) {
+          const res = waitingResolver;
+          waitingResolver = null;
+          res(line);
+        } else {
+          lineBuffer.push(line);
+        }
+      });
+      rl.on("close", () => {
+        if (waitingResolver !== null) {
+          const res = waitingResolver;
+          waitingResolver = null;
+          res("");
+        }
+      });
+      const ask = (prompt: string): Promise<string> => {
+        process.stdout.write(prompt);
+        if (lineBuffer.length > 0) return Promise.resolve(lineBuffer.shift()!);
+        return new Promise<string>((resolve) => {
+          waitingResolver = resolve;
         });
+      };
       let outputDir!: string; // assigned in all non-error try paths; emptySlug guard exits before use
       let emptySlug = false;
       try {
@@ -140,7 +157,10 @@ Examples:
         // Destroying stdin lets the event loop drain so process.exitCode=1 takes effect cleanly
         // rather than forcing process.exit() from inside the top-level-await async context (which
         // emits "Unfinished Top-Level Await" exit code 13 and can drop buffered writes).
-        writeSync(process.stderr.fd, "error: Company name must contain at least one letter or digit.\n");
+        writeSync(
+          process.stderr.fd,
+          "error: Company name must contain at least one letter or digit.\n",
+        );
         process.exitCode = 1;
         process.stdin.destroy();
         return;
