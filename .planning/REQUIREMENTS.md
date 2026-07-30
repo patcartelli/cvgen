@@ -1,0 +1,65 @@
+# Requirements: cvgen (Resume Generator)
+
+**Defined:** 2026-07-30
+**Milestone:** v1.1 Typography & Workflow Improvements
+**Core Value:** Running the CLI against a markdown resume note reliably produces a portfolio-quality PDF and a separate ATS-safe PDF — without the user touching a template or text editor.
+
+## v1.1 Requirements
+
+### Typography (Designed PDF)
+
+- [ ] **TYPO-01**: Designed PDF summary text renders at body-small size (visually smaller than body copy)
+- [ ] **TYPO-02**: Designed PDF bullet points are styled with subtle accent color (#2d4a6b)
+- [ ] **TYPO-03**: All section headers in the designed PDF have consistent bottom margin (matching the spacing already present under Experience)
+
+### Output Directory
+
+- [ ] **OUTPUT-01**: CLI asks the user whether the resume is tailored for a specific company; if yes, prompts for the company name
+- [ ] **OUTPUT-02**: Both PDFs are written to `output/` (not tailored) or `output/<Company-Name>/` (tailored), relative to cwd, creating the directory if needed
+
+### Quality & Workflow
+
+- [ ] **QUAL-01**: `rawResponse` in `ExtractResult` is typed as `ParsedMessage<ResumeData>` so `--verbose` output is complete (CR-01)
+- [ ] **QUAL-02**: Test suite runs under a single test runner with no conflicting scripts in package.json (WR-04)
+- [ ] **QUAL-03**: User can install and run `cvgen` as a global command via `npm install -g` or `npm link`
+
+## Future Requirements
+
+### Typography
+
+- Self-hosted Inter font (remove Google Fonts CDN dependency) — v2
+
+### Output
+
+- Non-interactive mode flag (e.g. `--company "Acme"`) to skip prompts in CI/scripts — v2
+
+## Out of Scope
+
+| Feature | Reason |
+|---------|--------|
+| Web UI | Deferred to v2 per STC-138; v1.x is CLI-only |
+| Job-posting-targeted tailoring | Out of scope for v1.x; one note in, two files out |
+| Multi-column layouts or images | Keeps ATS PDF machine-readable |
+| ATS PDF visual polish | ATS output is intentionally plain; visual changes would undermine machine-readability |
+
+## Traceability
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| TYPO-01 | TBD | Pending |
+| TYPO-02 | TBD | Pending |
+| TYPO-03 | TBD | Pending |
+| OUTPUT-01 | TBD | Pending |
+| OUTPUT-02 | TBD | Pending |
+| QUAL-01 | TBD | Pending |
+| QUAL-02 | TBD | Pending |
+| QUAL-03 | TBD | Pending |
+
+**Coverage:**
+- v1.1 requirements: 8 total
+- Mapped to phases: 0 (roadmap pending)
+- Unmapped: 8 ⚠
+
+---
+*Requirements defined: 2026-07-30*
+*Last updated: 2026-07-30 after initial v1.1 definition*
