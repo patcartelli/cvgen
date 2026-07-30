@@ -50,10 +50,15 @@ Plans:
   1. Running `cvgen <path>` prompts the user whether the resume is tailored; entering "no" writes both PDFs to `output/` relative to cwd
   2. Entering "yes" at the tailored prompt asks for a company name; entering "Acme Corp" writes both PDFs to `output/Acme-Corp/` (or equivalent slug)
   3. The output directory is created automatically if it does not exist
-**Plans**: 2 plans
+**Plans**: 2 plans in 2 waves
 Plans:
 - [ ] 06-01-PLAN.md — Add toCompanySlug export and update resolveOutputPaths signature in render.ts; rewrite Tests 1–3 and add slug unit tests in render.test.ts; fix smoke-render.ts one-line call
+**Wave 2** *(blocked on Wave 1 completion)*
 - [ ] 06-02-PLAN.md — Wire Step D.5 interactive prompts and mkdir into cli/index.ts; add integration tests for "n" and "y" prompt paths
+
+Cross-cutting constraints:
+- `toCompanySlug` must be exported from `src/lib/render.ts` (Plan 01) before Plan 02 imports it
+- `resolveOutputPaths(inputMdPath, outputDir)` two-arg signature must exist in render.ts before Plan 02 calls it at Step H
 
 ### Phase 7: Quality, Packaging & Global Install
 **Goal**: cvgen is installable as a global command and the codebase has no type or test infrastructure debt
