@@ -437,7 +437,7 @@ it("Test X: 'n' at tailored prompt → no company dir in output path", () => {
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Empty slug fallback behavior**
    - What we know: `toCompanySlug("!!!")` returns `""`.
