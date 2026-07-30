@@ -8,9 +8,9 @@
 
 ### Typography (Designed PDF)
 
-- [ ] **TYPO-01**: Designed PDF summary text renders at body-small size (visually smaller than body copy)
-- [ ] **TYPO-02**: Designed PDF bullet points are styled with subtle accent color (#2d4a6b)
-- [ ] **TYPO-03**: All section headers in the designed PDF have consistent bottom margin (matching the spacing already present under Experience)
+- [x] **TYPO-01**: Designed PDF summary text renders at body-small size (visually smaller than body copy) — closed 2026-07-30
+- [x] **TYPO-02**: Designed PDF bullet points are styled with subtle accent color (#2d4a6b) — closed 2026-07-30
+- [x] **TYPO-03**: All section headers in the designed PDF have consistent bottom margin (matching the spacing already present under Experience) — closed 2026-07-30
 
 ### Output Directory
 
@@ -46,9 +46,9 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| TYPO-01 | Phase 5 | Pending |
-| TYPO-02 | Phase 5 | Pending |
-| TYPO-03 | Phase 5 | Pending |
+| TYPO-01 | Phase 5 | Complete — 2026-07-30 |
+| TYPO-02 | Phase 5 | Complete — 2026-07-30 |
+| TYPO-03 | Phase 5 | Complete — 2026-07-30 |
 | OUTPUT-01 | Phase 6 | Pending |
 | OUTPUT-02 | Phase 6 | Pending |
 | QUAL-01 | Phase 7 | Pending |

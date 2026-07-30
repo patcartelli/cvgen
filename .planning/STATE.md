@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Typography & Workflow Improvements
 status: executing
-stopped_at: Phase 5 context gathered
-last_updated: "2026-07-30T17:01:26.762Z"
-last_activity: 2026-07-30 -- Phase 05 planning complete
+stopped_at: Phase 5 Plan 01 complete — TYPO-01 TYPO-02 TYPO-03 closed
+last_updated: "2026-07-30T18:00:00.000Z"
+last_activity: 2026-07-30 -- Phase 5 Plan 01 human-verified and complete
 progress:
   total_phases: 3
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 1
-  completed_plans: 0
-  percent: 0
+  completed_plans: 1
+  percent: 33
 ---
 
 # Project State
@@ -21,18 +21,18 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-30)
 
 **Core value:** Running the CLI against a markdown resume note reliably produces a portfolio-quality PDF and a separate ATS-safe PDF — without the user touching a template or text editor.
-**Current focus:** v1.1 — Roadmap defined, Phase 5 ready to plan
+**Current focus:** Phase 5 — typography-polish
 
 ## Current Position
 
-Phase: 5 — Typography Polish (not started)
-Plan: —
-Status: Ready to execute
-Last activity: 2026-07-30 -- Phase 05 planning complete
+Phase: 5 (typography-polish) — COMPLETE
+Plan: 1 of 1 complete
+Status: Phase 5 complete; Phase 6 (output-directory-routing) is next
+Last activity: 2026-07-30 -- Phase 5 Plan 01 human-verified and complete
 
 ```
-v1.1 Progress  [░░░░░░░░░░░░░░░░░░░░]  0%
-Phase 5 ░  Phase 6 ░  Phase 7 ░
+v1.1 Progress  [███████░░░░░░░░░░░░░]  33%
+Phase 5 ✓  Phase 6 ░  Phase 7 ░
 ```
 
 ## Performance Metrics
@@ -70,6 +70,11 @@ Recent decisions affecting current work:
 - Init: ATS-clean output is a second PDF (not .txt/.md) so it stays visually distinct but still machine-parseable
 - Init: Obsidian note frontmatter/heading convention designed fresh — no existing standard to target
 - v1.1 roadmap: 3 phases (5–7) derived from 3 natural requirement clusters; coarse granularity applied
+- Phase 5 D-01: Summary paragraph font-size set to 12px matching Core Competencies/bullet small-tier
+- Phase 5 D-02/D-03: --bullet CSS variable (#2d4a6b) in :root; li::marker references it — disc color independent from text color
+- Phase 5 D-04/D-05: section-header margin-bottom: 4px with adjacent-sibling override preventing 28px double-stack under Experience header
+- Phase 5 D-07: margin-top zeroed on section > p and .competencies — spacing fully owned by section-header margin-bottom
+- Phase 5 Line-height: Option A (inherit body 21px) accepted — operator approved without requesting Option B tighten
 
 ### Pending Todos
 
@@ -100,6 +105,6 @@ Items acknowledged and deferred at milestone close on 2026-07-28:
 
 ## Session Continuity
 
-Last session: 2026-07-30T16:37:56.205Z
-Stopped at: Phase 5 context gathered
-Resume file: .planning/phases/05-typography-polish/05-CONTEXT.md
+Last session: 2026-07-30T18:00:00.000Z
+Stopped at: Phase 5 Plan 01 complete — TYPO-01 TYPO-02 TYPO-03 closed
+Resume file: .planning/phases/05-typography-polish/05-01-SUMMARY.md

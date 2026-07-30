@@ -23,7 +23,7 @@ Full phase details: `.planning/milestones/v1.0-ROADMAP.md`
 
 ### v1.1 Typography & Workflow Improvements
 
-- [ ] **Phase 5: Typography Polish** — Designed PDF visual refinements (summary size, bullet color, header spacing)
+- [x] **Phase 5: Typography Polish** — Designed PDF visual refinements (summary size, bullet color, header spacing) — completed 2026-07-30
 - [ ] **Phase 6: Output Directory Routing** — CLI prompts for tailored vs. general and routes PDFs to correct directory
 - [ ] **Phase 7: Quality, Packaging & Global Install** — Type fix, test runner consolidation, npm global install
 
@@ -39,7 +39,7 @@ Full phase details: `.planning/milestones/v1.0-ROADMAP.md`
   3. Every section header in the designed PDF has the same bottom spacing as the Experience header
 **Plans**: 1 plan
 Plans:
-- [ ] 05-01-PLAN.md — Apply typography decisions D-01 to D-07 to designedHtmlTemplate() and human-verify designed PDF via smoke-render
+- [x] 05-01-PLAN.md — Apply typography decisions D-01 to D-07 to designedHtmlTemplate() and human-verify designed PDF via smoke-render — completed 2026-07-30
 **UI hint**: yes
 
 ### Phase 6: Output Directory Routing
@@ -70,6 +70,6 @@ Plans:
 | 2. Markdown to Structured JSON Extraction | v1.0 | 2/2 | Complete | 2026-07-28 |
 | 3. Designed & ATS PDF Rendering | v1.0 | 2/2 | Complete | 2026-07-28 |
 | 4. CLI Integration, Debug Tooling & Portfolio Readiness | v1.0 | 2/2 | Complete | 2026-07-28 |
-| 5. Typography Polish | v1.1 | 0/1 | Not started | - |
+| 5. Typography Polish | v1.1 | 1/1 | Complete | 2026-07-30 |
 | 6. Output Directory Routing | v1.1 | 0/? | Not started | - |
 | 7. Quality, Packaging & Global Install | v1.1 | 0/? | Not started | - |
