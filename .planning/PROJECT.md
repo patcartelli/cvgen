@@ -22,7 +22,7 @@ Running the CLI against a markdown resume note reliably produces a portfolio-qua
 
 ## Current State
 
-**v1.1 in progress.** v1.0 shipped 2026-07-28: `cvgen <path>` runs preflight → Claude extraction → Puppeteer rendering → two PDFs on disk. 841 LOC TypeScript, 38 automated tests, 9 plans across 4 phases.
+**v1.1 in progress — Phase 6 complete (2026-07-30).** Output directory routing: `cvgen <path>` now prompts "Is this resume tailored for a specific company?" and routes PDFs to `output/` (n) or `output/<Company-Slug>/` (y). `toCompanySlug` added to render.ts with D-01/D-02 regex rules. 44 automated tests. Next: Phase 7 (quality, packaging & global install).
 
 Known tech debt being resolved in v1.1:
 - CR-01: `rawResponse` in `ExtractResult` typed as `Message` instead of `ParsedMessage<ResumeData>` — affects `--verbose` completeness
@@ -42,6 +42,11 @@ Known tech debt being resolved in v1.1:
 - [x] Invalid/missing path and missing API key exit 1 with human-readable errors (no stack traces) — Phase 04 (2026-07-28)
 - [x] `--verbose` dumps raw Claude response and validated JSON to stderr — Phase 04 (2026-07-28)
 - [x] `cvgen init` creates a valid example note with all required frontmatter fields and sections — Phase 04 (2026-07-28)
+
+### Validated (v1.1 — in progress)
+
+- [x] PDF output routed to `output/` or `output/<Company-Slug>/` relative to cwd based on interactive prompt — Phase 06 (2026-07-30)
+- [x] `toCompanySlug` converts company name to Title-Case-Hyphen slug (D-01: spaces→hyphens, D-02: strip non-alphanumeric) — Phase 06 (2026-07-30)
 
 ### Active (v1.1)
 
