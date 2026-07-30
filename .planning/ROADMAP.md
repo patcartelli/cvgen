@@ -50,7 +50,10 @@ Plans:
   1. Running `cvgen <path>` prompts the user whether the resume is tailored; entering "no" writes both PDFs to `output/` relative to cwd
   2. Entering "yes" at the tailored prompt asks for a company name; entering "Acme Corp" writes both PDFs to `output/Acme-Corp/` (or equivalent slug)
   3. The output directory is created automatically if it does not exist
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 06-01-PLAN.md — Add toCompanySlug export and update resolveOutputPaths signature in render.ts; rewrite Tests 1–3 and add slug unit tests in render.test.ts; fix smoke-render.ts one-line call
+- [ ] 06-02-PLAN.md — Wire Step D.5 interactive prompts and mkdir into cli/index.ts; add integration tests for "n" and "y" prompt paths
 
 ### Phase 7: Quality, Packaging & Global Install
 **Goal**: cvgen is installable as a global command and the codebase has no type or test infrastructure debt
@@ -71,5 +74,5 @@ Plans:
 | 3. Designed & ATS PDF Rendering | v1.0 | 2/2 | Complete | 2026-07-28 |
 | 4. CLI Integration, Debug Tooling & Portfolio Readiness | v1.0 | 2/2 | Complete | 2026-07-28 |
 | 5. Typography Polish | v1.1 | 1/1 | Complete    | 2026-07-30 |
-| 6. Output Directory Routing | v1.1 | 0/? | Not started | - |
+| 6. Output Directory Routing | v1.1 | 0/2 | Not started | - |
 | 7. Quality, Packaging & Global Install | v1.1 | 0/? | Not started | - |
