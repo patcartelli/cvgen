@@ -24,7 +24,7 @@ Full phase details: `.planning/milestones/v1.0-ROADMAP.md`
 ### v1.1 Typography & Workflow Improvements
 
 - [x] **Phase 5: Typography Polish** — Designed PDF visual refinements (summary size, bullet color, header spacing) — completed 2026-07-30
-- [ ] **Phase 6: Output Directory Routing** — CLI prompts for tailored vs. general and routes PDFs to correct directory
+- [x] **Phase 6: Output Directory Routing** — CLI prompts for tailored vs. general and routes PDFs to correct directory (completed 2026-07-30)
 - [ ] **Phase 7: Quality, Packaging & Global Install** — Type fix, test runner consolidation, npm global install
 
 ## Phase Details
@@ -54,7 +54,7 @@ Plans:
 Plans:
 - [x] 06-01-PLAN.md — Add toCompanySlug export and update resolveOutputPaths signature in render.ts; rewrite Tests 1–3 and add slug unit tests in render.test.ts; fix smoke-render.ts one-line call
 **Wave 2** *(blocked on Wave 1 completion)*
-- [ ] 06-02-PLAN.md — Wire Step D.5 interactive prompts and mkdir into cli/index.ts; add integration tests for "n" and "y" prompt paths
+- [x] 06-02-PLAN.md — Wire Step D.5 interactive prompts and mkdir into cli/index.ts; add integration tests for "n" and "y" prompt paths
 
 Cross-cutting constraints:
 - `toCompanySlug` must be exported from `src/lib/render.ts` (Plan 01) before Plan 02 imports it
@@ -79,5 +79,5 @@ Cross-cutting constraints:
 | 3. Designed & ATS PDF Rendering | v1.0 | 2/2 | Complete | 2026-07-28 |
 | 4. CLI Integration, Debug Tooling & Portfolio Readiness | v1.0 | 2/2 | Complete | 2026-07-28 |
 | 5. Typography Polish | v1.1 | 1/1 | Complete    | 2026-07-30 |
-| 6. Output Directory Routing | v1.1 | 1/2 | In Progress|  |
+| 6. Output Directory Routing | v1.1 | 2/2 | Complete   | 2026-07-30 |
 | 7. Quality, Packaging & Global Install | v1.1 | 0/? | Not started | - |
