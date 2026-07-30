@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { readFile, writeFile } from "node:fs/promises";
-import { resolve } from "node:path";
+import { dirname, resolve } from "node:path";
 import { Command } from "commander";
 import puppeteer from "puppeteer";
 import { extractResume } from "../lib/extract.js";
@@ -121,7 +121,9 @@ Examples:
       }
 
       // Step H — render both PDFs
-      const paths = resolveOutputPaths(absPath);
+      // NOTE: outputDir will be replaced by Plan 02 interactive prompts; using dirname(absPath)
+      // as a temporary placeholder to keep tsc happy until Plan 02 updates this section.
+      const paths = resolveOutputPaths(absPath, dirname(absPath));
       console.error("Rendering...");
       const browser = await puppeteer.launch({ headless: true });
       try {

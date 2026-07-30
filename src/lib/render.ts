@@ -1,5 +1,5 @@
 // src/lib/render.ts
-import { basename, dirname, join } from "node:path";
+import { basename, join } from "node:path";
 import type { Browser } from "puppeteer";
 import type { ResumeData } from "../schema/resume.js";
 
@@ -8,19 +8,32 @@ import type { ResumeData } from "../schema/resume.js";
 // ---------------------------------------------------------------------------
 
 /**
- * Pure helper: derives the two PDF output paths from an input .md path.
- * Per D-O01 (same directory) and D-O02 (stem-based naming):
- *   my-resume.md → my-resume-resume.pdf / my-resume-resume-ats.pdf
+ * Pure helper: converts a company name string to a Title-Case-Hyphen directory slug.
+ * D-01: spaces → hyphens, casing preserved. D-02: special chars stripped without replacement.
+ * Examples: "Acme Corp" → "Acme-Corp", "AT&T" → "ATT", "Goldman Sachs & Partners" → "Goldman-Sachs-Partners"
  */
-export function resolveOutputPaths(inputMdPath: string): {
-  designed: string;
-  ats: string;
-} {
+export function toCompanySlug(company: string): string {
+  return company
+    .replace(/[^a-zA-Z0-9 ]/g, "") // D-02: strip ampersands, dots, commas, etc.
+    .trim()
+    .replace(/\s+/g, "-"); // D-01: collapse space runs to hyphens, preserve case
+}
+
+/**
+ * Pure helper: derives the two PDF output paths from an explicit output directory.
+ * Stem is derived from the input .md basename; directory is caller-supplied.
+ *   resolveOutputPaths("/path/my-resume.md", "/out/Acme-Corp")
+ *   → { designed: "/out/Acme-Corp/my-resume-resume.pdf",
+ *        ats:      "/out/Acme-Corp/my-resume-resume-ats.pdf" }
+ */
+export function resolveOutputPaths(
+  inputMdPath: string,
+  outputDir: string,
+): { designed: string; ats: string } {
   const stem = basename(inputMdPath, ".md");
-  const dir = dirname(inputMdPath);
   return {
-    designed: join(dir, stem + "-resume.pdf"),
-    ats: join(dir, stem + "-resume-ats.pdf"),
+    designed: join(outputDir, `${stem}-resume.pdf`),
+    ats: join(outputDir, `${stem}-resume-ats.pdf`),
   };
 }
 
