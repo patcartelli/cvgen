@@ -19,8 +19,8 @@
 
 ### Quality & Workflow
 
-- [ ] **QUAL-01**: `rawResponse` in `ExtractResult` is typed as `ParsedMessage<ResumeData>` so `--verbose` output is complete (CR-01)
-- [ ] **QUAL-02**: Test suite runs under a single test runner with no conflicting scripts in package.json (WR-04)
+- [x] **QUAL-01**: `rawResponse` in `ExtractResult` is typed as `ParsedMessage<ResumeData>` so `--verbose` output is complete (CR-01) — closed 2026-07-28
+- [x] **QUAL-02**: Test suite runs under a single test runner with no conflicting scripts in package.json (WR-04) — closed 2026-07-28
 - [ ] **QUAL-03**: User can install and run `cvgen` as a global command via `npm install -g` or `npm link`
 
 ## Future Requirements
@@ -51,8 +51,8 @@
 | TYPO-03 | Phase 5 | Complete — 2026-07-30 |
 | OUTPUT-01 | Phase 6 | Pending |
 | OUTPUT-02 | Phase 6 | Pending |
-| QUAL-01 | Phase 7 | Pending |
-| QUAL-02 | Phase 7 | Pending |
+| QUAL-01 | Phase 7 | Complete — 2026-07-28 |
+| QUAL-02 | Phase 7 | Complete — 2026-07-28 |
 | QUAL-03 | Phase 7 | Pending |
 
 **Coverage:**
