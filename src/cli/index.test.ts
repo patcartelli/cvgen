@@ -26,12 +26,14 @@ function runCli(
   args: string[],
   env: NodeJS.ProcessEnv = process.env,
   cwd: string = projectRoot,
+  input?: string,
 ): { stdout: string; stderr: string; status: number } {
   const result = spawnSync("npx", ["tsx", cliSrcPath, ...args], {
     cwd,
     env,
     encoding: "utf8",
     timeout: 15000,
+    ...(input !== undefined ? { input } : {}),
   });
   return {
     stdout: result.stdout ?? "",
@@ -183,5 +185,45 @@ describe("CLI entry point (src/cli/index.ts)", () => {
     assert.ok(!src.includes("require("), "must not use require() — ESM only");
     assert.ok(!src.includes("inquirer"), "must not import inquirer");
     assert.ok(!src.includes("yargs"), "must not import yargs");
+  });
+
+  // ---------------------------------------------------------------------------
+  // Step D.5 interactive prompt tests
+  // ---------------------------------------------------------------------------
+  describe("Step D.5 interactive prompt", () => {
+    // Test 9: "n" answer passes through prompt; failure is at Step E (API), not Step B (key guard)
+    it("Test 9: 'n' answer at prompt routes to Step E — failure is API rejection, not missing-key error", () => {
+      // Use a temp cwd so mkdir(output/) lands there, not in the project root
+      const tmpCwd = mkdtempSync(join(tmpdir(), "cvgen-test-"));
+      const { stderr, status } = runCli([fixturePath], envWithDummyKey(), tmpCwd, "n\n");
+      assert.notEqual(
+        status,
+        0,
+        `expected non-zero exit (API will reject dummy key) — got ${status}`,
+      );
+      assert.ok(
+        !stderr.includes("ANTHROPIC_API_KEY is not set"),
+        `stderr must NOT contain key-guard message — prompt was reached. stderr: ${stderr}`,
+      );
+    });
+
+    // Test 10: "y" then all-special company name triggers the empty-slug guard before any API call
+    it("Test 10: 'y' then all-special company name triggers empty-slug guard exit", () => {
+      const tmpCwd = mkdtempSync(join(tmpdir(), "cvgen-test-"));
+      const { stdout, stderr, status } = runCli(
+        [fixturePath],
+        envWithDummyKey(),
+        tmpCwd,
+        "y\n!!!\n",
+      );
+      assert.notEqual(status, 0, `expected non-zero exit from slug guard — got ${status}`);
+      // Commander may route the error via process.exit (losing async stderr flush) so check
+      // both streams — the message must appear somewhere in the combined output.
+      const output = stdout + stderr;
+      assert.ok(
+        output.includes("Company name must contain at least one letter or digit"),
+        `output must contain slug-guard message — got stdout: ${stdout} | stderr: ${stderr}`,
+      );
+    });
   });
 });
