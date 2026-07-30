@@ -129,7 +129,7 @@ Examples:
       });
       const ask = (prompt: string): Promise<string> => {
         process.stdout.write(prompt);
-        if (lineBuffer.length > 0) return Promise.resolve(lineBuffer.shift()!);
+        if (lineBuffer.length > 0) return Promise.resolve(lineBuffer.shift() ?? "");
         return new Promise<string>((resolve) => {
           waitingResolver = resolve;
         });
