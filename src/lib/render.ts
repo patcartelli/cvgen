@@ -316,7 +316,13 @@ function designedHtmlTemplate(data: ResumeData): string {
   <div class="container">
     <div class="contact-block">
       <div class="candidate-name">${escapeHtml(contact.name)}</div>
-      <div class="contact-details">${[contact.email, contact.phone, contact.location, contact.linkedin, contact.github].filter(Boolean).map(escapeHtml).join('<span class="sep">|</span>')}</div>
+      <div class="contact-details">
+        ${(() => {
+          const row1 = [contact.email, contact.phone, contact.location].filter(Boolean).map(escapeHtml).join('<span class="sep">|</span>');
+          const row2 = [contact.linkedin, contact.github].filter(Boolean).map(escapeHtml).join('<span class="sep">|</span>');
+          return [row1 && `<div class="contact-details-row">${row1}</div>`, row2 && `<div class="contact-details-row">${row2}</div>`].filter(Boolean).join('\n        ');
+        })()}
+      </div>
     </div>
 
     ${summaryHtml}
