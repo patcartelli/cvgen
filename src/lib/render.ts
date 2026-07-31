@@ -351,9 +351,9 @@ function designedHtmlTemplate(data: ResumeData): string {
             .filter(Boolean)
             .join('<span class="sep">|</span>');
           const row2 = [
+            contact.website && contactLink(contact.website, "url"),
             contact.linkedin && contactLink(contact.linkedin, "url"),
             contact.github && contactLink(contact.github, "url"),
-            contact.website && contactLink(contact.website, "url"),
           ]
             .filter(Boolean)
             .join('<span class="sep">|</span>');
@@ -515,7 +515,17 @@ function atsHtmlTemplate(data: ResumeData): string {
 <body>
   <h1>${escapeHtml(contact.name)}</h1>
   <div class="contact-details">
-    ${[contact.email, contact.phone, contact.location, contact.linkedin, contact.github, contact.website].filter((f): f is string => Boolean(f)).map(escapeHtml).join(" | ")}
+    ${[
+      contact.email,
+      contact.phone,
+      contact.location,
+      contact.website,
+      contact.linkedin,
+      contact.github,
+    ]
+      .filter((f): f is string => Boolean(f))
+      .map(escapeHtml)
+      .join(" | ")}
   </div>
 
   ${summaryHtml}
