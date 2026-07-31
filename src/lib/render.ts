@@ -82,7 +82,7 @@ function contactLink(value: string, type: "email" | "url"): string {
 // ---------------------------------------------------------------------------
 
 function designedHtmlTemplate(data: ResumeData): string {
-  const { contact, summary, coreCompetencies, experience, education, skills } = data;
+  const { contact, summary, coreCompetencies, experience, additionalExperience, education, skills } = data;
 
   const competenciesHtml =
     coreCompetencies && coreCompetencies.length > 0
@@ -335,6 +335,32 @@ function designedHtmlTemplate(data: ResumeData): string {
     .skill-items {
       color: var(--muted);
     }
+
+    /* Additional Experience — compact labeled list below main experience entries */
+    .additional-experience {
+      margin-top: 24px;
+      break-inside: avoid;
+    }
+
+    .additional-experience-label {
+      font-size: 12px;
+      line-height: 21px;
+      color: var(--muted);
+      font-style: italic;
+      margin-bottom: 2px;
+    }
+
+    .additional-experience ul {
+      margin: 0;
+      padding-left: 1.2em;
+    }
+
+    .additional-experience li {
+      font-size: 12px;
+      line-height: 21px;
+      color: var(--muted);
+      margin-bottom: 0;
+    }
   </style>
 </head>
 <body>
@@ -381,6 +407,12 @@ function designedHtmlTemplate(data: ResumeData): string {
     <section>
       <h2 class="section-header">Experience</h2>
       ${experienceHtml}
+      ${additionalExperience && additionalExperience.length > 0
+        ? `<div class="additional-experience">
+        <div class="additional-experience-label">Additional Experience</div>
+        <ul>${additionalExperience.map((item) => `<li>${escapeHtml(item)}</li>`).join("\n        ")}</ul>
+      </div>`
+        : ""}
     </section>
 
     <section>
@@ -403,7 +435,7 @@ function designedHtmlTemplate(data: ResumeData): string {
 // ---------------------------------------------------------------------------
 
 function atsHtmlTemplate(data: ResumeData): string {
-  const { contact, summary, coreCompetencies, experience, education, skills } = data;
+  const { contact, summary, coreCompetencies, experience, additionalExperience, education, skills } = data;
 
   const summaryHtml = summary
     ? `<section>
@@ -535,6 +567,10 @@ function atsHtmlTemplate(data: ResumeData): string {
   <section>
     <h2>Experience</h2>
     ${experienceHtml}
+    ${additionalExperience && additionalExperience.length > 0
+      ? `<h3>Additional Experience</h3>
+    <ul>${additionalExperience.map((item) => `<li>${escapeHtml(item)}</li>`).join("\n    ")}</ul>`
+      : ""}
   </section>
 
   <section>

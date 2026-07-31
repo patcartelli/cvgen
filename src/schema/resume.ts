@@ -35,6 +35,7 @@ export const ResumeSchema = z.object({
   summary: z.string().optional(),
   coreCompetencies: z.array(z.string()).optional(),
   experience: z.array(ExperienceSchema),
+  additionalExperience: z.array(z.string()).optional(),
   education: z.array(EducationSchema),
   skills: z.array(SkillGroupSchema),
 });
