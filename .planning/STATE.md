@@ -88,6 +88,7 @@ None.
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 260729-ez3 | Three portfolio-polish tasks: README.md, rebuild dist, GitHub Actions CI | 2026-07-29 | 5b463e6 | [260729-ez3-three-portfolio-polish-tasks-readme-md-r](./quick/260729-ez3-three-portfolio-polish-tasks-readme-md-r/) |
+| 260731-gby | Make personal info 2-line layout: email phone location on line 1, LinkedIn GitHub on line 2 | 2026-07-31 | 92e1414 | [260731-gby-make-personal-info-2-line-layout-email-p](./quick/260731-gby-make-personal-info-2-line-layout-email-p/) |
 
 ## Deferred Items
 
@@ -104,9 +105,8 @@ Items acknowledged and deferred at milestone close on 2026-07-28:
 
 ## Session Continuity
 
-Last session: 2026-07-30T18:29:49.135Z
-Stopped at: Phase 6 context gathered
-Resume file: .planning/phases/06-output-directory-routing/06-CONTEXT.md
+Last session: 2026-07-31
+Stopped at: Completed quick task 260731-gby: 2-line contact header
 
 ## Operator Next Steps
 
