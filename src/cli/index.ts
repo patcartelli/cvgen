@@ -135,6 +135,7 @@ Examples:
         });
       };
       let outputDir!: string; // assigned in all non-error try paths; emptySlug guard exits before use
+      let companySlug: string | undefined;
       let emptySlug = false;
       try {
         const tailored = await ask("Is this resume tailored for a specific company? (y/n): ");
@@ -144,6 +145,7 @@ Examples:
           if (!slug) {
             emptySlug = true;
           } else {
+            companySlug = slug;
             outputDir = join(process.cwd(), "output", slug);
           }
         } else {
@@ -190,7 +192,7 @@ Examples:
       }
 
       // Step H — render both PDFs
-      const paths = resolveOutputPaths(absPath, outputDir);
+      const paths = resolveOutputPaths(data.contact.name, outputDir, companySlug);
       console.error("Rendering...");
       const browser = await puppeteer.launch({ headless: true });
       try {

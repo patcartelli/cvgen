@@ -14,7 +14,7 @@ import type { Browser } from "puppeteer";
 import puppeteer from "puppeteer";
 
 import type { ResumeData } from "../schema/resume.js";
-import { renderAts, resolveOutputPaths, toCompanySlug } from "./render.js";
+import { renderAts, resolveOutputPaths, toCompanySlug, toNameSlug } from "./render.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, "../..");
@@ -23,34 +23,49 @@ const root = resolve(__dirname, "../..");
 // resolveOutputPaths unit tests — pure function, no Puppeteer
 // ---------------------------------------------------------------------------
 
+describe("toNameSlug", () => {
+  it("Test 1: converts full name to lowercase underscore slug", () => {
+    assert.equal(toNameSlug("Pat Cartelli"), "pat_cartelli");
+  });
+  it("Test 2: handles multiple spaces", () => {
+    assert.equal(toNameSlug("Patrick  James  Cartelli"), "patrick_james_cartelli");
+  });
+  it("Test 3: preserves hyphens in hyphenated names", () => {
+    assert.equal(toNameSlug("J. Smith-Jones"), "j_smith-jones");
+  });
+  it("Test 4: strips leading/trailing underscores", () => {
+    assert.equal(toNameSlug("  Alex Rivera  "), "alex_rivera");
+  });
+});
+
 describe("resolveOutputPaths", () => {
-  // Test 1: explicit outputDir — both paths land inside it with correct suffixes
-  it("Test 1: resolves designed and ats paths inside the given outputDir", () => {
-    const paths = resolveOutputPaths("/tmp/foo/my-resume.md", "/some/output/dir");
+  // Test 1: no company slug — name only
+  it("Test 1: resolves paths using candidate name, no company suffix", () => {
+    const paths = resolveOutputPaths("Pat Cartelli", "/some/output/dir");
     assert.equal(
       paths.designed,
-      "/some/output/dir/my-resume-resume.pdf",
-      "designed path must be inside outputDir with -resume.pdf suffix",
+      "/some/output/dir/pat_cartelli-resume.pdf",
+      "designed path must use name slug with -resume.pdf suffix",
     );
     assert.equal(
       paths.ats,
-      "/some/output/dir/my-resume-resume-ats.pdf",
-      "ats path must be inside outputDir with -resume-ats.pdf suffix",
+      "/some/output/dir/pat_cartelli-resume-ats.pdf",
+      "ats path must use name slug with -resume-ats.pdf suffix",
     );
   });
 
-  // Test 2: stem derived from inputMdPath basename regardless of outputDir
-  it("Test 2: stem derived from inputMdPath basename regardless of outputDir", () => {
-    const paths = resolveOutputPaths("./notes/alex.md", "/out");
+  // Test 2: with company slug appended to filename
+  it("Test 2: appends company slug to filename when provided", () => {
+    const paths = resolveOutputPaths("Alex Rivera", "/out/Acme-Corp", "Acme-Corp");
     assert.equal(
       basename(paths.designed),
-      "alex-resume.pdf",
-      "designed basename must be alex-resume.pdf",
+      "alex_rivera-resume-Acme-Corp.pdf",
+      "designed basename must include name and company slug",
     );
     assert.equal(
       basename(paths.ats),
-      "alex-resume-ats.pdf",
-      "ats basename must be alex-resume-ats.pdf",
+      "alex_rivera-resume-Acme-Corp-ats.pdf",
+      "ats basename must include name and company slug",
     );
     assert.equal(
       dirname(paths.designed),
@@ -59,15 +74,15 @@ describe("resolveOutputPaths", () => {
     );
   });
 
-  // Test 3: stem with internal dots — only trailing .md stripped
-  it("Test 3: stem with internal dots — only trailing .md stripped", () => {
-    const paths = resolveOutputPaths("/x/2026.q3-resume.md", "/out");
+  // Test 3: multi-word name with special chars
+  it("Test 3: handles name with punctuation correctly", () => {
+    const paths = resolveOutputPaths("J. Smith-Jones", "/out");
     assert.equal(
       paths.designed,
-      "/out/2026.q3-resume-resume.pdf",
-      "only trailing .md must be stripped from stem",
+      "/out/j_smith-jones-resume.pdf",
+      "dots become underscores, hyphens preserved",
     );
-    assert.equal(paths.ats, "/out/2026.q3-resume-resume-ats.pdf", "ats path must use same stem");
+    assert.equal(paths.ats, "/out/j_smith-jones-resume-ats.pdf", "ats path uses same slug");
   });
 });
 

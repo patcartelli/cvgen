@@ -1,5 +1,5 @@
 // src/lib/render.ts
-import { basename, join } from "node:path";
+import { join } from "node:path";
 import type { Browser } from "puppeteer";
 import type { ResumeData } from "../schema/resume.js";
 
@@ -20,20 +20,34 @@ export function toCompanySlug(company: string): string {
 }
 
 /**
- * Pure helper: derives the two PDF output paths from an explicit output directory.
- * Stem is derived from the input .md basename; directory is caller-supplied.
- *   resolveOutputPaths("/path/my-resume.md", "/out/Acme-Corp")
- *   → { designed: "/out/Acme-Corp/my-resume-resume.pdf",
- *        ats:      "/out/Acme-Corp/my-resume-resume-ats.pdf" }
+ * Pure helper: converts a candidate name to a lowercase underscore file slug.
+ * "Pat Cartelli" → "pat_cartelli", "J. Smith-Jones" → "j_smith-jones"
+ */
+export function toNameSlug(name: string): string {
+  return name
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9-]+/g, "_")
+    .replace(/^_+|_+$/g, "");
+}
+
+/**
+ * Pure helper: derives the two PDF output paths from candidate name + output directory.
+ * Optional companySlug is appended to the filename when provided.
+ *   resolveOutputPaths("Pat Cartelli", "/out/Acme-Corp", "Acme-Corp")
+ *   → { designed: "/out/Acme-Corp/pat_cartelli-resume-Acme-Corp.pdf",
+ *        ats:      "/out/Acme-Corp/pat_cartelli-resume-Acme-Corp-ats.pdf" }
  */
 export function resolveOutputPaths(
-  inputMdPath: string,
+  candidateName: string,
   outputDir: string,
+  companySlug?: string,
 ): { designed: string; ats: string } {
-  const stem = basename(inputMdPath, ".md");
+  const nameSlug = toNameSlug(candidateName);
+  const suffix = companySlug ? `-${companySlug}` : "";
   return {
-    designed: join(outputDir, `${stem}-resume.pdf`),
-    ats: join(outputDir, `${stem}-resume-ats.pdf`),
+    designed: join(outputDir, `${nameSlug}-resume${suffix}.pdf`),
+    ats: join(outputDir, `${nameSlug}-resume${suffix}-ats.pdf`),
   };
 }
 
@@ -318,9 +332,20 @@ function designedHtmlTemplate(data: ResumeData): string {
       <div class="candidate-name">${escapeHtml(contact.name)}</div>
       <div class="contact-details">
         ${(() => {
-          const row1 = [contact.email, contact.phone, contact.location].filter(Boolean).map(escapeHtml).join('<span class="sep">|</span>');
-          const row2 = [contact.linkedin, contact.github].filter(Boolean).map(escapeHtml).join('<span class="sep">|</span>');
-          return [row1 && `<div class="contact-details-row">${row1}</div>`, row2 && `<div class="contact-details-row">${row2}</div>`].filter(Boolean).join('\n        ');
+          const row1 = [contact.email, contact.phone, contact.location]
+            .filter(Boolean)
+            .map(escapeHtml)
+            .join('<span class="sep">|</span>');
+          const row2 = [contact.linkedin, contact.github]
+            .filter(Boolean)
+            .map(escapeHtml)
+            .join('<span class="sep">|</span>');
+          return [
+            row1 && `<div class="contact-details-row">${row1}</div>`,
+            row2 && `<div class="contact-details-row">${row2}</div>`,
+          ]
+            .filter(Boolean)
+            .join("\n        ");
         })()}
       </div>
     </div>
