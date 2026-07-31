@@ -45,7 +45,10 @@ export function resolveOutputPaths(
   date?: string,
 ): { designed: string; ats: string } {
   const nameSlug = toNameSlug(candidateName);
-  const suffix = [companySlug, date].filter(Boolean).map((s) => `-${s}`).join("");
+  const suffix = [companySlug, date]
+    .filter(Boolean)
+    .map((s) => `-${s}`)
+    .join("");
   return {
     designed: join(outputDir, `${nameSlug}-resume${suffix}.pdf`),
     ats: join(outputDir, `${nameSlug}-resume${suffix}-ats.pdf`),
@@ -68,7 +71,8 @@ function escapeHtml(str: string): string {
 
 /** Wrap a contact field in an anchor tag. Prepends https:// if no scheme present. */
 function contactLink(value: string, type: "email" | "url"): string {
-  const href = type === "email" ? `mailto:${value}` : value.startsWith("http") ? value : `https://${value}`;
+  const href =
+    type === "email" ? `mailto:${value}` : value.startsWith("http") ? value : `https://${value}`;
   return `<a href="${escapeHtml(href)}" style="color:inherit;text-decoration:none;">${escapeHtml(value)}</a>`;
 }
 
@@ -349,6 +353,7 @@ function designedHtmlTemplate(data: ResumeData): string {
           const row2 = [
             contact.linkedin && contactLink(contact.linkedin, "url"),
             contact.github && contactLink(contact.github, "url"),
+            contact.website && contactLink(contact.website, "url"),
           ]
             .filter(Boolean)
             .join('<span class="sep">|</span>');
@@ -510,7 +515,7 @@ function atsHtmlTemplate(data: ResumeData): string {
 <body>
   <h1>${escapeHtml(contact.name)}</h1>
   <div class="contact-details">
-    ${escapeHtml(contact.email)} | ${escapeHtml(contact.phone)} | ${escapeHtml(contact.location)} | ${escapeHtml(contact.linkedin)} | ${escapeHtml(contact.github)}
+    ${[contact.email, contact.phone, contact.location, contact.linkedin, contact.github, contact.website].filter((f): f is string => Boolean(f)).map(escapeHtml).join(" | ")}
   </div>
 
   ${summaryHtml}

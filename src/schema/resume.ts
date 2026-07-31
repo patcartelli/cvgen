@@ -7,6 +7,7 @@ const ContactSchema = z.object({
   location: z.string(),
   linkedin: z.string(),
   github: z.string(),
+  website: z.string().optional(),
 });
 
 const ExperienceSchema = z.object({
