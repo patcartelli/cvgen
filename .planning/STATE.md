@@ -89,6 +89,7 @@ None.
 |---|-------------|------|--------|-----------|
 | 260729-ez3 | Three portfolio-polish tasks: README.md, rebuild dist, GitHub Actions CI | 2026-07-29 | 5b463e6 | [260729-ez3-three-portfolio-polish-tasks-readme-md-r](./quick/260729-ez3-three-portfolio-polish-tasks-readme-md-r/) |
 | 260731-gby | Make personal info 2-line layout: email phone location on line 1, LinkedIn GitHub on line 2 | 2026-07-31 | 92e1414 | [260731-gby-make-personal-info-2-line-layout-email-p](./quick/260731-gby-make-personal-info-2-line-layout-email-p/) |
+| 260731-gui | Add candidate name to PDF filename: {name_slug}-resume[-{company}].pdf | 2026-07-31 | 6971669 | [260731-gui-add-candidate-name-to-pdf-filename-name-](./quick/260731-gui-add-candidate-name-to-pdf-filename-name-/) |
 
 ## Deferred Items
 
