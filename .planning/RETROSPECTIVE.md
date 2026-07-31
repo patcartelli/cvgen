@@ -43,6 +43,47 @@
 
 ---
 
+## Milestone: v1.1 — Typography & Workflow Improvements
+
+**Shipped:** 2026-07-31
+**Phases:** 3 (5–7) | **Plans:** 5 | **Timeline:** 1 day (2026-07-30–31)
+
+### What Was Built
+- Typography polish: 12px summary, #2d4a6b navy bullet markers, consistent 4px section header spacing via 6 targeted CSS edits
+- Output routing: interactive readline prompt routes PDFs to `output/` or `output/<Company-Slug>/`; `toCompanySlug` handles D-01/D-02 edge cases
+- Global install: `prepack` lifecycle hook, `chmod +x` in build script, `prepare || true` guard; `cvgen` works from any directory after `npm link`
+
+### What Worked
+- Research correctly identified that QUAL-01 and QUAL-02 were already done before Phase 7 started — saved two full plans of unnecessary re-implementation
+- Pattern mapper on Phase 7 surfaced exact line numbers for every edit, making executor tasks precise to the character
+- `writeSync` + `process.exitCode` + `return` pattern correctly handles early exit from async Commander action handlers (avoids exit code 13 and lost stderr)
+- Pre-buffering stdin 'line' events fixed a subtle `readline/promises` race where the second question's promise was abandoned on piped EOF
+
+### What Was Inefficient
+- `npm link` ran inside a worktree that was subsequently removed, leaving a dangling symlink — `cvgen not found` in the new terminal during UAT; required re-linking from main repo
+- readline/promises vs callback readline took 3 iterations to get right (promises silently drops questions on EOF; callback with `ask()` wrapper has the same race; line-buffer approach fixes it)
+- Human UAT files were created with `status: partial` and never updated after user said "approved" — required batch-updating at milestone close
+
+### Patterns Established
+- `ask()` line-buffer pattern for readline with piped stdin: pre-register a 'line' event queue on the interface so buffered lines are never lost when EOF arrives between questions
+- `writeSync(process.stderr.fd, msg)` + `process.exitCode = N` + `process.stdin.destroy()` + `return` for early exit from async Commander action handlers (bypasses exit-code-13 / unsettled-top-level-await issue)
+- `chmod +x` appended to `build` script: tsc outputs non-executable files; npm bin requires executable bit; automate it
+- `prepare: "simple-git-hooks || true"` — guard all `prepare` scripts against devDep-absent installs (global/CI/production)
+
+### Key Lessons
+1. `readline/promises`'s `question()` silently abandons pending promises when the interface closes (stdin EOF in pipe context) — use callback-based readline with a pre-buffered 'line' event queue instead
+2. `process.exit()` from inside a Commander async action handler produces exit code 13 ("Unfinished Top-Level Await") and drops buffered stderr — exit by setting `process.exitCode`, destroying stdin, and returning
+3. `npm link` from inside an isolated worktree points the global symlink to the worktree path, which is removed after merge — always re-link from main checkout after worktree cleanup
+4. Human approval during plan execution should update the corresponding VERIFICATION.md and HUMAN-UAT.md immediately, not deferred to milestone close
+
+### Cost Observations
+- 3 phases, 5 plans in 1 calendar day
+- Phase 5: pure CSS — single fast plan, no code complexity
+- Phase 6: most complex — readline/promises bug took multiple attempts; piped stdin race required a novel pattern
+- Phase 7: research-driven shortcut (QUAL-01/02 pre-done) saved significant execution time
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -50,14 +91,18 @@
 | Milestone | Phases | Plans | Key Pattern |
 |-----------|--------|-------|-------------|
 | v1.0 | 4 | 9 | Fixture-first rendering; source-level tests; Commander CLI pattern |
+| v1.1 | 3 | 5 | Research short-circuits; line-buffer readline; async early-exit pattern |
 
 ### Cumulative Quality
 
-| Milestone | Tests | Suites |
-|-----------|-------|--------|
-| v1.0 | 38 | 6 |
+| Milestone | Tests | Suites | LOC |
+|-----------|-------|--------|-----|
+| v1.0 | 38 | 6 | ~1200 |
+| v1.1 | 44 | 8 | 1791 |
 
 ### Top Lessons (Verified Across Milestones)
 
 1. Test subprocess isolation — always set explicit `cwd` when spawning CLI subprocesses in tests
 2. Close verification artifacts immediately when human testing is done
+3. Pre-buffer stdin 'line' events when using readline with piped input — readline/promises silently drops questions on EOF
+4. Early exit from async Commander handlers: `writeSync` + `exitCode` + `stdin.destroy()` + `return` (not `process.exit()`)

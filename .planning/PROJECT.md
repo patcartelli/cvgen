@@ -22,7 +22,7 @@ Running the CLI against a markdown resume note reliably produces a portfolio-qua
 
 ## Current State
 
-**v1.1 complete (2026-07-30).** All 7 phases shipped. `cvgen <path>` prompts for company routing, writes PDFs to `output/` or `output/<Company-Slug>/`, and is installable as a global command via `npm run build && npm link`. 44 automated tests. rawResponse typed as `ParsedMessage<ResumeData>`. Single test runner (`tsx --test`). `prepack` auto-builds before publish.
+**v1.1 shipped 2026-07-31.** All 7 phases complete. `cvgen <path>` prompts for company routing, writes PDFs to `output/` or `output/<Company-Slug>/`, and is installable globally via `npm run build && npm link`. 44 automated tests. 1,791 LOC TypeScript. Single test runner (`tsx --test`). `prepack` auto-builds before publish. Next: define v1.2 milestone.
 
 Known tech debt being resolved in v1.1:
 - CR-01: `rawResponse` in `ExtractResult` typed as `Message` instead of `ParsedMessage<ResumeData>` — affects `--verbose` completeness
@@ -53,9 +53,15 @@ Known tech debt being resolved in v1.1:
 - [x] Fix `rawResponse` type to `ParsedMessage<ResumeData>` for correct `--verbose` output (CR-01) — Phase 7 (2026-07-28)
 - [x] Remove vitest runner conflict — consolidate on one test runner (WR-04) — Phase 7 (2026-07-28)
 
-### Active (v1.1)
+### Validated (v1.1 — shipped 2026-07-31)
 
-- [ ] `npm publish` / `npm link` so `cvgen` can be run as a global command without `npx tsx` — v1.1
+- [x] `npm link` global install works — `cvgen <path>` runs from any directory without `npx tsx` — Phase 07 (2026-07-31)
+
+### Active (v1.2 — candidates)
+
+- [ ] Non-interactive mode flag (`--company "Acme"`) to skip prompts in CI/scripts
+- [ ] Self-hosted Inter font (remove Google Fonts CDN dependency)
+- [ ] `npm publish` to npm registry so `npx cvgen` works without cloning
 
 ### Out of Scope
 
@@ -96,4 +102,4 @@ Known tech debt being resolved in v1.1:
 4. Audit Out of Scope reasoning
 
 ---
-*Last updated: 2026-07-30 — v1.1 Typography & Workflow Improvements milestone started*
+*Last updated: 2026-07-31 — v1.1 Typography & Workflow Improvements milestone shipped*
