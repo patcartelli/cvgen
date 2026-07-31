@@ -192,7 +192,8 @@ Examples:
       }
 
       // Step H — render both PDFs
-      const paths = resolveOutputPaths(data.contact.name, outputDir, companySlug);
+      const today = new Date().toISOString().split("T")[0];
+      const paths = resolveOutputPaths(data.contact.name, outputDir, companySlug, today);
       console.error("Rendering...");
       const browser = await puppeteer.launch({ headless: true });
       try {

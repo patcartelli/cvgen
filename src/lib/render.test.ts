@@ -84,6 +84,26 @@ describe("resolveOutputPaths", () => {
     );
     assert.equal(paths.ats, "/out/j_smith-jones-resume-ats.pdf", "ats path uses same slug");
   });
+
+  // Test 4: date appended after company slug
+  it("Test 4: appends date after company slug when both provided", () => {
+    const paths = resolveOutputPaths("Pat Cartelli", "/out/EZCater", "EZCater", "2026-07-31");
+    assert.equal(
+      basename(paths.designed),
+      "pat_cartelli-resume-EZCater-2026-07-31.pdf",
+    );
+    assert.equal(
+      basename(paths.ats),
+      "pat_cartelli-resume-EZCater-2026-07-31-ats.pdf",
+    );
+  });
+
+  // Test 5: date only, no company
+  it("Test 5: appends date when no company slug provided", () => {
+    const paths = resolveOutputPaths("Pat Cartelli", "/out", undefined, "2026-07-31");
+    assert.equal(basename(paths.designed), "pat_cartelli-resume-2026-07-31.pdf");
+    assert.equal(basename(paths.ats), "pat_cartelli-resume-2026-07-31-ats.pdf");
+  });
 });
 
 // ---------------------------------------------------------------------------

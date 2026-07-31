@@ -33,18 +33,19 @@ export function toNameSlug(name: string): string {
 
 /**
  * Pure helper: derives the two PDF output paths from candidate name + output directory.
- * Optional companySlug is appended to the filename when provided.
- *   resolveOutputPaths("Pat Cartelli", "/out/Acme-Corp", "Acme-Corp")
- *   → { designed: "/out/Acme-Corp/pat_cartelli-resume-Acme-Corp.pdf",
- *        ats:      "/out/Acme-Corp/pat_cartelli-resume-Acme-Corp-ats.pdf" }
+ * Optional companySlug and date (YYYY-MM-DD) are appended to the filename when provided.
+ *   resolveOutputPaths("Pat Cartelli", "/out/Acme-Corp", "Acme-Corp", "2026-07-31")
+ *   → { designed: "/out/Acme-Corp/pat_cartelli-resume-Acme-Corp-2026-07-31.pdf",
+ *        ats:      "/out/Acme-Corp/pat_cartelli-resume-Acme-Corp-2026-07-31-ats.pdf" }
  */
 export function resolveOutputPaths(
   candidateName: string,
   outputDir: string,
   companySlug?: string,
+  date?: string,
 ): { designed: string; ats: string } {
   const nameSlug = toNameSlug(candidateName);
-  const suffix = companySlug ? `-${companySlug}` : "";
+  const suffix = [companySlug, date].filter(Boolean).map((s) => `-${s}`).join("");
   return {
     designed: join(outputDir, `${nameSlug}-resume${suffix}.pdf`),
     ats: join(outputDir, `${nameSlug}-resume${suffix}-ats.pdf`),
@@ -63,6 +64,12 @@ function escapeHtml(str: string): string {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
+}
+
+/** Wrap a contact field in an anchor tag. Prepends https:// if no scheme present. */
+function contactLink(value: string, type: "email" | "url"): string {
+  const href = type === "email" ? `mailto:${value}` : value.startsWith("http") ? value : `https://${value}`;
+  return `<a href="${escapeHtml(href)}" style="color:inherit;text-decoration:none;">${escapeHtml(value)}</a>`;
 }
 
 // ---------------------------------------------------------------------------
@@ -332,13 +339,18 @@ function designedHtmlTemplate(data: ResumeData): string {
       <div class="candidate-name">${escapeHtml(contact.name)}</div>
       <div class="contact-details">
         ${(() => {
-          const row1 = [contact.email, contact.phone, contact.location]
+          const row1 = [
+            contact.email && contactLink(contact.email, "email"),
+            contact.phone && escapeHtml(contact.phone),
+            contact.location && escapeHtml(contact.location),
+          ]
             .filter(Boolean)
-            .map(escapeHtml)
             .join('<span class="sep">|</span>');
-          const row2 = [contact.linkedin, contact.github]
+          const row2 = [
+            contact.linkedin && contactLink(contact.linkedin, "url"),
+            contact.github && contactLink(contact.github, "url"),
+          ]
             .filter(Boolean)
-            .map(escapeHtml)
             .join('<span class="sep">|</span>');
           return [
             row1 && `<div class="contact-details-row">${row1}</div>`,
