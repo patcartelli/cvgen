@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Typography & Workflow Improvements
-status: milestone_complete
-stopped_at: Milestone complete (Phase 07 was final phase)
-last_updated: 2026-07-30T23:22:03.199Z
-last_activity: 2026-07-30 -- Phase 07 execution started
+status: Awaiting next milestone
+stopped_at: Phase 6 context gathered
+last_updated: "2026-07-31T09:38:36.249Z"
+last_activity: 2026-07-31 — Milestone v1.1 completed and archived
 progress:
   total_phases: 3
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 5
-  completed_plans: 14
-  percent: 67
+  completed_plans: 5
+  percent: 100
 ---
 
 # Project State
@@ -25,15 +25,10 @@ See: .planning/PROJECT.md (updated 2026-07-30)
 
 ## Current Position
 
-Phase: 07
-Plan: Not started
-Status: Milestone complete
-Last activity: 2026-07-30
-
-```
-v1.1 Progress  [███████░░░░░░░░░░░░░]  33%
-Phase 5 ✓  Phase 6 ░  Phase 7 ░
-```
+Phase: Milestone v1.1 complete
+Plan: —
+Status: Awaiting next milestone
+Last activity: 2026-07-31 — Milestone v1.1 completed and archived
 
 ## Performance Metrics
 
@@ -101,6 +96,7 @@ Items acknowledged and deferred at milestone close on 2026-07-28:
 | Category | Item | Status |
 |----------|------|--------|
 | verification_gap | Phase 02: 02-VERIFICATION.md human_needed — extraction pipeline validated end-to-end in Phase 04 UAT instead | acknowledged |
+| quick_task | 260729-ez3-three-portfolio-polish-tasks-readme-md-r — audit false positive; task is complete with SUMMARY.md (status: complete) and 3 commits | acknowledged at v1.1 close |
 | Rendering | Config file for render preferences (margins, page size, ATS-safe font choice) | v2 |
 | Trust | Section-level parse-confidence/provenance flags | v2 |
 | Product Direction | Web UI | v2 |
@@ -111,3 +107,7 @@ Items acknowledged and deferred at milestone close on 2026-07-28:
 Last session: 2026-07-30T18:29:49.135Z
 Stopped at: Phase 6 context gathered
 Resume file: .planning/phases/06-output-directory-routing/06-CONTEXT.md
+
+## Operator Next Steps
+
+- Start the next milestone with /gsd-new-milestone

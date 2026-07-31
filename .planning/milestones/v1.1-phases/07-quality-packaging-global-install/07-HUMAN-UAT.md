@@ -1,5 +1,5 @@
 ---
-status: partial
+status: complete
 phase: 07-quality-packaging-global-install
 source: [07-VERIFICATION.md]
 started: 2026-07-30T00:00:00Z
@@ -26,7 +26,7 @@ Human gate: open a NEW terminal session and confirm:
 6. `rm /tmp/cvgen-verify-*.md`
 
 expected: All 6 steps succeed in a fresh terminal outside the repo
-result: [pending]
+result: approved
 
 ## Summary
 
