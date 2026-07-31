@@ -1,48 +1,49 @@
 {
   "version": "1.0",
-  "timestamp": "2026-07-31T10:06:44.863Z",
+  "timestamp": "2026-07-31T19:56:36.741Z",
   "phase": null,
   "phase_name": null,
   "phase_dir": null,
   "plan": null,
   "task": null,
   "total_tasks": null,
-  "status": "milestone_complete",
-  "completed_tasks": [],
+  "status": "paused",
+  "completed_tasks": [
+    {"id": 1, "name": "260731-gby: 2-line contact header — email/phone/location on row 1, linkedin/github on row 2", "status": "done", "commit": "92e1414"},
+    {"id": 2, "name": "260731-gui: candidate name in PDF filename (pat_cartelli-resume-Company-Date.pdf)", "status": "done", "commit": "6971669"},
+    {"id": 3, "name": "260731-h3z: date in filename + clickable email/linkedin/github links in designed PDF", "status": "done", "commit": "66fcadd"},
+    {"id": 4, "name": "260731-hck: optional website field in contact schema + render", "status": "done", "commit": "8d42e68"},
+    {"id": 5, "name": "fix: reorder contact row 2 to website · linkedin · github", "status": "done", "commit": "0cff081"},
+    {"id": 6, "name": "260731-j41: additionalExperience field for ### Additional Experience section", "status": "done", "commit": "663018d"}
+  ],
   "remaining_tasks": [],
   "blockers": [],
   "human_actions_pending": [
     {
-      "action": "Stage and commit unstaged deletions for v1.0 phase files (phases/01-04 dirs have empty/deleted contents in git)",
-      "context": "git status shows D entries for v1.0 phase files — these were deleted before this session but never committed. Either archive them to milestones/v1.0-phases/ or git rm them.",
+      "action": "Fix Captivate_IQ.md in Obsidian — delete stray '---' on line 10 and the heading on line 12 that repeats all frontmatter as text",
+      "context": "These structural issues will confuse the extractor. File: Resume & CV/2026-07/Captivate_IQ.md in Obsidian vault.",
+      "blocking": false
+    },
+    {
+      "action": "Run npm run build to rebuild dist/ with all today's source changes",
+      "context": "6 quick tasks changed render.ts, schema/resume.ts, cli/index.ts. dist/ is stale until rebuilt.",
+      "blocking": false
+    },
+    {
+      "action": "Commit or clean up stale v1.0 phase file deletions (D entries in git status for phases/01-07)",
+      "context": "These predate this session and were never committed. git rm them or archive to milestones/.",
       "blocking": false
     }
   ],
   "decisions": [
-    {
-      "decision": "readline/promises replaced with callback-based readline + line-buffer pattern",
-      "rationale": "readline/promises silently drops question() promises when stdin closes (piped EOF). Line-buffer pattern pre-captures all 'line' events so piped input is never lost.",
-      "phase": "06"
-    },
-    {
-      "decision": "process.exit() replaced with writeSync + exitCode + stdin.destroy() + return for async Commander early exit",
-      "rationale": "process.exit() from inside async action handler produces exit code 13 (Unfinished Top-Level Await) and drops buffered stderr.",
-      "phase": "06"
-    },
-    {
-      "decision": "chmod +x appended to build script (tsc && chmod +x dist/cli/index.js)",
-      "rationale": "tsc outputs non-executable files; npm bin requires executable bit for global install to work.",
-      "phase": "07"
-    },
-    {
-      "decision": "prepare: 'simple-git-hooks || true'",
-      "rationale": "Guard all prepare scripts against devDep-absent installs (npm install -g, --omit=dev, CI production builds).",
-      "phase": "07"
-    }
+    {"decision": "website field is optional — not added to REQUIRED_FRONTMATTER_FIELDS in preflight.ts", "rationale": "Existing resumes must not break", "phase": "quick"},
+    {"decision": "additionalExperience renders as compact italic-labeled list in designed PDF; plain h3+bullets in ATS", "rationale": "Visually distinct from main experience entries; ATS needs machine-parseable text", "phase": "quick"},
+    {"decision": "Contact row 2 order: website · linkedin · github", "rationale": "User requested this specific order", "phase": "quick"},
+    {"decision": "PDF filename format: {name_slug}-resume[-{Company-Slug}][-{YYYY-MM-DD}].pdf", "rationale": "Name from contact.name, company from prompt, date from new Date() at render time", "phase": "quick"},
+    {"decision": "readline/promises replaced with callback-based line-buffer pattern (phase 06 decision)", "rationale": "readline/promises silently drops question() promises when stdin closes (piped EOF)", "phase": "06"},
+    {"decision": "process.exit() replaced with writeSync + exitCode + stdin.destroy() + return", "rationale": "process.exit() from async Commander action produces exit code 13", "phase": "06"}
   ],
-  "uncommitted_files": [
-    ".planning/phases/01-04 file deletions (unstaged from before this session)"
-  ],
-  "next_action": "Run /gsd-new-milestone to define v1.2 — candidates: non-interactive flag (--company), npm publish to registry, self-hosted Inter font.",
-  "context_notes": "v1.1 milestone fully shipped and archived. All 7 phases complete. git tag v1.1 pushed to github.com/patcartelli/cvgen. REQUIREMENTS.md archived and removed. Ready for clean v1.2 start."
+  "uncommitted_files": ["stale D entries for phases 01-07 (pre-existing, not from this session)"],
+  "next_action": "npm run build, test against fixed Captivate_IQ.md. Then /gsd-new-milestone to define v1.2.",
+  "context_notes": "v1.1 fully shipped. Session was all quick tasks polishing PDF output — contact layout split into 2 rows, filename now includes name+company+date, links are clickable, website field added, additionalExperience section supported. No phase work. Ready for v1.2 milestone planning."
 }
