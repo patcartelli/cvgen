@@ -92,6 +92,7 @@ None.
 | 260731-gui | Add candidate name to PDF filename: {name_slug}-resume[-{company}].pdf | 2026-07-31 | 6971669 | [260731-gui-add-candidate-name-to-pdf-filename-name-](./quick/260731-gui-add-candidate-name-to-pdf-filename-name-/) |
 | 260731-h3z | Add date to PDF filename and make email/linkedin/github clickable links in designed PDF | 2026-07-31 | 66fcadd | [260731-h3z-add-date-to-pdf-filename-and-make-email-](./quick/260731-h3z-add-date-to-pdf-filename-and-make-email-/) |
 | 260731-hck | Add optional website field to contact schema | 2026-07-31 | 8d42e68 | [260731-hck-add-website-field-to-schema](./quick/260731-hck-add-website-field-to-schema/) |
+| 260731-j41 | Add additionalExperience field for Additional Experience section | 2026-07-31 | 663018d | [260731-j41-add-additionalexperience-field-to-schema](./quick/260731-j41-add-additionalexperience-field-to-schema/) |
 
 ## Deferred Items
 
