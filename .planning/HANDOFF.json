@@ -1,0 +1,48 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-07-31T10:06:44.863Z",
+  "phase": null,
+  "phase_name": null,
+  "phase_dir": null,
+  "plan": null,
+  "task": null,
+  "total_tasks": null,
+  "status": "milestone_complete",
+  "completed_tasks": [],
+  "remaining_tasks": [],
+  "blockers": [],
+  "human_actions_pending": [
+    {
+      "action": "Stage and commit unstaged deletions for v1.0 phase files (phases/01-04 dirs have empty/deleted contents in git)",
+      "context": "git status shows D entries for v1.0 phase files — these were deleted before this session but never committed. Either archive them to milestones/v1.0-phases/ or git rm them.",
+      "blocking": false
+    }
+  ],
+  "decisions": [
+    {
+      "decision": "readline/promises replaced with callback-based readline + line-buffer pattern",
+      "rationale": "readline/promises silently drops question() promises when stdin closes (piped EOF). Line-buffer pattern pre-captures all 'line' events so piped input is never lost.",
+      "phase": "06"
+    },
+    {
+      "decision": "process.exit() replaced with writeSync + exitCode + stdin.destroy() + return for async Commander early exit",
+      "rationale": "process.exit() from inside async action handler produces exit code 13 (Unfinished Top-Level Await) and drops buffered stderr.",
+      "phase": "06"
+    },
+    {
+      "decision": "chmod +x appended to build script (tsc && chmod +x dist/cli/index.js)",
+      "rationale": "tsc outputs non-executable files; npm bin requires executable bit for global install to work.",
+      "phase": "07"
+    },
+    {
+      "decision": "prepare: 'simple-git-hooks || true'",
+      "rationale": "Guard all prepare scripts against devDep-absent installs (npm install -g, --omit=dev, CI production builds).",
+      "phase": "07"
+    }
+  ],
+  "uncommitted_files": [
+    ".planning/phases/01-04 file deletions (unstaged from before this session)"
+  ],
+  "next_action": "Run /gsd-new-milestone to define v1.2 — candidates: non-interactive flag (--company), npm publish to registry, self-hosted Inter font.",
+  "context_notes": "v1.1 milestone fully shipped and archived. All 7 phases complete. git tag v1.1 pushed to github.com/patcartelli/cvgen. REQUIREMENTS.md archived and removed. Ready for clean v1.2 start."
+}
