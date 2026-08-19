@@ -1,13 +1,18 @@
 import { z } from "zod";
 
+// IMPORTANT: always write `.describe(...).optional()`, never
+// `.optional().describe(...)`. The SDK's zodOutputFormat hoists the latter into
+// a `$defs` entry AND silently drops the description, so the extraction model
+// never sees the guidance — and enough of them together trip the API's
+// "Schema is too complex" limit. Descriptions are the only prompt signal
+// extract.ts sends, so losing them silently breaks extraction quality.
+
 const ContactSchema = z.object({
   name: z.string(),
   headline: z
     .string()
-    .optional()
-    .describe(
-      "Short professional headline shown directly under the name (e.g. 'Senior Product Designer'). This is the candidate's current title or positioning line, not a job entry.",
-    ),
+    .describe("Headline line under the name, e.g. 'Senior Product Designer'. Not a job entry.")
+    .optional(),
   email: z.string(),
   phone: z.string(),
   location: z.string(),
@@ -26,58 +31,56 @@ const CaseStudySchema = z.object({
 // optional `engagements` array. Nesting is one level deep only — an engagement
 // can never itself contain engagements.
 const experienceBase = {
-  role: z
-    .string()
-    .optional()
-    .describe(
-      "Job title. Omit entirely for non-role entries such as Parental Leave or an unnamed advisory engagement.",
-    ),
+  role: z.string().describe("Job title. Omit for non-role entries like Parental Leave.").optional(),
   company: z.string(),
   industry: z
     .string()
-    .optional()
-    .describe(
-      "Short industry or sector label for this employer, rendered beside the company name (e.g. 'AI infrastructure', 'CPG trade promotion'). A few words at most, never a sentence. Omit if the source does not say.",
-    ),
+    .describe("Value after the 'Industry:' prefix in the meta line. Omit if absent.")
+    .optional(),
   via: z
     .string()
-    .optional()
     .describe(
-      "How this work was held, when the source says so (e.g. 'Client engagement', 'Advisory engagements', 'Concurrent contracts'). Use the source's own wording per entry; do not force consistent phrasing across entries. Omit if the source does not say.",
-    ),
-  location: z
-    .string()
-    .optional()
-    .describe(
-      "Where this role was performed (e.g. 'Remote', 'New York, NY'). Omit if the source does not say.",
-    ),
+      "Relationship words from a parenthetical, e.g. 'client engagement', 'advisory engagements', 'Concurrent Contracts'. Source wording, no dates.",
+    )
+    .optional(),
+  location: z.string().describe("Where performed, e.g. 'Remote'. Omit if absent.").optional(),
   startDate: z.string(),
   endDate: z.string().optional(),
   type: z.enum(["full-time", "contract"]).optional(),
   bullets: z
     .array(z.string())
-    .describe(
-      "Only accomplishment bullets present in the source for this employer itself, not nested client work. Empty array if the source has none. Never invent bullets.",
-    ),
-  caseStudy: CaseStudySchema.optional().describe(
-    "A case-study URL attached to this specific role. Do not put a header-level selected-work link here.",
-  ),
+    .describe("Only this employer's own bullets, not a nested client's. Never invent."),
+  caseStudy: CaseStudySchema.describe("Case-study URL for this role only.").optional(),
 };
 
+// Deliberately a SUBSET of experienceBase, not all of it. Duplicating every
+// field into the nested object pushes the generated JSON schema past the
+// structured-output API's complexity limit ("Schema is too complex", a 400 that
+// arrives ~30s into the request). location/type/caseStudy are dropped because no
+// engagement has ever carried them; industry and via are kept because the
+// acceptance fixture needs both on Bluefish AI.
 const EngagementSchema = z
-  .object(experienceBase)
+  .object({
+    role: experienceBase.role,
+    company: experienceBase.company,
+    industry: experienceBase.industry,
+    via: experienceBase.via,
+    startDate: experienceBase.startDate,
+    endDate: experienceBase.endDate,
+    bullets: experienceBase.bullets,
+  })
   .describe(
-    "A client engagement nested inside a consultancy or studio. Bold or indented blocks under an employer belong here, not as sibling experience entries. `company` is the client's name (e.g. 'Bluefish AI'). This is not a separate job and must not also appear as a top-level experience entry.",
+    "Client engagement nested in a consultancy. `company` is the client. Never also a top-level experience entry.",
   );
 
 const ExperienceSchema = z.object({
   ...experienceBase,
   engagements: z
     .array(EngagementSchema)
-    .optional()
     .describe(
-      "Client engagements nested under this employer. If the markdown shows clients such as Bluefish AI under a studio or consultancy, put them here and omit them from the top-level experience array.",
-    ),
+      "Nested client engagements from bold sub-blocks. Omit them from the top-level experience array.",
+    )
+    .optional(),
 });
 
 const EducationSchema = z.object({
@@ -94,17 +97,97 @@ const SkillGroupSchema = z.object({
 export const ResumeSchema = z.object({
   contact: ContactSchema,
   summary: z.string().optional(),
-  summaryHeading: z
-    .string()
-    .optional()
-    .describe(
-      "Heading shown above the summary. Defaults to 'Professional Summary' when the source does not name one.",
-    ),
   coreCompetencies: z.array(z.string()).optional(),
-  selectedWork: CaseStudySchema.optional().describe(
-    "Header-level selected work or portfolio URL and optional password (e.g. 'Selected work: studiocartelli.com/work (password: ...)'). Not tied to a single job.",
-  ),
+  selectedWork: CaseStudySchema.describe(
+    "Header-level portfolio link with optional password.",
+  ).optional(),
   experience: z.array(ExperienceSchema),
+  additionalExperience: z.array(z.string()).optional(),
+  education: z.array(EducationSchema),
+  skills: z.array(SkillGroupSchema),
+});
+
+// ---------------------------------------------------------------------------
+// Extraction schema
+// ---------------------------------------------------------------------------
+// The structured-output API rejects ResumeSchema with "Schema is too complex"
+// (a 400 that can take ~30s to come back). ResumeSchema stays the full contract
+// for validation, typing, and rendering; extraction sends this leaner twin.
+//
+// Dropped here: `type` and `caseStudy`, which no resume in this project has ever
+// populated, and which the markdown master expresses in prose anyway ("Concurrent
+// Contracts" arrives via `via`). Both remain in ResumeSchema, so hand-authored
+// JSON can still use them. Every dropped field is optional, so anything this
+// schema produces still satisfies ResumeSchema.
+//
+// If you add a field here, re-check the complexity limit — it is close.
+
+const extractionBase = {
+  // Required here, unlike ResumeSchema. Every optional property multiplies the
+  // constrained-decoding grammar the API compiles, and too many of them fail the
+  // request with "Grammar compilation timed out". The empty-string convention
+  // keeps the grammar small; ResumeSchema still accepts an absent role.
+  role: z.string().describe("Job title. Empty string for non-role entries like Parental Leave."),
+  company: experienceBase.company,
+  // industry/via/location are REQUIRED here with an empty-string convention,
+  // unlike ResumeSchema where they are optional. Two reasons, both learned the
+  // hard way: the model silently skips optional fields (two full runs returned
+  // none of these), and every optional property enlarges the constrained-decoding
+  // grammar until the request fails with "Grammar compilation timed out".
+  // Empty string means "not in the source" and is falsy, so the templates that
+  // test `exp.industry ? ... : ""` treat it exactly like an absent value.
+  industry: z
+    .string()
+    .describe(
+      "Text after the 'Industry:' prefix in the entry's meta line. Always fill this when that prefix is present. Empty string only if it is absent.",
+    ),
+  via: z
+    .string()
+    .describe(
+      "Relationship words from a parenthetical on the heading, copied verbatim with the source's own capitalization (e.g. 'Client engagement', 'Advisory engagements'). Words only, never the dates beside them. Empty string if there is no such note.",
+    ),
+  location: z
+    .string()
+    .describe(
+      "Work location from the meta line, e.g. 'Remote'. Empty string if the meta line has none.",
+    ),
+  startDate: experienceBase.startDate,
+  endDate: experienceBase.endDate,
+  bullets: experienceBase.bullets,
+};
+
+const ExtractionEngagementSchema = z
+  .object({
+    role: extractionBase.role,
+    company: extractionBase.company,
+    industry: extractionBase.industry,
+    via: extractionBase.via,
+    startDate: extractionBase.startDate,
+    endDate: extractionBase.endDate,
+    bullets: extractionBase.bullets,
+  })
+  .describe(
+    "Client engagement nested in a consultancy. `company` is the client. Never also a top-level experience entry.",
+  );
+
+export const ExtractionResumeSchema = z.object({
+  contact: ContactSchema,
+  summary: z.string().optional(),
+  coreCompetencies: z.array(z.string()).optional(),
+  selectedWork: CaseStudySchema.describe(
+    "Header-level portfolio link with optional password.",
+  ).optional(),
+  experience: z.array(
+    z.object({
+      ...extractionBase,
+      engagements: z
+        .array(ExtractionEngagementSchema)
+        .describe(
+          "Nested client engagements from bold sub-blocks. Omit them from the top-level experience array.",
+        )
+        .optional(),
+    }),
+  ),
   additionalExperience: z.array(z.string()).optional(),
   education: z.array(EducationSchema),
   skills: z.array(SkillGroupSchema),

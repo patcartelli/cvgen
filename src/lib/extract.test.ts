@@ -18,15 +18,21 @@ const extractSrcPath = resolve(root, "src/lib/extract.ts");
 
 describe("extract.ts structural assertions (no live API call)", () => {
   // Test 2: extract.ts uses messages.parse, passes zodOutputFormat, uses correct model/max_tokens
-  it("Test 2: extract.ts uses messages.parse with zodOutputFormat(ResumeSchema), haiku model, max_tokens 4096", async () => {
+  it("Test 2: extract.ts uses messages.parse with zodOutputFormat(ExtractionResumeSchema), haiku model, max_tokens 4096", async () => {
     const src = await readFile(extractSrcPath, "utf8");
     assert.ok(
       src.includes("messages.parse"),
       "extract.ts must use messages.parse (not messages.create)",
     );
+    // Extraction sends the lean twin, not the full ResumeSchema: the structured-
+    // output API rejects the full schema outright ("Schema is too complex").
     assert.ok(
-      src.includes("zodOutputFormat(ResumeSchema)"),
-      "extract.ts must pass zodOutputFormat(ResumeSchema) to output_config.format",
+      src.includes("zodOutputFormat(ExtractionResumeSchema)"),
+      "extract.ts must pass zodOutputFormat(ExtractionResumeSchema) to output_config.format",
+    );
+    assert.ok(
+      !src.includes("zodOutputFormat(ResumeSchema)"),
+      "extract.ts must NOT send the full ResumeSchema — the API rejects it as too complex",
     );
     assert.ok(src.includes("claude-haiku-4-5"), "extract.ts must use model claude-haiku-4-5");
     assert.ok(src.includes("max_tokens: 4096"), "extract.ts must set max_tokens: 4096");
@@ -106,5 +112,50 @@ describe("extract.ts structural assertions (no live API call)", () => {
       src.includes("data: response.parsed_output"),
       "return statement must set data from response.parsed_output",
     );
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Extraction-schema complexity guard
+// ---------------------------------------------------------------------------
+// The structured-output API rejects schemas two different ways, and both cost a
+// live 400 to discover (each arriving up to ~30s into the request):
+//   "Schema is too complex."        — too much schema overall
+//   "Grammar compilation timed out." — too many OPTIONAL properties, which
+//                                      multiply the constrained-decoding grammar
+// These bounds are where extraction was verified working on 2026-08-19. They are
+// deliberately tight. If you add a field to ExtractionResumeSchema and this fails,
+// that is the point: prefer a required field with an empty-string convention over
+// a new optional one, and re-verify against the live API before loosening these.
+
+describe("ExtractionResumeSchema complexity budget", () => {
+  it("stays within the limits the live API was verified against", async () => {
+    const { zodOutputFormat } = await import("@anthropic-ai/sdk/helpers/zod.js");
+    const { ExtractionResumeSchema } = await import("../schema/resume.js");
+    const format = zodOutputFormat(ExtractionResumeSchema) as unknown as {
+      schema: { $defs?: Record<string, unknown>; properties: Record<string, unknown> };
+    };
+    const defs = Object.keys(format.schema.$defs ?? {}).length;
+    const bytes = JSON.stringify(format).length;
+    assert.ok(defs <= 12, `extraction schema $defs grew to ${defs} (verified working at <= 12)`);
+    assert.ok(
+      bytes <= 4000,
+      `extraction schema grew to ${bytes} bytes (verified working at <= 4000)`,
+    );
+
+    const exp = (
+      format.schema.properties.experience as {
+        items: { properties: Record<string, unknown>; required: string[] };
+      }
+    ).items;
+    // Every one of these is required-with-empty-string on purpose. Making any of
+    // them optional both shrinks recall (the model skips optionals — two full runs
+    // returned none of them) and enlarges the grammar.
+    for (const field of ["role", "industry", "via", "location"]) {
+      assert.ok(
+        exp.required.includes(field),
+        `${field} must stay REQUIRED in the extraction schema (empty-string convention)`,
+      );
+    }
   });
 });

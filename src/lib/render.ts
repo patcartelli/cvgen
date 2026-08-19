@@ -216,10 +216,10 @@ function designedHtmlTemplate(data: ResumeData, opts: DesignedOpts = {}): string
   // The summary is headed like every other section. Its header shares a
   // baseline with the rail's first header, which is what makes the two
   // columns read as a deliberate grid. Wording follows the master's own
-  // "## Professional Summary" heading (override via data.summaryHeading).
+  // "## Professional Summary" heading.
   const summaryHtml = summary
     ? `<section class="summary">
-      <h2 class="section-header summary-header">${escapeHtml(data.summaryHeading || "Professional Summary")}</h2>
+      <h2 class="section-header summary-header">Professional Summary</h2>
       <p>${escapeHtml(summary)}</p>
     </section>`
     : "";
