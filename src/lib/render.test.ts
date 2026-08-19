@@ -14,6 +14,7 @@ import type { Browser } from "puppeteer";
 import puppeteer from "puppeteer";
 
 import type { ResumeData } from "../schema/resume.js";
+import { ResumeSchema } from "../schema/resume.js";
 import {
   renderAts,
   renderDesigned,
@@ -319,7 +320,7 @@ const nestedResume: ResumeData = {
       bullets: ["Built studiocartelli.com in production Astro."],
       engagements: [
         {
-          client: "Bluefish AI",
+          company: "Bluefish AI",
           role: "Senior Product Designer",
           startDate: "April 2026",
           endDate: "June 2026",
@@ -364,11 +365,15 @@ describe("designed PDF nested engagements and selected work", () => {
     assert.ok(extractedText.includes("fixture-password"), "must include selected-work password");
   });
 
+  // The two-column template puts the company on its own line and the role in the
+  // meta line beneath it, so there is no comma-joined "Company, Role" string to
+  // assert on. The ATS template still comma-joins; see the ATS describe block.
   it("nests the client under the parent company instead of listing it as a sibling job", () => {
-    assert.ok(extractedText.includes("Studio Cartelli, Product Design Consultant"));
-    assert.ok(extractedText.includes("Bluefish AI, Senior Product Designer"));
-    const studioIdx = extractedText.indexOf("Studio Cartelli, Product Design Consultant");
-    const bluefishIdx = extractedText.indexOf("Bluefish AI, Senior Product Designer");
+    assert.ok(extractedText.includes("Studio Cartelli"), "parent company must appear");
+    assert.ok(extractedText.includes("Product Design Consultant"), "parent role must appear");
+    assert.ok(extractedText.includes("Bluefish AI"), "nested client must appear");
+    const studioIdx = extractedText.indexOf("Studio Cartelli");
+    const bluefishIdx = extractedText.indexOf("Bluefish AI");
     assert.ok(studioIdx < bluefishIdx, "parent must appear before nested engagement");
   });
 
@@ -403,5 +408,95 @@ describe("ATS PDF nested engagements use en dashes and selected work", () => {
     assert.ok(extractedText.includes("Client engagement"));
     assert.ok(extractedText.includes("Bluefish AI"));
     assert.ok(!extractedText.includes("\u2014"), `em dash found in: ${extractedText}`);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Acceptance fixture — the approved two-column design (handoff 2026-08-19).
+// The fixture is the contract: it must validate against ResumeSchema unmodified
+// and render to EXACTLY two pages. Page count is a hard rule from the handoff.
+// ---------------------------------------------------------------------------
+
+describe("designed PDF acceptance fixture (two-column, 2026-08-19)", () => {
+  let browser: Browser;
+  let pageCount: number;
+  let extractedText: string;
+
+  before(async () => {
+    const raw = JSON.parse(
+      await readFile(join(root, "handoff/2026-08-19-two-column/master-clean-fixture.json"), "utf8"),
+    );
+    // Validates as-is — no fixture edits allowed to make this pass.
+    const data = ResumeSchema.parse(raw);
+    browser = await puppeteer.launch({ headless: true });
+    const tmpDir = await mkdtemp(join(tmpdir(), "cvgen-fixture-"));
+    const outputPath = join(tmpDir, "fixture-designed.pdf");
+    await renderDesigned(data, outputPath, browser);
+    const parser = new PDFParse({ data: await readFile(outputPath) });
+    const result = await parser.getText();
+    await parser.destroy();
+    pageCount = result.pages.length;
+    extractedText = result.text;
+  });
+
+  after(async () => {
+    await browser.close();
+  });
+
+  it("renders to exactly two pages", () => {
+    assert.equal(pageCount, 2, `fixture must render to exactly 2 pages, got ${pageCount}`);
+  });
+
+  it("contains no em dashes anywhere", () => {
+    const emDashes = (extractedText.match(/\u2014/g) || []).length;
+    assert.equal(emDashes, 0, `em dash found in fixture render (${emDashes} occurrences)`);
+  });
+
+  it("preserves en dashes in date ranges", () => {
+    assert.ok(extractedText.includes("Jan 2026 \u2013 Present"), "en-dash date range must survive");
+  });
+
+  it("renders the contact headline under the name", () => {
+    assert.ok(extractedText.includes("Senior Product Designer"), "headline must appear");
+  });
+
+  it("renders the header selected-work line", () => {
+    assert.ok(extractedText.includes("Selected work:"), "selected-work label must appear");
+    assert.ok(extractedText.includes("studiocartelli.com/work"), "selected-work URL must appear");
+  });
+
+  it("renders industry beside the company name", () => {
+    assert.ok(
+      extractedText.includes("Product and design consultancy"),
+      "parent industry label must appear",
+    );
+    assert.ok(extractedText.includes("AI infrastructure"), "engagement industry must appear");
+  });
+
+  it("renders via labels in the meta line", () => {
+    assert.ok(extractedText.includes("Client engagement"), "via label must appear");
+    assert.ok(extractedText.includes("Concurrent contracts"), "second via label must appear");
+  });
+
+  it("nests both Studio Cartelli engagements under the parent, not as sibling jobs", () => {
+    const studioIdx = extractedText.indexOf("Studio Cartelli");
+    const bluefishIdx = extractedText.indexOf("Bluefish AI");
+    const stealthIdx = extractedText.indexOf("Stealth startup");
+    const leaveIdx = extractedText.indexOf("Parental Leave");
+    assert.ok(studioIdx >= 0 && bluefishIdx > studioIdx, "Bluefish nests under Studio Cartelli");
+    assert.ok(stealthIdx > studioIdx, "stealth engagement nests under Studio Cartelli");
+    assert.ok(leaveIdx > stealthIdx, "next top-level entry follows both engagements");
+  });
+
+  it("renders the rail sections in order: competencies, skills, education", () => {
+    const comp = extractedText.indexOf("Core Competencies");
+    const skills = extractedText.indexOf("Skills");
+    const edu = extractedText.indexOf("Education");
+    assert.ok(comp >= 0 && skills > comp, "Skills must follow Core Competencies in the rail");
+    assert.ok(edu > skills, "Education must follow Skills in the rail");
+  });
+
+  it("heads the summary 'Professional Summary'", () => {
+    assert.ok(extractedText.includes("Professional Summary"), "summary heading must appear");
   });
 });

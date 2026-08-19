@@ -152,7 +152,7 @@ describe("validateResume", () => {
           bullets: ["Built the studio site."],
           engagements: [
             {
-              client: "Bluefish AI",
+              company: "Bluefish AI",
               role: "Senior Product Designer",
               startDate: "April 2026",
               endDate: "June 2026",
@@ -166,6 +166,6 @@ describe("validateResume", () => {
     };
     const result = validateResume(data);
     assert.equal(result.selectedWork?.url, "studiocartelli.com/work");
-    assert.equal(result.experience[0]?.engagements?.[0]?.client, "Bluefish AI");
+    assert.equal(result.experience[0]?.engagements?.[0]?.company, "Bluefish AI");
   });
 });

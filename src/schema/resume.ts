@@ -2,6 +2,12 @@ import { z } from "zod";
 
 const ContactSchema = z.object({
   name: z.string(),
+  headline: z
+    .string()
+    .optional()
+    .describe(
+      "Short professional headline shown directly under the name (e.g. 'Senior Product Designer'). This is the candidate's current title or positioning line, not a job entry.",
+    ),
   email: z.string(),
   phone: z.string(),
   location: z.string(),
@@ -15,31 +21,36 @@ const CaseStudySchema = z.object({
   password: z.string().optional(),
 });
 
-const EngagementSchema = z
-  .object({
-    client: z
-      .string()
-      .describe(
-        "Name of a nested client engagement under this employer (e.g. 'Bluefish AI'). This is not a separate job and must not also appear as a top-level experience entry.",
-      ),
-    role: z
-      .string()
-      .describe("Role at the client. Empty string if the source has no role on this engagement."),
-    startDate: z.string(),
-    endDate: z.string().optional(),
-    bullets: z
-      .array(z.string())
-      .describe(
-        "Only bullets written under this engagement in the source. Empty array if none. Never invent bullets.",
-      ),
-  })
-  .describe(
-    "A client engagement nested inside a consultancy or studio. Bold or indented blocks under an employer belong here, not as sibling experience entries.",
-  );
-
-const ExperienceSchema = z.object({
-  role: z.string().describe("Job title. Empty string for non-role entries such as Parental Leave."),
+// Fields shared by a top-level job and a nested client engagement. An engagement
+// is exactly this shape; a top-level experience entry is this shape plus an
+// optional `engagements` array. Nesting is one level deep only — an engagement
+// can never itself contain engagements.
+const experienceBase = {
+  role: z
+    .string()
+    .optional()
+    .describe(
+      "Job title. Omit entirely for non-role entries such as Parental Leave or an unnamed advisory engagement.",
+    ),
   company: z.string(),
+  industry: z
+    .string()
+    .optional()
+    .describe(
+      "Short industry or sector label for this employer, rendered beside the company name (e.g. 'AI infrastructure', 'CPG trade promotion'). A few words at most, never a sentence. Omit if the source does not say.",
+    ),
+  via: z
+    .string()
+    .optional()
+    .describe(
+      "How this work was held, when the source says so (e.g. 'Client engagement', 'Advisory engagements', 'Concurrent contracts'). Use the source's own wording per entry; do not force consistent phrasing across entries. Omit if the source does not say.",
+    ),
+  location: z
+    .string()
+    .optional()
+    .describe(
+      "Where this role was performed (e.g. 'Remote', 'New York, NY'). Omit if the source does not say.",
+    ),
   startDate: z.string(),
   endDate: z.string().optional(),
   type: z.enum(["full-time", "contract"]).optional(),
@@ -51,6 +62,16 @@ const ExperienceSchema = z.object({
   caseStudy: CaseStudySchema.optional().describe(
     "A case-study URL attached to this specific role. Do not put a header-level selected-work link here.",
   ),
+};
+
+const EngagementSchema = z
+  .object(experienceBase)
+  .describe(
+    "A client engagement nested inside a consultancy or studio. Bold or indented blocks under an employer belong here, not as sibling experience entries. `company` is the client's name (e.g. 'Bluefish AI'). This is not a separate job and must not also appear as a top-level experience entry.",
+  );
+
+const ExperienceSchema = z.object({
+  ...experienceBase,
   engagements: z
     .array(EngagementSchema)
     .optional()
@@ -73,6 +94,12 @@ const SkillGroupSchema = z.object({
 export const ResumeSchema = z.object({
   contact: ContactSchema,
   summary: z.string().optional(),
+  summaryHeading: z
+    .string()
+    .optional()
+    .describe(
+      "Heading shown above the summary. Defaults to 'Professional Summary' when the source does not name one.",
+    ),
   coreCompetencies: z.array(z.string()).optional(),
   selectedWork: CaseStudySchema.optional().describe(
     "Header-level selected work or portfolio URL and optional password (e.g. 'Selected work: studiocartelli.com/work (password: ...)'). Not tied to a single job.",

@@ -82,12 +82,6 @@ function dateRange(startDate: string, endDate?: string): string {
   return `${escapeHtml(startDate)} ${EN_DASH} ${endDate ? escapeHtml(endDate) : "Present"}`;
 }
 
-/** Company and role joined with a comma. Matches the markdown master; never an em dash. */
-function companyRoleHeading(company: string, role?: string): string {
-  const name = escapeHtml(company);
-  return role ? `${name}, ${escapeHtml(role)}` : name;
-}
-
 function urlWithPassword(work: { url: string; password?: string }, asLink: boolean): string {
   const urlHtml = asLink ? contactLink(work.url, "url") : escapeHtml(work.url);
   const password = work.password ? ` (password: ${escapeHtml(work.password)})` : "";
@@ -95,11 +89,28 @@ function urlWithPassword(work: { url: string; password?: string }, asLink: boole
 }
 
 // ---------------------------------------------------------------------------
-// Designed PDF template (D-D01: minimal/modern, D-D02: Inter via Google Fonts,
-// D-D03: muted accent color #2d4a6b on name and section headers)
+// Designed PDF template — two-column layout approved 2026-08-19.
+// Main column = experience. Right rail (232px) = core competencies, skills,
+// education. Ported from handoff/2026-08-19-two-column/template-two-col.js;
+// that file's CSS is the spec.
+//
+// Type system: one font (Inter), three sizes (20px name / 14px section headers
+// and company names / one small size for everything else), line-height always
+// 1.5x the font size, two greys (#232323 text, #555555 secondary), and one
+// accent (#FEAC03) used exactly once on the header rule.
 // ---------------------------------------------------------------------------
 
-function designedHtmlTemplate(data: ResumeData): string {
+/** Render options for the designed template. `small` is the one small size. */
+export interface DesignedOpts {
+  small?: number;
+}
+
+/** A top-level experience entry or a nested client engagement — same shape. */
+type ExperienceEntry = ResumeData["experience"][number];
+
+function designedHtmlTemplate(data: ResumeData, opts: DesignedOpts = {}): string {
+  const S = opts.small ?? 10;
+  const SLH = S * 1.5; // line-height is always 1.5x the font size
   const {
     contact,
     summary,
@@ -111,403 +122,252 @@ function designedHtmlTemplate(data: ResumeData): string {
     skills,
   } = data;
 
-  const competenciesHtml =
-    coreCompetencies && coreCompetencies.length > 0
-      ? `<p class="competencies">${coreCompetencies.map((c) => escapeHtml(c)).join(", ")}</p>`
+  // ---- main column: experience -------------------------------------------
+  // renderEntry handles both a top-level job and a client engagement nested
+  // inside one. Nesting is what keeps a consultancy's engagements from reading
+  // as parallel jobs.
+  function renderEntry(exp: ExperienceEntry, nested: boolean): string {
+    // Employment type is only worth calling out when it is a contract.
+    // Full-time is the assumed default and renders nothing. No parentheses.
+    const typeBadge = exp.type === "contract" ? `<span class="type-badge">Contract</span>` : "";
+    const industryChip = exp.industry
+      ? `<span class="exp-industry">${escapeHtml(exp.industry)}</span>`
+      : "";
+    const via = exp.via ? `<span class="exp-via">${escapeHtml(exp.via)}</span>` : "";
+    const metaParts = [
+      exp.role ? escapeHtml(exp.role) : "",
+      exp.location ? escapeHtml(exp.location) : "",
+      via,
+      typeBadge,
+      dateRange(exp.startDate, exp.endDate),
+    ].filter(Boolean);
+    const bulletsHtml = (exp.bullets ?? [])
+      .map((b) => `<li>${escapeHtml(b)}</li>`)
+      .join("\n          ");
+    const caseStudyHtml = exp.caseStudy
+      ? `<div class="case-study">Case study: ${urlWithPassword(exp.caseStudy, true)}</div>`
+      : "";
+    // Industry sits beside the company name, not in the meta line.
+    const companyIndustry = industryChip ? `<span class="dot">&middot;</span>${industryChip}` : "";
+    const engagementsHtml = (exp.engagements ?? [])
+      .map((eng) => renderEntry(eng, true))
+      .join("\n        ");
+    return `<div class="experience-entry${nested ? " nested" : ""}">
+        <div class="exp-company">${escapeHtml(exp.company)}${companyIndustry}</div>
+        <div class="exp-meta">${metaParts.join('<span class="dot">&middot;</span>')}</div>
+        ${exp.bullets && exp.bullets.length > 0 ? `<ul>\n          ${bulletsHtml}\n        </ul>` : ""}
+        ${caseStudyHtml}
+        ${engagementsHtml}
+      </div>`;
+  }
+
+  const experienceHtml = experience.map((exp) => renderEntry(exp, false)).join("\n      ");
+
+  const additionalHtml =
+    additionalExperience && additionalExperience.length > 0
+      ? `<div class="additional-experience">
+        <div class="additional-experience-label">Additional Experience</div>
+        <ul>${additionalExperience.map((i) => `<li>${escapeHtml(i)}</li>`).join("\n        ")}</ul>
+      </div>`
       : "";
 
-  const selectedWorkHtml = selectedWork
-    ? `<div class="selected-work">Selected work: ${urlWithPassword(selectedWork, true)}</div>`
-    : "";
+  // ---- rail: competencies, skills, education ------------------------------
+  const competenciesHtml =
+    coreCompetencies && coreCompetencies.length > 0
+      ? `<section class="rail-section">
+        <h2 class="rail-header">Core Competencies</h2>
+        <ul class="rail-list">${coreCompetencies
+          .map((c) => `<li>${escapeHtml(c)}</li>`)
+          .join("\n          ")}</ul>
+      </section>`
+      : "";
 
+  const skillsHtml =
+    skills && skills.length > 0
+      ? `<section class="rail-section">
+        <h2 class="rail-header">Skills</h2>
+        ${skills
+          .map(
+            (sg) => `<div class="skill-group">
+          <div class="skill-category">${escapeHtml(sg.category)}</div>
+          <div class="skill-items">${sg.items.map((i) => escapeHtml(i)).join(", ")}</div>
+        </div>`,
+          )
+          .join("\n        ")}
+      </section>`
+      : "";
+
+  const educationHtml =
+    education && education.length > 0
+      ? `<section class="rail-section">
+        <h2 class="rail-header">Education</h2>
+        ${education
+          .map(
+            (edu) => `<div class="edu-entry">
+          <div class="degree">${escapeHtml(edu.degree)}</div>
+          <div class="institution">${escapeHtml(edu.institution)}</div>
+          <div class="edu-year">${escapeHtml(edu.year)}</div>
+        </div>`,
+          )
+          .join("\n        ")}
+      </section>`
+      : "";
+
+  // The summary is headed like every other section. Its header shares a
+  // baseline with the rail's first header, which is what makes the two
+  // columns read as a deliberate grid. Wording follows the master's own
+  // "## Professional Summary" heading (override via data.summaryHeading).
   const summaryHtml = summary
-    ? `<section>
-      <h2 class="section-header">Summary</h2>
+    ? `<section class="summary">
+      <h2 class="section-header summary-header">${escapeHtml(data.summaryHeading || "Professional Summary")}</h2>
       <p>${escapeHtml(summary)}</p>
     </section>`
     : "";
 
-  const experienceHtml = experience
-    .map((exp) => {
-      const typeBadge = exp.type
-        ? ` <span class="type-badge">(${escapeHtml(exp.type)})</span>`
-        : "";
-      const bulletsHtml = exp.bullets
-        .map((b) => `<li>${escapeHtml(b)}</li>`)
-        .join("\n            ");
-      const caseStudyHtml = exp.caseStudy
-        ? `<div class="case-study">Case study: ${urlWithPassword(exp.caseStudy, false)}</div>`
-        : "";
-      const parentHtml = `<div class="experience-entry">
-        <div class="exp-main">
-          <div class="exp-title">${companyRoleHeading(exp.company, exp.role)}${exp.role ? typeBadge : ""}</div>
-          ${exp.bullets.length > 0 ? `<ul>\n            ${bulletsHtml}\n          </ul>` : ""}
-          ${caseStudyHtml}
-        </div>
-        <div class="exp-date">${dateRange(exp.startDate, exp.endDate)}</div>
-      </div>`;
-      const engagementsHtml = (exp.engagements ?? [])
-        .map((eng) => {
-          const engBullets = eng.bullets
-            .map((b) => `<li>${escapeHtml(b)}</li>`)
-            .join("\n            ");
-          return `<div class="experience-entry engagement-entry">
-        <div class="exp-main">
-          <div class="exp-title">${companyRoleHeading(eng.client, eng.role)}</div>
-          ${eng.bullets.length > 0 ? `<ul>\n            ${engBullets}\n          </ul>` : ""}
-        </div>
-        <div class="exp-date">${dateRange(eng.startDate, eng.endDate)}</div>
-      </div>`;
-        })
-        .join("\n    ");
-      return engagementsHtml ? `${parentHtml}\n    ${engagementsHtml}` : parentHtml;
-    })
-    .join("\n    ");
-
-  const educationHtml = education
-    .map(
-      (edu) =>
-        `<div class="edu-entry">
-        <div class="edu-main">
-          <div class="degree">${escapeHtml(edu.degree)}</div>
-          <div class="institution">${escapeHtml(edu.institution)}</div>
-        </div>
-        <div class="edu-year">${escapeHtml(edu.year)}</div>
-      </div>`,
-    )
-    .join("\n    ");
-
-  const skillsHtml = skills
-    .map(
-      (sg) =>
-        `<div class="skill-group">
-        <span class="skill-category">${escapeHtml(sg.category)}</span>
-        <span class="skill-items">${sg.items.map((i) => escapeHtml(i)).join(", ")}</span>
-      </div>`,
-    )
-    .join("\n    ");
+  const row1 = [
+    contact.email && contactLink(contact.email, "email"),
+    contact.phone && escapeHtml(contact.phone),
+    contact.location && escapeHtml(contact.location),
+  ]
+    .filter(Boolean)
+    .join('<span class="sep">|</span>');
+  const row2 = [
+    contact.website && contactLink(contact.website, "url"),
+    contact.linkedin && contactLink(contact.linkedin, "url"),
+    contact.github && contactLink(contact.github, "url"),
+  ]
+    .filter(Boolean)
+    .join('<span class="sep">|</span>');
 
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+<meta charset="utf-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      print-color-adjust: exact;
-      -webkit-print-color-adjust: exact;
-    }
+  * { box-sizing: border-box; margin: 0; padding: 0;
+      print-color-adjust: exact; -webkit-print-color-adjust: exact; }
 
-    :root {
-      --accent: #FEAC03;
-      --text: #232323;
-      --muted: #555555;
-      --border: #e0e0e0;
-      --bullet: #2d4a6b;
-    }
+  :root {
+    --accent: #FEAC03;
+    --text:   #232323;
+    --muted:  #555555;
+    --faint:  #555555;  /* merged with --muted; #555 wins on contrast (7.5:1) */
+    --border: #e0e0e0;
+    --bullet: #232323;  /* dots match text; no second accent hue */
+    --rail:    232px;
+    --gutter:  48px;
+    /* Main column width, identical on both pages. Sized for ~72 characters
+       at 10px: 672 (content box) - 232 (rail) - 48 (gutter). */
+    --measure: 392px;
+    --s:    ${S}px;   /* the one small size: body, meta, rail, contact */
+    --s-lh: ${SLH}px;
+  }
 
-    body {
-      font-family: 'Inter', sans-serif;
-      font-size: 14px;
-      line-height: 21px;
-      color: var(--text);
-    }
+  body { font-family: 'Inter', sans-serif; font-size: 14px; line-height: 21px; color: var(--text); }
+  /* Type rule: line-height = 1.5 x font size, at every size. */
+  a { color: inherit; text-decoration: none; }
+  p, li { orphans: 3; widows: 3; }
 
-    .container {
-      max-width: 100%;
-    }
+  /* ---- header: full width ---------------------------------------------- */
+  .contact-block { padding-bottom: 16px; border-bottom: 1px solid var(--accent); }
+  .candidate-name { font-size: 20px; line-height: 30px; letter-spacing: -0.01em;
+                    font-weight: 400; margin-bottom: 8px; }
+  .headline { font-size: var(--s); line-height: var(--s-lh); color: var(--text); margin-bottom: 6px; }
+  .contact-details { font-size: var(--s); line-height: var(--s-lh); color: var(--muted); }
+  .selected-work { font-size: var(--s); line-height: var(--s-lh); color: var(--faint); margin-top: 6px; }
+  .sep { margin: 0 6px; color: var(--border); }
 
-    /* Contact block — accent appears once as a thin bottom rule */
-    .contact-block {
-      padding-bottom: 1.2em;
-      border-bottom: 1px solid var(--accent);
-    }
+  /* ---- summary ---------------------------------------------------------
+     Capped to the same measure as the main column so the line length never
+     exceeds ~85 characters, on either page. -------------------------------- */
+  .summary { margin-top: 16px; max-width: var(--measure); }
+  .summary-header { margin-top: 0; margin-bottom: 4px; }
+  .summary p { font-size: var(--s); line-height: var(--s-lh); color: var(--muted); }
 
-    .candidate-name {
-      font-size: 20px;
-      line-height: 26px;
-      font-weight: 400;
-      color: var(--text);
-      margin-bottom: 8px;
-    }
+  /* ---- the split -------------------------------------------------------
+     The rail is a right float, so main-column text narrows beside it and
+     reflows to full width once the rail ends. That is what keeps the rail on
+     page one only without hard-coding a break. ---------------------------- */
+  .rail {
+    float: right;
+    width: var(--rail);
+    margin: 16px 0 24px var(--gutter);
+  }
+  .rail-section { break-inside: avoid; }
+  .rail-section + .rail-section { margin-top: 32px; }
+  .rail-header {
+    font-size: 14px; line-height: 21px; font-weight: 400;
+    color: var(--text); margin-bottom: 8px;
+  }
+  .rail-list { list-style: none; padding: 0; }
+  .rail-list li { font-size: var(--s); line-height: var(--s-lh); color: var(--muted); margin-bottom: 4px; }
+  .skill-group + .skill-group { margin-top: 8px; }
+  .skill-category { font-size: var(--s); line-height: var(--s-lh); color: var(--text); }
+  .skill-items { font-size: var(--s); line-height: var(--s-lh); color: var(--faint); }
+  .edu-entry .degree { font-size: var(--s); line-height: var(--s-lh); color: var(--text); }
+  .edu-entry .institution,
+  .edu-entry .edu-year { font-size: var(--s); line-height: var(--s-lh); color: var(--faint); }
 
-    .contact-details {
-      font-size: 12px;
-      line-height: 21px;
-      color: var(--muted);
-    }
+  /* ---- main column: experience ----------------------------------------- */
+  main { max-width: var(--measure); }
+  .section-header {
+    font-size: 14px; line-height: 21px; font-weight: 400; color: var(--text);
+    margin-top: 24px; margin-bottom: 4px;
+    break-after: avoid; break-inside: avoid;
+  }
+  .experience-entry { margin-top: 20px; }
+  /* A client engagement nested inside a consultancy: indented, one step down in
+     size, so it never reads as a parallel job. */
+  .experience-entry.nested { margin-left: 16px; margin-top: 16px; }
+  .experience-entry.nested .exp-company { font-size: var(--s); line-height: var(--s-lh); font-weight: 500; }
+  .exp-company { font-size: 14px; line-height: 21px; font-weight: 500; break-after: avoid; }
+  .exp-meta {
+    font-size: var(--s); line-height: var(--s-lh); color: var(--faint);
+    margin-bottom: 2px; break-after: avoid;
+  }
+  .dot { margin: 0 6px; }
+  .type-badge { color: var(--faint); }
+  .exp-industry { font-size: var(--s); line-height: var(--s-lh); color: var(--faint); font-weight: 400; }
+  .exp-via { color: var(--faint); }
+  ul { padding-left: 16px; margin: 0; }
+  li { font-size: var(--s); line-height: var(--s-lh); color: var(--muted); margin-bottom: 3px;
+       break-inside: avoid; }
+  li::marker { color: var(--bullet); }
+  .case-study { font-size: var(--s); line-height: var(--s-lh); color: var(--faint); margin-top: 4px; }
+  .additional-experience { margin-top: 20px; }
+  .additional-experience-label { font-size: 14px; line-height: 21px; font-weight: 500; break-after: avoid; }
 
-    .selected-work {
-      font-size: 12px;
-      line-height: 21px;
-      color: var(--muted);
-      margin-top: 4px;
-    }
-
-    .sep {
-      margin: 0 4px;
-    }
-
-    /* Section headers — 48px above, 4px below (uniform gap to first content element) */
-    .section-header {
-      font-size: 14px;
-      line-height: 21px;
-      font-weight: 400;
-      color: var(--text);
-      margin-top: 20px;
-      margin-bottom: 4px;
-      break-after: avoid;
-      break-inside: avoid;
-    }
-
-    .section-header + .experience-entry {
-      margin-top: 0;
-    }
-
-    /* Summary paragraph — body-small size; spacing comes from .section-header margin-bottom */
-    section > p {
-      margin-top: 0;
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    /* Core Competencies — comma-separated body/small */
-    .competencies {
-      font-size: 12px;
-      line-height: 21px;
-      color: var(--muted);
-      margin-top: 0;
-    }
-
-    /* Experience — two-column grid: content left, date right */
-    .experience-entry {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 0 1.5em;
-      margin-top: 12px;
-      margin-bottom: 0;
-      align-items: start;
-    }
-
-    .engagement-entry {
-      margin-top: 8px;
-      padding-left: 1.2em;
-    }
-
-    .engagement-entry .exp-title {
-      font-size: 13px;
-    }
-
-    /* Keep a role heading with at least the first bullet; allow long entries to split */
-    .exp-title {
-      break-after: avoid;
-    }
-
-    .experience-entry li {
-      break-inside: avoid;
-    }
-
-    /* Case study reference — a pointer, not an accomplishment; sits apart from bullets */
-    .case-study {
-      font-size: 11px;
-      line-height: 18px;
-      color: var(--muted);
-      margin-top: 4px;
-    }
-
-    .exp-date {
-      font-size: 12px;
-      line-height: 21px;
-      color: var(--muted);
-      white-space: nowrap;
-      text-align: right;
-    }
-
-    .exp-title {
-      font-size: 14px;
-      line-height: 21px;
-      font-weight: 400;
-      color: var(--text);
-      margin-bottom: 0.1em;
-    }
-
-    .type-badge {
-      font-size: 12px;
-      line-height: 21px;
-      color: var(--muted);
-    }
-
-    ul {
-      padding-left: 1.2em;
-      margin: 0;
-    }
-
-    li {
-      font-size: 12px;
-      line-height: 18px;
-      color: var(--muted);
-      margin-bottom: 0.1em;
-      orphans: 3;
-      widows: 3;
-    }
-
-    li::marker {
-      color: var(--bullet);
-    }
-
-    p {
-      orphans: 3;
-      widows: 3;
-    }
-
-    /* Education — two-column grid matching experience: content left, year right */
-    .edu-entry {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 0 1.5em;
-      margin-bottom: 0.5em;
-      break-inside: avoid;
-      align-items: start;
-    }
-
-    .edu-year {
-      font-size: 12px;
-      line-height: 21px;
-      color: var(--muted);
-      white-space: nowrap;
-      text-align: right;
-    }
-
-    .degree {
-      font-size: 14px;
-      line-height: 21px;
-      font-weight: 400;
-    }
-
-    .institution {
-      font-size: 12px;
-      line-height: 21px;
-      color: var(--muted);
-    }
-
-    /* Skills — two-column grid matching experience */
-    .skill-group {
-      display: grid;
-      grid-template-columns: 150px 1fr;
-      gap: 0 1.5em;
-      margin-bottom: 0.3em;
-      font-size: 12px;
-      line-height: 21px;
-      break-inside: avoid;
-    }
-
-    .skill-category {
-      font-size: 12px;
-      line-height: 21px;
-      color: var(--muted);
-    }
-
-    .skill-items {
-      color: var(--muted);
-    }
-
-    /* Additional Experience — compact labeled list below main experience entries */
-    .additional-experience {
-      margin-top: 16px;
-      break-inside: avoid;
-    }
-
-    .additional-experience-label {
-      font-size: 12px;
-      line-height: 21px;
-      color: var(--muted);
-      font-style: italic;
-      margin-bottom: 2px;
-    }
-
-    .additional-experience ul {
-      margin: 0;
-      padding-left: 1.2em;
-    }
-
-    .additional-experience li {
-      font-size: 12px;
-      line-height: 21px;
-      color: var(--muted);
-      margin-bottom: 0;
-    }
-  </style>
+</style>
 </head>
 <body>
-  <div class="container">
-    <div class="contact-block">
-      <div class="candidate-name">${escapeHtml(contact.name)}</div>
-      <div class="contact-details">
-        ${(() => {
-          const row1 = [
-            contact.email && contactLink(contact.email, "email"),
-            contact.phone && escapeHtml(contact.phone),
-            contact.location && escapeHtml(contact.location),
-          ]
-            .filter(Boolean)
-            .join('<span class="sep">|</span>');
-          const row2 = [
-            contact.website && contactLink(contact.website, "url"),
-            contact.linkedin && contactLink(contact.linkedin, "url"),
-            contact.github && contactLink(contact.github, "url"),
-          ]
-            .filter(Boolean)
-            .join('<span class="sep">|</span>');
-          return [
-            row1 && `<div class="contact-details-row">${row1}</div>`,
-            row2 && `<div class="contact-details-row">${row2}</div>`,
-          ]
-            .filter(Boolean)
-            .join("\n        ");
-        })()}
-        ${selectedWorkHtml}
-      </div>
+  <header class="contact-block">
+    <div class="candidate-name">${escapeHtml(contact.name)}</div>
+    ${contact.headline ? `<div class="headline">${escapeHtml(contact.headline)}</div>` : ""}
+    <div class="contact-details">
+      ${[row1 && `<div>${row1}</div>`, row2 && `<div>${row2}</div>`].filter(Boolean).join("\n      ")}
     </div>
-
-    ${summaryHtml}
-
     ${
-      competenciesHtml
-        ? `<section>
-      <h2 class="section-header">Core Competencies</h2>
-      ${competenciesHtml}
-    </section>`
+      selectedWork
+        ? `<div class="selected-work">Selected work: ${urlWithPassword(selectedWork, true)}</div>`
         : ""
     }
+  </header>
 
-    <section>
-      <h2 class="section-header">Experience</h2>
-      ${experienceHtml}
-      ${
-        additionalExperience && additionalExperience.length > 0
-          ? `<div class="additional-experience">
-        <div class="additional-experience-label">Additional Experience</div>
-        <ul>${additionalExperience.map((item) => `<li>${escapeHtml(item)}</li>`).join("\n        ")}</ul>
-      </div>`
-          : ""
-      }
-    </section>
+  <aside class="rail">
+    ${competenciesHtml}
+    ${skillsHtml}
+    ${educationHtml}
+  </aside>
 
-    <section>
-      <h2 class="section-header">Education</h2>
-      ${educationHtml}
-    </section>
+  ${summaryHtml}
 
-    <section>
-      <h2 class="section-header">Skills</h2>
-      ${skillsHtml}
-    </section>
-  </div>
+  <main>
+    <h2 class="section-header">Experience</h2>
+    ${experienceHtml}
+    ${additionalHtml}
+  </main>
 </body>
 </html>`;
 }
@@ -571,7 +431,7 @@ function atsHtmlTemplate(data: ResumeData): string {
           const engHeading = [
             "Client engagement",
             eng.role ? `<strong>${escapeHtml(eng.role)}</strong>` : "",
-            escapeHtml(eng.client),
+            escapeHtml(eng.company),
             dateRange(eng.startDate, eng.endDate),
           ]
             .filter(Boolean)
@@ -727,10 +587,11 @@ export async function renderDesigned(
   data: ResumeData,
   outputPath: string,
   browser: Browser,
+  opts: DesignedOpts = {},
 ): Promise<void> {
   const page = await browser.newPage();
   try {
-    const html = designedHtmlTemplate(data);
+    const html = designedHtmlTemplate(data, opts);
     // Use 'load' for setContent (Puppeteer 25.x excludes networkidle0/2 from
     // SetContentWaitForOptions); then explicitly gate on network idle to ensure
     // the Google Fonts CDN @import finishes before page.pdf() is called.
@@ -740,7 +601,7 @@ export async function renderDesigned(
       path: outputPath,
       format: "Letter",
       printBackground: true,
-      margin: { top: "0.6in", right: "0.6in", bottom: "0.6in", left: "0.6in" },
+      margin: { top: "0.75in", right: "0.75in", bottom: "0.75in", left: "0.75in" },
     });
   } finally {
     await page.close();
