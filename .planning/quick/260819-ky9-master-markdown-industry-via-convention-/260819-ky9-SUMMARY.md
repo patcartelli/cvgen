@@ -2,7 +2,7 @@
 quick_id: 260819-ky9
 date: 2026-08-19
 status: complete
-commits: 898ff4d, edcc0ff, 3a20ff2
+commits: b3c47f4, 7ec3dd9, 2e04a28
 scope: handoff steps 3-5
 ---
 
@@ -92,9 +92,9 @@ now fails locally instead of against a live 400 thirty seconds in.
 2. **Full month names confirmed as the standard.** No code change needed, the
    master already spells them out. The committed acceptance fixture did not, so
    it was guarding output nobody ships; all 18 of its date values and the
-   en-dash assertion were expanded to match (edcc0ff). Still exactly 2 pages.
+   en-dash assertion were expanded to match (7ec3dd9). Still exactly 2 pages.
 3. **Hyphenated phone accepted** as-is. No change.
-4. **`type` and `caseStudy` removed entirely** (3a20ff2). Neither could be
+4. **`type` and `caseStudy` removed entirely** (2e04a28). Neither could be
    populated from markdown, and both carried schema weight plus template
    branches for nothing. `type` was redundant with `via`; `caseStudy` was
    redundant with the header-level `selectedWork`. CaseStudySchema survives

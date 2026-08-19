@@ -87,15 +87,15 @@ None.
 
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
-| 260729-ez3 | Three portfolio-polish tasks: README.md, rebuild dist, GitHub Actions CI | 2026-07-29 | 5b463e6 | [260729-ez3-three-portfolio-polish-tasks-readme-md-r](./quick/260729-ez3-three-portfolio-polish-tasks-readme-md-r/) |
-| 260731-gby | Make personal info 2-line layout: email phone location on line 1, LinkedIn GitHub on line 2 | 2026-07-31 | 92e1414 | [260731-gby-make-personal-info-2-line-layout-email-p](./quick/260731-gby-make-personal-info-2-line-layout-email-p/) |
-| 260731-gui | Add candidate name to PDF filename: {name_slug}-resume[-{company}].pdf | 2026-07-31 | 6971669 | [260731-gui-add-candidate-name-to-pdf-filename-name-](./quick/260731-gui-add-candidate-name-to-pdf-filename-name-/) |
-| 260731-h3z | Add date to PDF filename and make email/linkedin/github clickable links in designed PDF | 2026-07-31 | 66fcadd | [260731-h3z-add-date-to-pdf-filename-and-make-email-](./quick/260731-h3z-add-date-to-pdf-filename-and-make-email-/) |
-| 260731-hck | Add optional website field to contact schema | 2026-07-31 | 8d42e68 | [260731-hck-add-website-field-to-schema](./quick/260731-hck-add-website-field-to-schema/) |
-| 260731-j41 | Add additionalExperience field for Additional Experience section | 2026-07-31 | 663018d | [260731-j41-add-additionalexperience-field-to-schema](./quick/260731-j41-add-additionalexperience-field-to-schema/) |
-| 260819-i5h | Nested engagements, selectedWork header, en dashes, 2-page designed PDF | 2026-08-19 | 374cb4a | [260819-i5h-schema-template-nested-engagements-under](./quick/260819-i5h-schema-template-nested-engagements-under/) |
-| 260819-kkx | Port approved two-column designed template + schema fields (handoff steps 1-2) | 2026-08-19 | 8778fb7 | [260819-kkx-port-approved-two-column-designed-templa](./quick/260819-kkx-port-approved-two-column-designed-templa/) |
-| 260819-ky9 | Master markdown conventions, extraction fixes, full run (handoff steps 3-5) | 2026-08-19 | 898ff4d | [260819-ky9-master-markdown-industry-via-convention-](./quick/260819-ky9-master-markdown-industry-via-convention-/) |
+| 260729-ez3 | Three portfolio-polish tasks: README.md, rebuild dist, GitHub Actions CI | 2026-07-29 | ff277cd | [260729-ez3-three-portfolio-polish-tasks-readme-md-r](./quick/260729-ez3-three-portfolio-polish-tasks-readme-md-r/) |
+| 260731-gby | Make personal info 2-line layout: email phone location on line 1, LinkedIn GitHub on line 2 | 2026-07-31 | 19966d0 | [260731-gby-make-personal-info-2-line-layout-email-p](./quick/260731-gby-make-personal-info-2-line-layout-email-p/) |
+| 260731-gui | Add candidate name to PDF filename: {name_slug}-resume[-{company}].pdf | 2026-07-31 | 468f7bb | [260731-gui-add-candidate-name-to-pdf-filename-name-](./quick/260731-gui-add-candidate-name-to-pdf-filename-name-/) |
+| 260731-h3z | Add date to PDF filename and make email/linkedin/github clickable links in designed PDF | 2026-07-31 | 7c791c6 | [260731-h3z-add-date-to-pdf-filename-and-make-email-](./quick/260731-h3z-add-date-to-pdf-filename-and-make-email-/) |
+| 260731-hck | Add optional website field to contact schema | 2026-07-31 | f227237 | [260731-hck-add-website-field-to-schema](./quick/260731-hck-add-website-field-to-schema/) |
+| 260731-j41 | Add additionalExperience field for Additional Experience section | 2026-07-31 | a183570 | [260731-j41-add-additionalexperience-field-to-schema](./quick/260731-j41-add-additionalexperience-field-to-schema/) |
+| 260819-i5h | Nested engagements, selectedWork header, en dashes, 2-page designed PDF | 2026-08-19 | 8a0ae62 | [260819-i5h-schema-template-nested-engagements-under](./quick/260819-i5h-schema-template-nested-engagements-under/) |
+| 260819-kkx | Port approved two-column designed template + schema fields (handoff steps 1-2) | 2026-08-19 | e963756 | [260819-kkx-port-approved-two-column-designed-templa](./quick/260819-kkx-port-approved-two-column-designed-templa/) |
+| 260819-ky9 | Master markdown conventions, extraction fixes, full run (handoff steps 3-5) | 2026-08-19 | b3c47f4 | [260819-ky9-master-markdown-industry-via-convention-](./quick/260819-ky9-master-markdown-industry-via-convention-/) |
 
 ## Deferred Items
 

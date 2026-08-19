@@ -2,7 +2,7 @@
 quick_id: 260819-kkx
 date: 2026-08-19
 status: complete
-commits: 8778fb7, 8a38cff
+commits: e963756, 5cf068e
 scope: handoff steps 1-2 only
 ---
 
@@ -67,12 +67,12 @@ engagement has no role at all, and the old schema required the field. The
 handoff's "empty string for non-role entries" convention does not match the
 fixture it shipped alongside.
 
-## Decisions taken after the initial commit (8a38cff)
+## Decisions taken after the initial commit (5cf068e)
 
 **Personal data scrubbed before first push.** The repo is public and nothing had
 been pushed (main was 169 commits ahead of origin). The committed test files
 carried the live portfolio password `fixture-password`, a real phone number,
-and a home location — added by the prior session in 374cb4a. All three are now
+and a home location — added by the prior session in 8a0ae62. All three are now
 obvious fakes. `fixtures/two-column-acceptance.json` is the scrubbed twin of the
 handoff fixture and is what the acceptance test reads; it still renders to
 exactly 2 pages. `handoff/`, `output/`, `fixtures/patrick-master-*.json`, and

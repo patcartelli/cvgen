@@ -20,7 +20,7 @@ The design was approved over ~15 review rounds and handed off as working JS at
 spec. `master-clean-fixture.json` is the acceptance fixture; it must validate and
 render to exactly 2 pages.
 
-Quick task 260819-i5h (commit 374cb4a) already landed `engagements[]`,
+Quick task 260819-i5h (commit 8a0ae62) already landed `engagements[]`,
 `selectedWork`, and en-dash date ranges. Build on it, do not redo it.
 
 ## Task 1 — Schema extension and engagement key rename

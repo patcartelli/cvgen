@@ -3,7 +3,7 @@ quick_id: 260819-i5h
 slug: schema-template-nested-engagements-under
 status: complete
 date: 2026-08-19
-commit: 374cb4a
+commit: 8a0ae62
 ---
 
 # Quick Task 260819-i5h: Nested engagements, selected work, punctuation
