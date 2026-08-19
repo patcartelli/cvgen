@@ -14,7 +14,13 @@ import type { Browser } from "puppeteer";
 import puppeteer from "puppeteer";
 
 import type { ResumeData } from "../schema/resume.js";
-import { renderAts, resolveOutputPaths, toCompanySlug, toNameSlug } from "./render.js";
+import {
+  renderAts,
+  renderDesigned,
+  resolveOutputPaths,
+  toCompanySlug,
+  toNameSlug,
+} from "./render.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, "../..");
@@ -88,14 +94,8 @@ describe("resolveOutputPaths", () => {
   // Test 4: date appended after company slug
   it("Test 4: appends date after company slug when both provided", () => {
     const paths = resolveOutputPaths("Pat Cartelli", "/out/EZCater", "EZCater", "2026-07-31");
-    assert.equal(
-      basename(paths.designed),
-      "pat_cartelli-resume-EZCater-2026-07-31.pdf",
-    );
-    assert.equal(
-      basename(paths.ats),
-      "pat_cartelli-resume-EZCater-2026-07-31-ats.pdf",
-    );
+    assert.equal(basename(paths.designed), "pat_cartelli-resume-EZCater-2026-07-31.pdf");
+    assert.equal(basename(paths.ats), "pat_cartelli-resume-EZCater-2026-07-31-ats.pdf");
   });
 
   // Test 5: date only, no company
@@ -295,5 +295,113 @@ describe("renderAts pdf-parse extraction", () => {
       degreeIdx < skillCatIdx,
       `education degree (${degreeIdx}) must appear before skills category (${skillCatIdx}) in reading order`,
     );
+  });
+});
+
+const nestedResume: ResumeData = {
+  contact: {
+    name: "Patrick Cartelli",
+    email: "patrick@studiocartelli.com",
+    phone: "+1 555 010 1234",
+    location: "Example City, NJ",
+    linkedin: "linkedin.com/in/patrick-cartelli",
+    github: "github.com/patcartelli",
+    website: "studiocartelli.com",
+  },
+  selectedWork: { url: "studiocartelli.com/work", password: "fixture-password" },
+  summary: "Product designer and design engineer.",
+  experience: [
+    {
+      role: "Product Design Consultant",
+      company: "Studio Cartelli",
+      startDate: "January 2026",
+      endDate: "Present",
+      bullets: ["Built studiocartelli.com in production Astro."],
+      engagements: [
+        {
+          client: "Bluefish AI",
+          role: "Senior Product Designer",
+          startDate: "April 2026",
+          endDate: "June 2026",
+          bullets: ["Defined what optimized meant."],
+        },
+      ],
+    },
+  ],
+  education: [
+    {
+      degree: "B.F.A. New Media Design",
+      institution: "Rochester Institute of Technology",
+      year: "2008",
+    },
+  ],
+  skills: [{ category: "Design", items: ["Figma"] }],
+};
+
+describe("designed PDF nested engagements and selected work", () => {
+  let browser: Browser;
+  let extractedText: string;
+
+  before(async () => {
+    browser = await puppeteer.launch({ headless: true });
+    const tmpDir = await mkdtemp(join(tmpdir(), "cvgen-designed-"));
+    const outputPath = join(tmpDir, "nested-resume.pdf");
+    await renderDesigned(nestedResume, outputPath, browser);
+    const pdfBuffer = await readFile(outputPath);
+    const parser = new PDFParse({ data: pdfBuffer });
+    const result = await parser.getText();
+    await parser.destroy();
+    extractedText = result.text;
+  });
+
+  after(async () => {
+    await browser.close();
+  });
+
+  it("prints selected work with password in the header", () => {
+    assert.ok(extractedText.includes("Selected work:"), "must include Selected work label");
+    assert.ok(extractedText.includes("studiocartelli.com/work"), "must include selected-work URL");
+    assert.ok(extractedText.includes("fixture-password"), "must include selected-work password");
+  });
+
+  it("nests the client under the parent company instead of listing it as a sibling job", () => {
+    assert.ok(extractedText.includes("Studio Cartelli, Product Design Consultant"));
+    assert.ok(extractedText.includes("Bluefish AI, Senior Product Designer"));
+    const studioIdx = extractedText.indexOf("Studio Cartelli, Product Design Consultant");
+    const bluefishIdx = extractedText.indexOf("Bluefish AI, Senior Product Designer");
+    assert.ok(studioIdx < bluefishIdx, "parent must appear before nested engagement");
+  });
+
+  it("does not use an em dash between company and role or in dates", () => {
+    assert.ok(!extractedText.includes("\u2014"), `em dash found in: ${extractedText}`);
+    assert.ok(extractedText.includes("January 2026 \u2013 Present"));
+  });
+});
+
+describe("ATS PDF nested engagements use en dashes and selected work", () => {
+  let browser: Browser;
+  let extractedText: string;
+
+  before(async () => {
+    browser = await puppeteer.launch({ headless: true });
+    const tmpDir = await mkdtemp(join(tmpdir(), "cvgen-ats-nested-"));
+    const outputPath = join(tmpDir, "nested-resume-ats.pdf");
+    await renderAts(nestedResume, outputPath, browser);
+    const pdfBuffer = await readFile(outputPath);
+    const parser = new PDFParse({ data: pdfBuffer });
+    const result = await parser.getText();
+    await parser.destroy();
+    extractedText = result.text;
+  });
+
+  after(async () => {
+    await browser.close();
+  });
+
+  it("prints selected work and a client-engagement line", () => {
+    assert.ok(extractedText.includes("Selected work:"));
+    assert.ok(extractedText.includes("Client engagement"));
+    assert.ok(extractedText.includes("Bluefish AI"));
+    assert.ok(!extractedText.includes("\u2014"), `em dash found in: ${extractedText}`);
   });
 });

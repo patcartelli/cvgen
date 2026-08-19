@@ -131,4 +131,41 @@ describe("validateResume", () => {
       );
     }
   });
+
+  it("accepts nested engagements and top-level selectedWork", () => {
+    const data = {
+      contact: {
+        name: "Test",
+        email: "t@t.com",
+        phone: "555",
+        location: "City",
+        linkedin: "li",
+        github: "gh",
+      },
+      selectedWork: { url: "studiocartelli.com/work", password: "fixture-password" },
+      experience: [
+        {
+          role: "Product Design Consultant",
+          company: "Studio Cartelli",
+          startDate: "January 2026",
+          endDate: "Present",
+          bullets: ["Built the studio site."],
+          engagements: [
+            {
+              client: "Bluefish AI",
+              role: "Senior Product Designer",
+              startDate: "April 2026",
+              endDate: "June 2026",
+              bullets: ["Defined what optimized meant."],
+            },
+          ],
+        },
+      ],
+      education: [{ degree: "B.F.A.", institution: "RIT", year: "2008" }],
+      skills: [{ category: "Design", items: ["Figma"] }],
+    };
+    const result = validateResume(data);
+    assert.equal(result.selectedWork?.url, "studiocartelli.com/work");
+    assert.equal(result.experience[0]?.engagements?.[0]?.client, "Bluefish AI");
+  });
 });

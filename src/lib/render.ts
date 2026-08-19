@@ -76,18 +76,49 @@ function contactLink(value: string, type: "email" | "url"): string {
   return `<a href="${escapeHtml(href)}" style="color:inherit;text-decoration:none;">${escapeHtml(value)}</a>`;
 }
 
+const EN_DASH = "\u2013";
+
+function dateRange(startDate: string, endDate?: string): string {
+  return `${escapeHtml(startDate)} ${EN_DASH} ${endDate ? escapeHtml(endDate) : "Present"}`;
+}
+
+/** Company and role joined with a comma. Matches the markdown master; never an em dash. */
+function companyRoleHeading(company: string, role?: string): string {
+  const name = escapeHtml(company);
+  return role ? `${name}, ${escapeHtml(role)}` : name;
+}
+
+function urlWithPassword(work: { url: string; password?: string }, asLink: boolean): string {
+  const urlHtml = asLink ? contactLink(work.url, "url") : escapeHtml(work.url);
+  const password = work.password ? ` (password: ${escapeHtml(work.password)})` : "";
+  return `${urlHtml}${password}`;
+}
+
 // ---------------------------------------------------------------------------
 // Designed PDF template (D-D01: minimal/modern, D-D02: Inter via Google Fonts,
 // D-D03: muted accent color #2d4a6b on name and section headers)
 // ---------------------------------------------------------------------------
 
 function designedHtmlTemplate(data: ResumeData): string {
-  const { contact, summary, coreCompetencies, experience, additionalExperience, education, skills } = data;
+  const {
+    contact,
+    summary,
+    coreCompetencies,
+    selectedWork,
+    experience,
+    additionalExperience,
+    education,
+    skills,
+  } = data;
 
   const competenciesHtml =
     coreCompetencies && coreCompetencies.length > 0
       ? `<p class="competencies">${coreCompetencies.map((c) => escapeHtml(c)).join(", ")}</p>`
       : "";
+
+  const selectedWorkHtml = selectedWork
+    ? `<div class="selected-work">Selected work: ${urlWithPassword(selectedWork, true)}</div>`
+    : "";
 
   const summaryHtml = summary
     ? `<section>
@@ -98,22 +129,38 @@ function designedHtmlTemplate(data: ResumeData): string {
 
   const experienceHtml = experience
     .map((exp) => {
-      const endDate = exp.endDate ? escapeHtml(exp.endDate) : "Present";
       const typeBadge = exp.type
         ? ` <span class="type-badge">(${escapeHtml(exp.type)})</span>`
         : "";
       const bulletsHtml = exp.bullets
         .map((b) => `<li>${escapeHtml(b)}</li>`)
         .join("\n            ");
-      return `<div class="experience-entry">
+      const caseStudyHtml = exp.caseStudy
+        ? `<div class="case-study">Case study: ${urlWithPassword(exp.caseStudy, false)}</div>`
+        : "";
+      const parentHtml = `<div class="experience-entry">
         <div class="exp-main">
-          <div class="exp-title">${escapeHtml(exp.company)}${exp.role ? ` — ${escapeHtml(exp.role)}${typeBadge}` : ""}</div>
-          <ul>
-            ${bulletsHtml}
-          </ul>
+          <div class="exp-title">${companyRoleHeading(exp.company, exp.role)}${exp.role ? typeBadge : ""}</div>
+          ${exp.bullets.length > 0 ? `<ul>\n            ${bulletsHtml}\n          </ul>` : ""}
+          ${caseStudyHtml}
         </div>
-        <div class="exp-date">${escapeHtml(exp.startDate)} – ${endDate}</div>
+        <div class="exp-date">${dateRange(exp.startDate, exp.endDate)}</div>
       </div>`;
+      const engagementsHtml = (exp.engagements ?? [])
+        .map((eng) => {
+          const engBullets = eng.bullets
+            .map((b) => `<li>${escapeHtml(b)}</li>`)
+            .join("\n            ");
+          return `<div class="experience-entry engagement-entry">
+        <div class="exp-main">
+          <div class="exp-title">${companyRoleHeading(eng.client, eng.role)}</div>
+          ${eng.bullets.length > 0 ? `<ul>\n            ${engBullets}\n          </ul>` : ""}
+        </div>
+        <div class="exp-date">${dateRange(eng.startDate, eng.endDate)}</div>
+      </div>`;
+        })
+        .join("\n    ");
+      return engagementsHtml ? `${parentHtml}\n    ${engagementsHtml}` : parentHtml;
     })
     .join("\n    ");
 
@@ -186,13 +233,20 @@ function designedHtmlTemplate(data: ResumeData): string {
       line-height: 26px;
       font-weight: 400;
       color: var(--text);
-      margin-bottom: 16px;
+      margin-bottom: 8px;
     }
 
     .contact-details {
       font-size: 12px;
       line-height: 21px;
       color: var(--muted);
+    }
+
+    .selected-work {
+      font-size: 12px;
+      line-height: 21px;
+      color: var(--muted);
+      margin-top: 4px;
     }
 
     .sep {
@@ -205,7 +259,7 @@ function designedHtmlTemplate(data: ResumeData): string {
       line-height: 21px;
       font-weight: 400;
       color: var(--text);
-      margin-top: 48px;
+      margin-top: 20px;
       margin-bottom: 4px;
       break-after: avoid;
       break-inside: avoid;
@@ -235,10 +289,35 @@ function designedHtmlTemplate(data: ResumeData): string {
       display: grid;
       grid-template-columns: 1fr auto;
       gap: 0 1.5em;
-      margin-top: 24px;
+      margin-top: 12px;
       margin-bottom: 0;
-      break-inside: avoid;
       align-items: start;
+    }
+
+    .engagement-entry {
+      margin-top: 8px;
+      padding-left: 1.2em;
+    }
+
+    .engagement-entry .exp-title {
+      font-size: 13px;
+    }
+
+    /* Keep a role heading with at least the first bullet; allow long entries to split */
+    .exp-title {
+      break-after: avoid;
+    }
+
+    .experience-entry li {
+      break-inside: avoid;
+    }
+
+    /* Case study reference — a pointer, not an accomplishment; sits apart from bullets */
+    .case-study {
+      font-size: 11px;
+      line-height: 18px;
+      color: var(--muted);
+      margin-top: 4px;
     }
 
     .exp-date {
@@ -324,6 +403,7 @@ function designedHtmlTemplate(data: ResumeData): string {
       margin-bottom: 0.3em;
       font-size: 12px;
       line-height: 21px;
+      break-inside: avoid;
     }
 
     .skill-category {
@@ -338,7 +418,7 @@ function designedHtmlTemplate(data: ResumeData): string {
 
     /* Additional Experience — compact labeled list below main experience entries */
     .additional-experience {
-      margin-top: 24px;
+      margin-top: 16px;
       break-inside: avoid;
     }
 
@@ -390,6 +470,7 @@ function designedHtmlTemplate(data: ResumeData): string {
             .filter(Boolean)
             .join("\n        ");
         })()}
+        ${selectedWorkHtml}
       </div>
     </div>
 
@@ -407,12 +488,14 @@ function designedHtmlTemplate(data: ResumeData): string {
     <section>
       <h2 class="section-header">Experience</h2>
       ${experienceHtml}
-      ${additionalExperience && additionalExperience.length > 0
-        ? `<div class="additional-experience">
+      ${
+        additionalExperience && additionalExperience.length > 0
+          ? `<div class="additional-experience">
         <div class="additional-experience-label">Additional Experience</div>
         <ul>${additionalExperience.map((item) => `<li>${escapeHtml(item)}</li>`).join("\n        ")}</ul>
       </div>`
-        : ""}
+          : ""
+      }
     </section>
 
     <section>
@@ -435,7 +518,16 @@ function designedHtmlTemplate(data: ResumeData): string {
 // ---------------------------------------------------------------------------
 
 function atsHtmlTemplate(data: ResumeData): string {
-  const { contact, summary, coreCompetencies, experience, additionalExperience, education, skills } = data;
+  const {
+    contact,
+    summary,
+    coreCompetencies,
+    selectedWork,
+    experience,
+    additionalExperience,
+    education,
+    skills,
+  } = data;
 
   const summaryHtml = summary
     ? `<section>
@@ -452,17 +544,45 @@ function atsHtmlTemplate(data: ResumeData): string {
     </section>`
       : "";
 
+  const selectedWorkHtml = selectedWork
+    ? `<p class="selected-work">Selected work: ${urlWithPassword(selectedWork, false)}</p>`
+    : "";
+
   const experienceHtml = experience
     .map((exp) => {
-      const endDate = exp.endDate ? escapeHtml(exp.endDate) : "Present";
       const typeLabel = exp.type ? ` (${escapeHtml(exp.type)})` : "";
       const bulletsHtml = exp.bullets.map((b) => `<li>${escapeHtml(b)}</li>`).join("\n        ");
-      return `<div class="experience-entry">
-      <p><strong>${escapeHtml(exp.role)}</strong>${typeLabel} | ${escapeHtml(exp.company)} | ${escapeHtml(exp.startDate)} &mdash; ${endDate}</p>
-      <ul>
-        ${bulletsHtml}
-      </ul>
+      const caseStudyHtml = exp.caseStudy
+        ? `<p class="case-study">Case study: ${urlWithPassword(exp.caseStudy, false)}</p>`
+        : "";
+      const headingParts = [
+        exp.role ? `<strong>${escapeHtml(exp.role)}</strong>${typeLabel}` : "",
+        escapeHtml(exp.company),
+        dateRange(exp.startDate, exp.endDate),
+      ].filter(Boolean);
+      const parentHtml = `<div class="experience-entry">
+      <p>${headingParts.join(" | ")}</p>
+      ${exp.bullets.length > 0 ? `<ul>\n        ${bulletsHtml}\n      </ul>` : ""}
+      ${caseStudyHtml}
     </div>`;
+      const engagementsHtml = (exp.engagements ?? [])
+        .map((eng) => {
+          const engBullets = eng.bullets.map((b) => `<li>${escapeHtml(b)}</li>`).join("\n        ");
+          const engHeading = [
+            "Client engagement",
+            eng.role ? `<strong>${escapeHtml(eng.role)}</strong>` : "",
+            escapeHtml(eng.client),
+            dateRange(eng.startDate, eng.endDate),
+          ]
+            .filter(Boolean)
+            .join(" | ");
+          return `<div class="experience-entry">
+      <p>${engHeading}</p>
+      ${eng.bullets.length > 0 ? `<ul>\n        ${engBullets}\n      </ul>` : ""}
+    </div>`;
+        })
+        .join("\n    ");
+      return engagementsHtml ? `${parentHtml}\n    ${engagementsHtml}` : parentHtml;
     })
     .join("\n    ");
 
@@ -508,8 +628,8 @@ function atsHtmlTemplate(data: ResumeData): string {
       font-size: 11pt;
       font-weight: bold;
       border-bottom: 1px solid #000;
-      margin-top: 0.9em;
-      margin-bottom: 0.4em;
+      margin-top: 0.55em;
+      margin-bottom: 0.3em;
       padding-bottom: 0.1em;
     }
 
@@ -523,7 +643,7 @@ function atsHtmlTemplate(data: ResumeData): string {
     }
 
     .experience-entry {
-      margin-bottom: 0.6em;
+      margin-bottom: 0.4em;
     }
 
     p {
@@ -560,6 +680,8 @@ function atsHtmlTemplate(data: ResumeData): string {
       .join(" | ")}
   </div>
 
+  ${selectedWorkHtml}
+
   ${summaryHtml}
 
   ${competenciesHtml}
@@ -567,10 +689,12 @@ function atsHtmlTemplate(data: ResumeData): string {
   <section>
     <h2>Experience</h2>
     ${experienceHtml}
-    ${additionalExperience && additionalExperience.length > 0
-      ? `<h3>Additional Experience</h3>
+    ${
+      additionalExperience && additionalExperience.length > 0
+        ? `<h3>Additional Experience</h3>
     <ul>${additionalExperience.map((item) => `<li>${escapeHtml(item)}</li>`).join("\n    ")}</ul>`
-      : ""}
+        : ""
+    }
   </section>
 
   <section>
@@ -616,7 +740,7 @@ export async function renderDesigned(
       path: outputPath,
       format: "Letter",
       printBackground: true,
-      margin: { top: "0.75in", right: "0.75in", bottom: "0.75in", left: "0.75in" },
+      margin: { top: "0.6in", right: "0.6in", bottom: "0.6in", left: "0.6in" },
     });
   } finally {
     await page.close();
@@ -644,7 +768,7 @@ export async function renderAts(
       path: outputPath,
       format: "Letter",
       printBackground: false,
-      margin: { top: "0.75in", right: "0.75in", bottom: "0.75in", left: "0.75in" },
+      margin: { top: "0.6in", right: "0.6in", bottom: "0.6in", left: "0.6in" },
     });
   } finally {
     await page.close();

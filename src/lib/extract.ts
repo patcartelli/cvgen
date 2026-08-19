@@ -17,8 +17,9 @@ export async function extractResume(markdown: string): Promise<ExtractResult> {
 
   const response = await client.messages.parse({
     model: "claude-haiku-4-5",
-    max_tokens: 2048,
-    system: "Extract the resume data from this markdown document.",
+    max_tokens: 4096,
+    system:
+      "Extract the resume data from this markdown document. Use only content present in the source. Never invent bullets, job titles, or employment types.",
     messages: [{ role: "user", content: markdown }],
     output_config: { format: zodOutputFormat(ResumeSchema) },
   });

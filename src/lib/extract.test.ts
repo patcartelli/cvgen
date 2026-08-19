@@ -18,7 +18,7 @@ const extractSrcPath = resolve(root, "src/lib/extract.ts");
 
 describe("extract.ts structural assertions (no live API call)", () => {
   // Test 2: extract.ts uses messages.parse, passes zodOutputFormat, uses correct model/max_tokens
-  it("Test 2: extract.ts uses messages.parse with zodOutputFormat(ResumeSchema), haiku model, max_tokens 2048", async () => {
+  it("Test 2: extract.ts uses messages.parse with zodOutputFormat(ResumeSchema), haiku model, max_tokens 4096", async () => {
     const src = await readFile(extractSrcPath, "utf8");
     assert.ok(
       src.includes("messages.parse"),
@@ -29,7 +29,7 @@ describe("extract.ts structural assertions (no live API call)", () => {
       "extract.ts must pass zodOutputFormat(ResumeSchema) to output_config.format",
     );
     assert.ok(src.includes("claude-haiku-4-5"), "extract.ts must use model claude-haiku-4-5");
-    assert.ok(src.includes("max_tokens: 2048"), "extract.ts must set max_tokens: 2048");
+    assert.ok(src.includes("max_tokens: 4096"), "extract.ts must set max_tokens: 4096");
     assert.ok(
       !src.includes("messages.create"),
       "extract.ts must NOT use messages.create (anti-pattern)",
