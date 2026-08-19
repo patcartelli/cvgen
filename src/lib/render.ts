@@ -410,14 +410,17 @@ function atsHtmlTemplate(data: ResumeData): string {
 
   const experienceHtml = experience
     .map((exp) => {
-      const typeLabel = exp.type ? ` (${escapeHtml(exp.type)})` : "";
+      // Employment type matches the designed template: full-time is the assumed
+      // default and renders nothing, contract renders as plain text.
+      const typeLabel = exp.type === "contract" ? "Contract" : "";
       const bulletsHtml = exp.bullets.map((b) => `<li>${escapeHtml(b)}</li>`).join("\n        ");
       const caseStudyHtml = exp.caseStudy
         ? `<p class="case-study">Case study: ${urlWithPassword(exp.caseStudy, false)}</p>`
         : "";
       const headingParts = [
-        exp.role ? `<strong>${escapeHtml(exp.role)}</strong>${typeLabel}` : "",
+        exp.role ? `<strong>${escapeHtml(exp.role)}</strong>` : "",
         escapeHtml(exp.company),
+        typeLabel,
         dateRange(exp.startDate, exp.endDate),
       ].filter(Boolean);
       const parentHtml = `<div class="experience-entry">
@@ -429,7 +432,7 @@ function atsHtmlTemplate(data: ResumeData): string {
         .map((eng) => {
           const engBullets = eng.bullets.map((b) => `<li>${escapeHtml(b)}</li>`).join("\n        ");
           const engHeading = [
-            "Client engagement",
+            eng.via ? escapeHtml(eng.via) : "Client engagement",
             eng.role ? `<strong>${escapeHtml(eng.role)}</strong>` : "",
             escapeHtml(eng.company),
             dateRange(eng.startDate, eng.endDate),

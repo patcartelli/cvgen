@@ -1,0 +1,192 @@
+{
+  "contact": {
+    "name": "Patrick Cartelli",
+    "headline": "Senior Product Designer",
+    "email": "patrick@studiocartelli.com",
+    "phone": "+1 555 010 1234",
+    "location": "Example City, NJ",
+    "linkedin": "linkedin.com/in/patrick-cartelli",
+    "github": "github.com/patcartelli",
+    "website": "studiocartelli.com"
+  },
+  "selectedWork": {
+    "url": "studiocartelli.com/work",
+    "password": "fixture-password"
+  },
+  "summary": "Product designer and design engineer, 15 years on complex, data-dense platforms where being wrong is expensive. Takes mandates nobody has defined and turns them into plans other teams adopt: design system governance at Vividly that spread across the full product and engineering org, a phased roadmap at Bluefish AI adopted by design and engineering leads, and at Dataminr a reframing of the platform's core gap that won roadmap resources and cut configuration time 65%. Designs systems and ships them in code, from Astro front-ends to design tokens and AI tooling for design teams.",
+  "coreCompetencies": [
+    "Design Systems & Governance",
+    "Design Tokens",
+    "Front-End Implementation",
+    "Enterprise B2B SaaS",
+    "Analytics & Dashboard Design"
+  ],
+  "experience": [
+    {
+      "company": "Studio Cartelli",
+      "role": "Product Design Consultant",
+      "industry": "Product and design consultancy",
+      "location": "Remote",
+      "startDate": "Jan 2026",
+      "endDate": "Present",
+      "bullets": [
+        "Design systems, product scoping, and front-end implementation across three client engagements, each starting from an undefined brief. In two, defining the scope was the deliverable.",
+        "Built studiocartelli.com in production Astro, owning component architecture, content pipeline, and deploy."
+      ],
+      "engagements": [
+        {
+          "company": "Bluefish AI",
+          "role": "Senior Product Designer",
+          "industry": "AI infrastructure",
+          "via": "Client engagement",
+          "startDate": "Apr 2026",
+          "endDate": "Jun 2026",
+          "bullets": [
+            "Took an ambiguous mandate to \"optimize the design system\" against an ungoverned, ownerless library and defined what optimized meant: a phased roadmap with milestones and a handoff plan, adopted by design and engineering leads.",
+            "Designed and shipped three Claude skills for the design system, spec, explore, and prototype, making it machine-readable for AI, enforcing consistency at authoring time, and cutting prototype-to-handoff time in half. Specified a fourth for component generation and handed it off.",
+            "Grew the Figma component library 4x (32 to 140) and shipped a token strategy and contribution guidelines that established ownership, prototyping in code with engineering (JS/CSS) to validate the system before handoff."
+          ]
+        },
+        {
+          "company": "Stealth startup & architecture firm",
+          "via": "Advisory engagements",
+          "startDate": "Jan 2026",
+          "endDate": "Jun 2026",
+          "bullets": [
+            "Stealth startup, business health and consultancy software: scoped two products from undefined briefs, a business health diagnostic covering platform and operations review and a company-wide review system. Both scopes approved. Architecture firm: scoped hour and cost planning and invoicing software, redirecting what the firm had planned to build."
+          ]
+        }
+      ]
+    },
+    {
+      "company": "Parental Leave",
+      "role": "",
+      "startDate": "Jul 2025",
+      "endDate": "Dec 2025",
+      "bullets": []
+    },
+    {
+      "company": "Vividly",
+      "role": "Senior Product Designer",
+      "industry": "CPG trade promotion",
+      "location": "Remote",
+      "startDate": "Jun 2023",
+      "endDate": "Jul 2025",
+      "bullets": [
+        "Owned multi-product-area design for a financial analytics platform tracking thousands of products, promotions, budgets, and forecasts.",
+        "Led a design system team of 2 designers and 5 engineers, writing the contribution guidelines and governance that drove org-wide adoption and reduced platform bugs 14% without dedicated engineering resources.",
+        "Introduced pre/post-mortems and formalized documentation where none existed; adopted across the full product and engineering org, not just design.",
+        "Cut user-error support requests ~35% and saved staff 4 hours/week through customized reports, bulk actions, automations, and improved validation."
+      ]
+    },
+    {
+      "company": "Innodata & Spark Hire",
+      "role": "Senior Product Designer",
+      "industry": "Data services \u00b7 HR tech",
+      "via": "Concurrent contracts",
+      "location": "Remote",
+      "startDate": "Jan 2023",
+      "endDate": "May 2023",
+      "bullets": [
+        "Innodata: led mixed-method discovery for a human-in-the-loop medical document tool, diagnosing a data-entry error pattern and defining an automation-first redesign. Spark Hire: built the company's first design system and shipped onboarding and reference-checking features that reduced setup abandonment."
+      ]
+    },
+    {
+      "company": "Dataminr",
+      "role": "Senior Product Designer",
+      "industry": "Risk & crisis intelligence",
+      "location": "Remote",
+      "startDate": "Jun 2020",
+      "endDate": "Oct 2022",
+      "bullets": [
+        "Diagnosed extensibility as the platform's core gap where others saw feature requests: designed Custom Monitoring Settings to accept any value type. Cut configuration time 65% and support tickets 45% on a platform serving 300,000+ analysts.",
+        "Led discovery across 8 managers at 5 enterprise customers, reframing an unresolved organizational debate and securing roadmap resources."
+      ]
+    },
+    {
+      "company": "Wellhub",
+      "role": "Senior Product Designer",
+      "industry": "Corporate wellness",
+      "startDate": "Sep 2019",
+      "endDate": "Apr 2020",
+      "bullets": [
+        "Partnered with the Data team to ship an ML-based model flagging fraudulent partner check-ins, exposing six figures of annual payout risk."
+      ]
+    },
+    {
+      "company": "Signafire",
+      "role": "Product Designer",
+      "industry": "Intelligence analytics",
+      "startDate": "Jan 2019",
+      "endDate": "Jul 2019",
+      "bullets": [
+        "Owned end-to-end design for data collection and alerting for a ~30-person analyst team, and mentored a junior designer who was promoted within the year."
+      ]
+    },
+    {
+      "company": "W. W. Norton & Co.",
+      "role": "UX Designer & Web Designer",
+      "industry": "Academic & trade publishing",
+      "startDate": "Dec 2010",
+      "endDate": "Dec 2018",
+      "bullets": [
+        "Led end-to-end design of a learning management system used by 15+ universities, supporting students, instructors, and administrators.",
+        "Established an accessibility-focused design system and designed digital asset management workflows."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "B.F.A. New Media Design",
+      "institution": "Rochester Institute of Technology",
+      "year": "2008"
+    }
+  ],
+  "skills": [
+    {
+      "category": "Design",
+      "items": [
+        "Information Architecture",
+        "Data Visualization",
+        "Design Systems",
+        "User Research",
+        "Accessibility",
+        "Prototyping"
+      ]
+    },
+    {
+      "category": "Design Engineering",
+      "items": [
+        "Astro",
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "Design Tokens (W3C JSON)",
+        "Git",
+        "Figma",
+        "Vercel",
+        "Cloudflare",
+        "GitHub Actions"
+      ]
+    },
+    {
+      "category": "Research & Analytics",
+      "items": [
+        "UserTesting",
+        "FigJam",
+        "Mixpanel",
+        "Looker",
+        "Tableau"
+      ]
+    },
+    {
+      "category": "AI",
+      "items": [
+        "Claude Skills",
+        "Claude Code",
+        "MCP (Model Context Protocol)",
+        "Human-in-the-Loop Product Design"
+      ]
+    }
+  ]
+}

@@ -424,9 +424,12 @@ describe("designed PDF acceptance fixture (two-column, 2026-08-19)", () => {
 
   before(async () => {
     const raw = JSON.parse(
-      await readFile(join(root, "handoff/2026-08-19-two-column/master-clean-fixture.json"), "utf8"),
+      await readFile(join(root, "fixtures/two-column-acceptance.json"), "utf8"),
     );
     // Validates as-is — no fixture edits allowed to make this pass.
+    // This is the scrubbed twin of handoff/2026-08-19-two-column/master-clean-fixture.json:
+    // identical layout-bearing content, with phone/location/password faked because
+    // this repo is public. Keep the two in sync when the design changes.
     const data = ResumeSchema.parse(raw);
     browser = await puppeteer.launch({ headless: true });
     const tmpDir = await mkdtemp(join(tmpdir(), "cvgen-fixture-"));

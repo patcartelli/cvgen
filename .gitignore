@@ -19,3 +19,11 @@ Thumbs.db
 
 # Puppeteer Chromium cache (Phase 2+)
 .cache/
+
+# Local handoff packages — contain unscrubbed personal data (public repo)
+handoff/
+output/
+
+# Real-data fixtures and generated PDFs — never commit (public repo)
+fixtures/patrick-master-*.json
+fixtures/*.pdf
