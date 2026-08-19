@@ -456,7 +456,10 @@ describe("designed PDF acceptance fixture (two-column, 2026-08-19)", () => {
   });
 
   it("preserves en dashes in date ranges", () => {
-    assert.ok(extractedText.includes("Jan 2026 \u2013 Present"), "en-dash date range must survive");
+    assert.ok(
+      extractedText.includes("January 2026 \u2013 Present"),
+      "en-dash date range must survive",
+    );
   });
 
   it("renders the contact headline under the name", () => {
