@@ -4,8 +4,8 @@ milestone: v1.1
 milestone_name: Typography & Workflow Improvements
 status: Awaiting next milestone
 stopped_at: Phase 6 context gathered
-last_updated: "2026-08-19T18:57:00.000Z"
-last_activity: 2026-08-19 - Completed quick task 260819-kkx: two-column designed template ported
+last_updated: "2026-08-19T20:15:00.000Z"
+last_activity: 2026-08-19 - Completed quick task 260819-ky9: extraction working end to end; handoff steps 1-5 all done
 progress:
   total_phases: 3
   completed_phases: 3
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-07-30)
 Phase: Milestone v1.1 complete
 Plan: —
 Status: Awaiting next milestone
-Last activity: 2026-08-19 - Completed quick task 260819-kkx: two-column designed template ported
+Last activity: 2026-08-19 - Completed quick task 260819-ky9: extraction working end to end; handoff steps 1-5 all done
 
 ## Performance Metrics
 
@@ -95,6 +95,7 @@ None.
 | 260731-j41 | Add additionalExperience field for Additional Experience section | 2026-07-31 | 663018d | [260731-j41-add-additionalexperience-field-to-schema](./quick/260731-j41-add-additionalexperience-field-to-schema/) |
 | 260819-i5h | Nested engagements, selectedWork header, en dashes, 2-page designed PDF | 2026-08-19 | 374cb4a | [260819-i5h-schema-template-nested-engagements-under](./quick/260819-i5h-schema-template-nested-engagements-under/) |
 | 260819-kkx | Port approved two-column designed template + schema fields (handoff steps 1-2) | 2026-08-19 | 8778fb7 | [260819-kkx-port-approved-two-column-designed-templa](./quick/260819-kkx-port-approved-two-column-designed-templa/) |
+| 260819-ky9 | Master markdown conventions, extraction fixes, full run (handoff steps 3-5) | 2026-08-19 | 898ff4d | [260819-ky9-master-markdown-industry-via-convention-](./quick/260819-ky9-master-markdown-industry-via-convention-/) |
 
 ## Deferred Items
 
@@ -112,7 +113,7 @@ Items acknowledged and deferred at milestone close on 2026-07-28:
 ## Session Continuity
 
 Last session: 2026-08-19
-Stopped at: Completed quick task 260819-kkx: two-column template ported; handoff steps 3-5 (master markdown, extraction iteration, full run) still open
+Stopped at: Completed quick task 260819-ky9: all five handoff steps done; open items are copy decisions listed in the 260819-ky9 summary
 
 ## Operator Next Steps
 
