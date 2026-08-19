@@ -10,7 +10,7 @@ cvgen is a CLI tool that turns an Obsidian-native markdown resume note into two 
 ### Constraints
 
 - **Tech stack**: TypeScript CLI (no web framework), Claude API client for parsing, Puppeteer for PDF rendering — Why: v1 ships no web routes, so a framework like Next.js adds toolchain weight without user-facing benefit
-- **Output format**: No images, no multi-column layouts in either PDF — Why: keeps the ATS-clean PDF machine-readable and keeps both renderers structurally simple
+- **Output format**: No images in either PDF. The ATS-clean PDF must stay single-column with no tables — Why: that is what keeps it machine-readable. The designed PDF may be multi-column and as of 2026-08-19 ships an approved two-column layout with a right rail.
 - **Secrets**: Claude API key must come from an environment variable — Why: this repo is public (portfolio piece); no credentials can ever be committed
 <!-- GSD:project-end -->
 

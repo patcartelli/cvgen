@@ -36,7 +36,7 @@ Known tech debt being resolved in v1.1:
 - [x] User can run `cvgen <path> --validate-only` to extract structured JSON from a markdown resume via Claude API — Phase 02 (2026-07-28)
 - [x] CLI parses the markdown resume via the Claude API into structured JSON (contact, summary, experience, education, skills) — Phase 02 (2026-07-28)
 - [x] CLI reads the Claude API key from an environment variable (never hardcoded, never prompted interactively) — Phase 02 (2026-07-28)
-- [x] CLI renders the structured JSON into a designed single-column typographic PDF (no images, no multi-column layout) — Phase 03 (2026-07-28)
+- [x] CLI renders the structured JSON into a designed typographic PDF (no images) — Phase 03 (2026-07-28); layout became two-column with a right rail on 2026-08-19
 - [x] CLI renders the structured JSON into a simplified single-column ATS-clean PDF, visually distinct from the designed PDF — Phase 03 (2026-07-28)
 - [x] Single `cvgen <path>` command writes both PDFs to disk and exits cleanly — Phase 04 (2026-07-28)
 - [x] Invalid/missing path and missing API key exit 1 with human-readable errors (no stack traces) — Phase 04 (2026-07-28)
@@ -79,7 +79,7 @@ Known tech debt being resolved in v1.1:
 ## Constraints
 
 - **Tech stack**: TypeScript CLI (no web framework), Claude API client for parsing, Puppeteer for PDF rendering — v1 ships no web routes
-- **Output format**: No images, no multi-column layouts in either PDF — keeps ATS PDF machine-readable
+- **Output format**: No images in either PDF. The ATS PDF must stay single-column, no tables, no multi-column layout — that is what keeps it machine-readable. The designed PDF may use multi-column layout (superseded 2026-08-19, STC handoff: it now ships an approved two-column layout with a right rail).
 - **Secrets**: Claude API key from environment variable only — repo is public
 
 ## Key Decisions
