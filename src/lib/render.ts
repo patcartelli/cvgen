@@ -127,9 +127,6 @@ function designedHtmlTemplate(data: ResumeData, opts: DesignedOpts = {}): string
   // inside one. Nesting is what keeps a consultancy's engagements from reading
   // as parallel jobs.
   function renderEntry(exp: ExperienceEntry, nested: boolean): string {
-    // Employment type is only worth calling out when it is a contract.
-    // Full-time is the assumed default and renders nothing. No parentheses.
-    const typeBadge = exp.type === "contract" ? `<span class="type-badge">Contract</span>` : "";
     const industryChip = exp.industry
       ? `<span class="exp-industry">${escapeHtml(exp.industry)}</span>`
       : "";
@@ -138,15 +135,11 @@ function designedHtmlTemplate(data: ResumeData, opts: DesignedOpts = {}): string
       exp.role ? escapeHtml(exp.role) : "",
       exp.location ? escapeHtml(exp.location) : "",
       via,
-      typeBadge,
       dateRange(exp.startDate, exp.endDate),
     ].filter(Boolean);
     const bulletsHtml = (exp.bullets ?? [])
       .map((b) => `<li>${escapeHtml(b)}</li>`)
       .join("\n          ");
-    const caseStudyHtml = exp.caseStudy
-      ? `<div class="case-study">Case study: ${urlWithPassword(exp.caseStudy, true)}</div>`
-      : "";
     // Industry sits beside the company name, not in the meta line.
     const companyIndustry = industryChip ? `<span class="dot">&middot;</span>${industryChip}` : "";
     const engagementsHtml = (exp.engagements ?? [])
@@ -156,7 +149,6 @@ function designedHtmlTemplate(data: ResumeData, opts: DesignedOpts = {}): string
         <div class="exp-company">${escapeHtml(exp.company)}${companyIndustry}</div>
         <div class="exp-meta">${metaParts.join('<span class="dot">&middot;</span>')}</div>
         ${exp.bullets && exp.bullets.length > 0 ? `<ul>\n          ${bulletsHtml}\n        </ul>` : ""}
-        ${caseStudyHtml}
         ${engagementsHtml}
       </div>`;
   }
@@ -328,14 +320,12 @@ function designedHtmlTemplate(data: ResumeData, opts: DesignedOpts = {}): string
     margin-bottom: 2px; break-after: avoid;
   }
   .dot { margin: 0 6px; }
-  .type-badge { color: var(--faint); }
   .exp-industry { font-size: var(--s); line-height: var(--s-lh); color: var(--faint); font-weight: 400; }
   .exp-via { color: var(--faint); }
   ul { padding-left: 16px; margin: 0; }
   li { font-size: var(--s); line-height: var(--s-lh); color: var(--muted); margin-bottom: 3px;
        break-inside: avoid; }
   li::marker { color: var(--bullet); }
-  .case-study { font-size: var(--s); line-height: var(--s-lh); color: var(--faint); margin-top: 4px; }
   .additional-experience { margin-top: 20px; }
   .additional-experience-label { font-size: 14px; line-height: 21px; font-weight: 500; break-after: avoid; }
 
@@ -410,23 +400,15 @@ function atsHtmlTemplate(data: ResumeData): string {
 
   const experienceHtml = experience
     .map((exp) => {
-      // Employment type matches the designed template: full-time is the assumed
-      // default and renders nothing, contract renders as plain text.
-      const typeLabel = exp.type === "contract" ? "Contract" : "";
       const bulletsHtml = exp.bullets.map((b) => `<li>${escapeHtml(b)}</li>`).join("\n        ");
-      const caseStudyHtml = exp.caseStudy
-        ? `<p class="case-study">Case study: ${urlWithPassword(exp.caseStudy, false)}</p>`
-        : "";
       const headingParts = [
         exp.role ? `<strong>${escapeHtml(exp.role)}</strong>` : "",
         escapeHtml(exp.company),
-        typeLabel,
         dateRange(exp.startDate, exp.endDate),
       ].filter(Boolean);
       const parentHtml = `<div class="experience-entry">
       <p>${headingParts.join(" | ")}</p>
       ${exp.bullets.length > 0 ? `<ul>\n        ${bulletsHtml}\n      </ul>` : ""}
-      ${caseStudyHtml}
     </div>`;
       const engagementsHtml = (exp.engagements ?? [])
         .map((eng) => {

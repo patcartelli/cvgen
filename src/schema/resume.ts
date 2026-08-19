@@ -46,19 +46,17 @@ const experienceBase = {
   location: z.string().describe("Where performed, e.g. 'Remote'. Omit if absent.").optional(),
   startDate: z.string(),
   endDate: z.string().optional(),
-  type: z.enum(["full-time", "contract"]).optional(),
   bullets: z
     .array(z.string())
     .describe("Only this employer's own bullets, not a nested client's. Never invent."),
-  caseStudy: CaseStudySchema.describe("Case-study URL for this role only.").optional(),
 };
 
 // Deliberately a SUBSET of experienceBase, not all of it. Duplicating every
 // field into the nested object pushes the generated JSON schema past the
 // structured-output API's complexity limit ("Schema is too complex", a 400 that
-// arrives ~30s into the request). location/type/caseStudy are dropped because no
-// engagement has ever carried them; industry and via are kept because the
-// acceptance fixture needs both on Bluefish AI.
+// arrives ~30s into the request). `location` is dropped because no engagement has
+// ever carried one; industry and via are kept because the acceptance fixture
+// needs both on Bluefish AI.
 const EngagementSchema = z
   .object({
     role: experienceBase.role,
@@ -114,10 +112,7 @@ export const ResumeSchema = z.object({
 // (a 400 that can take ~30s to come back). ResumeSchema stays the full contract
 // for validation, typing, and rendering; extraction sends this leaner twin.
 //
-// Dropped here: `type` and `caseStudy`, which no resume in this project has ever
-// populated, and which the markdown master expresses in prose anyway ("Concurrent
-// Contracts" arrives via `via`). Both remain in ResumeSchema, so hand-authored
-// JSON can still use them. Every dropped field is optional, so anything this
+// Every field it omits relative to ResumeSchema is optional, so anything this
 // schema produces still satisfies ResumeSchema.
 //
 // If you add a field here, re-check the complexity limit — it is close.
