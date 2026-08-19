@@ -71,11 +71,24 @@ now fails locally instead of against a live 400 thirty seconds in.
 
 ## Follow-up decisions (resolved 2026-08-19)
 
-1. **Two industry labels still need Patrick's eye.** The handoff flagged
-   Vividly = "CPG trade promotion" and Signafire = "Intelligence analytics" as
-   session inferences. Both are written into the master and print on every
-   resume. Patrick is verifying and correcting them in the markdown directly.
-   OPEN, with Patrick.
+1. **Industry labels verified and corrected by Patrick.** RESOLVED. Four of the
+   eight were rewritten in the master:
+   - Vividly: "CPG trade promotion" -> "Trade promotion management"
+   - Signafire: "Intelligence analytics" -> "Data analytics"
+   - Dataminr: "Risk & crisis intelligence" -> "Event, threat & risk
+     intelligence" (verbatim from Dataminr's own positioning)
+   - Wellhub: "Corporate wellness" -> "Corporate wellbeing platform"
+
+   Note on Wellhub: the label describes the company as it is today. During
+   Patrick's 2019-2020 tenure it was Gympass, closer to a corporate gym benefit;
+   the rebrand and the broader wellbeing expansion both came in 2024. Chosen
+   deliberately, since the master lists the company under its current name.
+
+   Case convention: sentence case, matching the approved render. Confirmed and
+   left as-is 2026-08-19 — the company name beside it is already distinguished
+   by size, weight, and colour, so sentence case keeps the industry reading as a
+   description rather than part of the name. Title case is reserved for section
+   headers and rail labels.
 2. **Full month names confirmed as the standard.** No code change needed, the
    master already spells them out. The committed acceptance fixture did not, so
    it was guarding output nobody ships; all 18 of its date values and the
