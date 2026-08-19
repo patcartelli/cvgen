@@ -2,7 +2,7 @@
 quick_id: 260819-ky9
 date: 2026-08-19
 status: complete
-commit: 898ff4d
+commits: 898ff4d, edcc0ff, 3a20ff2
 scope: handoff steps 3-5
 ---
 
@@ -69,17 +69,20 @@ now fails locally instead of against a live 400 thirty seconds in.
 | ATS PDF | 2 pages, 0 em dashes, 10 en dashes |
 | Test suite | 66/66 |
 
-## Open items for Patrick
+## Follow-up decisions (resolved 2026-08-19)
 
-1. **Two industry labels were never line-item verified.** The handoff flagged
+1. **Two industry labels still need Patrick's eye.** The handoff flagged
    Vividly = "CPG trade promotion" and Signafire = "Intelligence analytics" as
-   session inferences. They are now written into the master and will print on
-   every resume. Worth a read.
-2. **Dates print as full month names** ("January 2026 – Present") because the
-   master spells them out, while the approved render used abbreviations
-   ("Jan 2026"). Still 2 pages either way. Changing it means editing the master.
-3. **Phone renders as `+1-555-010-1234`** (hyphens, from the frontmatter) where
-   the approved render showed spaces. The master's own contact line uses spaces;
-   extraction takes the frontmatter value.
-4. `type` and `caseStudy` are now unreachable by extraction. They still validate
-   and render from hand-authored JSON, but no markdown convention feeds them.
+   session inferences. Both are written into the master and print on every
+   resume. Patrick is verifying and correcting them in the markdown directly.
+   OPEN, with Patrick.
+2. **Full month names confirmed as the standard.** No code change needed, the
+   master already spells them out. The committed acceptance fixture did not, so
+   it was guarding output nobody ships; all 18 of its date values and the
+   en-dash assertion were expanded to match (edcc0ff). Still exactly 2 pages.
+3. **Hyphenated phone accepted** as-is. No change.
+4. **`type` and `caseStudy` removed entirely** (3a20ff2). Neither could be
+   populated from markdown, and both carried schema weight plus template
+   branches for nothing. `type` was redundant with `via`; `caseStudy` was
+   redundant with the header-level `selectedWork`. CaseStudySchema survives
+   because selectedWork uses it. Re-verified end to end after removal.
