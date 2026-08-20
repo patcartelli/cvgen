@@ -37,11 +37,11 @@ patterns-established:
   - "Pure routing helper with no process/fs/console; CLI owns error: prefix and trailing newline"
   - "TTY-only readline: flags bypass prompts; non-TTY without flags fails fast"
 
-requirements-completed: []  # STC-230 pending Task 3 human-verify
+requirements-completed: [STC-230]
 
 # Metrics
 duration: 5min
-completed: 2026-08-20  # paused at Task 3 checkpoint — not marked complete
+completed: 2026-08-20
 ---
 
 # Phase quick-260820-mct Plan 01: Add --company / --no-company flags Summary
@@ -52,8 +52,8 @@ completed: 2026-08-20  # paused at Task 3 checkpoint — not marked complete
 
 - **Duration:** 5 min
 - **Started:** 2026-08-20T20:12:31Z
-- **Completed:** 2026-08-20T20:17:11Z (Tasks 1–2 only; Task 3 waiting on human)
-- **Tasks:** 2 of 3 auto tasks complete; Task 3 checkpoint:human-verify pending
+- **Completed:** 2026-08-20T20:30:00Z
+- **Tasks:** 3 of 3 complete (Task 3 human-verify approved)
 - **Files modified:** 5
 
 ## Accomplishments
@@ -74,9 +74,9 @@ Each task was committed atomically (TDD: RED then GREEN):
 2. **Task 2: Wire --company / --no-company into the CLI and replace the piped-prompt tests**
    - `b78d2e1` test(quick-260820-mct-01): replace piped-prompt tests with flag coverage
    - `1ad07f2` feat(quick-260820-mct-01): add --company and --no-company CLI flags
-3. **Task 3: Confirm the interactive TTY path is unchanged** — not committed; waiting on human verification
+3. **Task 3: Confirm the interactive TTY path is unchanged** — human approved 2026-08-20 (all six verification steps)
 
-**Plan metadata:** not committed by this executor (orchestrator owns the docs commit)
+**Plan metadata:** `f2298a9` (docs: plan); summary/STATE committed by orchestrator
 
 ## Files Created/Modified
 
@@ -111,25 +111,10 @@ None - no external service configuration required.
 
 ## Next Phase Readiness
 
-**Not ready to close.** Task 3 is `checkpoint:human-verify` and blocking. Automated coverage cannot allocate a TTY, so the v1.1 interactive prompt, empty-slug `!!!` guard, and live flag paths need a human pass.
-
-### Task 3 waiting — how to verify
-
-From the repo root in a normal interactive terminal, with `ANTHROPIC_API_KEY` exported:
-
-1. `npx tsx src/cli/index.ts <your-resume.md>` — both questions must appear as they did in v1.1. Answer `y`, then `Acme Corp`. Expect both PDFs in `output/Acme-Corp/`.
-2. Run it again and answer `n`. Expect both PDFs in bare `output/`.
-3. Run it again, answer `y`, then enter `!!!`. Expect exit 1 with "Company name must contain at least one letter or digit."
-4. `npx tsx src/cli/index.ts <your-resume.md> --company "Acme Corp"` — no questions, PDFs land in `output/Acme-Corp/`.
-5. `npx tsx src/cli/index.ts <your-resume.md> --no-company` — no questions, PDFs land in `output/`.
-6. `npx tsx src/cli/index.ts <your-resume.md> < /dev/null` — must exit 1 immediately naming both flags, with no hang and no `output/` directory created.
-
-Step 1 and step 3 are the ones that matter most: they prove the pre-buffered readline queue still works where it is actually used.
-
-**Resume signal:** Type "approved", or describe which step misbehaved.
+Ready. Operator approved all six Task 3 TTY checks on 2026-08-20: interactive y/Acme Corp, interactive n, empty-slug `!!!` guard, `--company`, `--no-company`, and non-TTY fail-fast via `/dev/null`.
 
 ---
 *Phase: quick-260820-mct*
-*Paused: 2026-08-20 (Task 3 human-verify)*
+*Completed: 2026-08-20*
 
 ## Self-Check: PASSED
