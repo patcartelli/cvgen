@@ -243,7 +243,11 @@ describe("CLI entry point (src/cli/index.ts)", () => {
         envWithDummyKey(),
         tmpCwd,
       );
-      assert.equal(status, 1, `expected exit 1 — got ${status}. stdout: ${stdout} stderr: ${stderr}`);
+      assert.equal(
+        status,
+        1,
+        `expected exit 1 — got ${status}. stdout: ${stdout} stderr: ${stderr}`,
+      );
       const output = stdout + stderr;
       assert.ok(
         output.includes("at least one letter or digit"),
@@ -259,7 +263,11 @@ describe("CLI entry point (src/cli/index.ts)", () => {
         envWithDummyKey(),
         tmpCwd,
       );
-      assert.equal(status, 1, `expected exit 1 — got ${status}. stdout: ${stdout} stderr: ${stderr}`);
+      assert.equal(
+        status,
+        1,
+        `expected exit 1 — got ${status}. stdout: ${stdout} stderr: ${stderr}`,
+      );
       const output = stdout + stderr;
       assert.ok(
         output.includes("cannot be used together"),
@@ -271,7 +279,11 @@ describe("CLI entry point (src/cli/index.ts)", () => {
     it("Test 13: no routing flag and non-TTY stdin exits 1 naming both flags", () => {
       const tmpCwd = mkdtempSync(join(tmpdir(), "cvgen-test-"));
       const { stdout, stderr, status } = runCli([fixturePath], envWithDummyKey(), tmpCwd);
-      assert.equal(status, 1, `expected exit 1 — got ${status}. stdout: ${stdout} stderr: ${stderr}`);
+      assert.equal(
+        status,
+        1,
+        `expected exit 1 — got ${status}. stdout: ${stdout} stderr: ${stderr}`,
+      );
       const output = stdout + stderr;
       assert.ok(
         output.includes("--company") && output.includes("--no-company"),
@@ -284,7 +296,7 @@ describe("CLI entry point (src/cli/index.ts)", () => {
       const src = readFileSync(cliSrcPath, "utf8");
       assert.ok(src.includes("lineBuffer"), "must retain lineBuffer pre-buffering queue");
       assert.ok(src.includes("waitingResolver"), "must retain waitingResolver");
-      assert.ok(src.includes('rl.on("line"'), "must retain rl.on(\"line\" listener");
+      assert.ok(src.includes('rl.on("line"'), 'must retain rl.on("line" listener');
     });
   });
 });

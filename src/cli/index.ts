@@ -8,7 +8,13 @@ import { Command } from "commander";
 import puppeteer from "puppeteer";
 import { extractResume } from "../lib/extract.js";
 import { preflightCheck } from "../lib/preflight.js";
-import { renderAts, renderDesigned, resolveOutputPaths, toCompanySlug } from "../lib/render.js";
+import {
+  renderAts,
+  renderDesigned,
+  resolveCompanyRouting,
+  resolveOutputPaths,
+  toCompanySlug,
+} from "../lib/render.js";
 
 const INIT_TEMPLATE = `---
 name: Your Name
@@ -45,6 +51,11 @@ Mar 2020 – Dec 2022 · City, State
 **Category:** Item, Item, Item
 `;
 
+// Commander writes --company and --no-company to the same options.company key,
+// so .conflicts() cannot separate them. These option: listeners are the presence signal.
+let companyFlagValue: string | undefined;
+let noCompanyFlagSeen = false;
+
 const program = new Command();
 
 program
@@ -56,6 +67,8 @@ program
   .option("--verbose", "dump raw Claude API response and validated JSON to stderr")
   .option("--validate-only", "extract and validate JSON, skip PDF rendering")
   .option("--dry-run", "alias for --validate-only")
+  .option("--company <name>", "route output to output/<Company-Slug>/ without prompting")
+  .option("--no-company", "write output to bare output/ without prompting")
   .addHelpText(
     "after",
     `
@@ -63,6 +76,8 @@ Examples:
   cvgen ./my-resume.md
   cvgen ./my-resume.md --verbose
   cvgen ./my-resume.md --validate-only
+  cvgen ./my-resume.md --company "Acme Corp"
+  cvgen ./my-resume.md --no-company
   cvgen init ./my-resume.md`,
   )
   .action(
@@ -105,68 +120,86 @@ Examples:
         program.error("Preflight checks failed.", { exitCode: 1 });
       }
 
-      // Step D.5 — prompt for output routing (readline released in finally — prevents process hang)
-      // Pre-buffers all arriving 'line' events so piped input (e.g. printf "y\nAcme Corp\n" | ...)
-      // is never lost to a race between the 'close' event and the next ask() call.
-      // In TTY mode, 'line' events fire only when the user presses Enter — same behaviour as before.
-      const rl = createInterface({ input: process.stdin, output: process.stdout });
-      const lineBuffer: string[] = [];
-      let waitingResolver: ((line: string) => void) | null = null;
-      rl.on("line", (line) => {
-        if (waitingResolver !== null) {
-          const res = waitingResolver;
-          waitingResolver = null;
-          res(line);
-        } else {
-          lineBuffer.push(line);
-        }
-      });
-      rl.on("close", () => {
-        if (waitingResolver !== null) {
-          const res = waitingResolver;
-          waitingResolver = null;
-          res("");
-        }
-      });
-      const ask = (prompt: string): Promise<string> => {
-        process.stdout.write(prompt);
-        if (lineBuffer.length > 0) return Promise.resolve(lineBuffer.shift() ?? "");
-        return new Promise<string>((resolve) => {
-          waitingResolver = resolve;
-        });
-      };
-      let outputDir!: string; // assigned in all non-error try paths; emptySlug guard exits before use
+      // Step D.5 — resolve output routing (flags first; prompt only on a TTY)
+      let outputDir!: string; // assigned in all non-error paths; emptySlug guard exits before use
       let companySlug: string | undefined;
-      let emptySlug = false;
-      try {
-        const tailored = await ask("Is this resume tailored for a specific company? (y/n): ");
-        if (tailored.trim().toLowerCase().startsWith("y")) {
-          const company = await ask("Company name: ");
-          const slug = toCompanySlug(company.trim());
-          if (!slug) {
-            emptySlug = true;
-          } else {
-            companySlug = slug;
-            outputDir = join(process.cwd(), "output", slug);
-          }
-        } else {
-          outputDir = join(process.cwd(), "output");
-        }
-      } finally {
-        rl.close();
-      }
-      if (emptySlug) {
-        // writeSync commits to OS pipe buffer synchronously (no stream flush race).
-        // Destroying stdin lets the event loop drain so process.exitCode=1 takes effect cleanly
-        // rather than forcing process.exit() from inside the top-level-await async context (which
-        // emits "Unfinished Top-Level Await" exit code 13 and can drop buffered writes).
-        writeSync(
-          process.stderr.fd,
-          "error: Company name must contain at least one letter or digit.\n",
-        );
+      const routing = resolveCompanyRouting({
+        company: companyFlagValue,
+        noCompany: noCompanyFlagSeen,
+        stdinIsTty: process.stdin.isTTY === true,
+      });
+      if (routing.kind === "error") {
+        writeSync(process.stderr.fd, `error: ${routing.message}\n`);
         process.exitCode = 1;
         process.stdin.destroy();
         return;
+      }
+      if (routing.kind === "company") {
+        companySlug = routing.slug;
+        outputDir = join(process.cwd(), "output", routing.slug);
+      } else if (routing.kind === "bare") {
+        outputDir = join(process.cwd(), "output");
+      } else {
+        // Pre-buffers all arriving 'line' events so piped input (e.g. printf "y\nAcme Corp\n" | ...)
+        // is never lost to a race between the 'close' event and the next ask() call.
+        // In TTY mode, 'line' events fire only when the user presses Enter — same behaviour as before.
+        const rl = createInterface({ input: process.stdin, output: process.stdout });
+        const lineBuffer: string[] = [];
+        let waitingResolver: ((line: string) => void) | null = null;
+        rl.on("line", (line) => {
+          if (waitingResolver !== null) {
+            const res = waitingResolver;
+            waitingResolver = null;
+            res(line);
+          } else {
+            lineBuffer.push(line);
+          }
+        });
+        rl.on("close", () => {
+          if (waitingResolver !== null) {
+            const res = waitingResolver;
+            waitingResolver = null;
+            res("");
+          }
+        });
+        const ask = (prompt: string): Promise<string> => {
+          process.stdout.write(prompt);
+          if (lineBuffer.length > 0) return Promise.resolve(lineBuffer.shift() ?? "");
+          return new Promise<string>((resolve) => {
+            waitingResolver = resolve;
+          });
+        };
+        let emptySlug = false;
+        try {
+          const tailored = await ask("Is this resume tailored for a specific company? (y/n): ");
+          if (tailored.trim().toLowerCase().startsWith("y")) {
+            const company = await ask("Company name: ");
+            const slug = toCompanySlug(company.trim());
+            if (!slug) {
+              emptySlug = true;
+            } else {
+              companySlug = slug;
+              outputDir = join(process.cwd(), "output", slug);
+            }
+          } else {
+            outputDir = join(process.cwd(), "output");
+          }
+        } finally {
+          rl.close();
+        }
+        if (emptySlug) {
+          // writeSync commits to OS pipe buffer synchronously (no stream flush race).
+          // Destroying stdin lets the event loop drain so process.exitCode=1 takes effect cleanly
+          // rather than forcing process.exit() from inside the top-level-await async context (which
+          // emits "Unfinished Top-Level Await" exit code 13 and can drop buffered writes).
+          writeSync(
+            process.stderr.fd,
+            "error: Company name must contain at least one letter or digit.\n",
+          );
+          process.exitCode = 1;
+          process.stdin.destroy();
+          return;
+        }
       }
 
       // mkdir only when PDFs will actually be written
@@ -225,6 +258,13 @@ program
       );
     }
   });
+
+program.on("option:company", (value: string) => {
+  companyFlagValue = value;
+});
+program.on("option:no-company", () => {
+  noCompanyFlagSeen = true;
+});
 
 await program.parseAsync().catch((err: unknown) => {
   console.error(err instanceof Error ? err.message : String(err));
