@@ -32,26 +32,34 @@ export function toNameSlug(name: string): string {
 }
 
 /**
- * Pure helper: derives the two PDF output paths from candidate name + output directory.
+ * Pure helper: derives the designed PDF path plus the four ATS-family paths
+ * (pdf/html/txt/md) from candidate name + output directory.
  * Optional companySlug and date (YYYY-MM-DD) are appended to the filename when provided.
  *   resolveOutputPaths("Pat Cartelli", "/out/Acme-Corp", "Acme-Corp", "2026-07-31")
  *   → { designed: "/out/Acme-Corp/pat_cartelli-resume-Acme-Corp-2026-07-31.pdf",
- *        ats:      "/out/Acme-Corp/pat_cartelli-resume-Acme-Corp-2026-07-31-ats.pdf" }
+ *        ats:      "/out/Acme-Corp/pat_cartelli-resume-Acme-Corp-2026-07-31-ats.pdf",
+ *        atsHtml:  "/out/Acme-Corp/pat_cartelli-resume-Acme-Corp-2026-07-31-ats.html",
+ *        atsTxt:   "/out/Acme-Corp/pat_cartelli-resume-Acme-Corp-2026-07-31-ats.txt",
+ *        atsMd:    "/out/Acme-Corp/pat_cartelli-resume-Acme-Corp-2026-07-31-ats.md" }
  */
 export function resolveOutputPaths(
   candidateName: string,
   outputDir: string,
   companySlug?: string,
   date?: string,
-): { designed: string; ats: string } {
+): { designed: string; ats: string; atsHtml: string; atsTxt: string; atsMd: string } {
   const nameSlug = toNameSlug(candidateName);
   const suffix = [companySlug, date]
     .filter(Boolean)
     .map((s) => `-${s}`)
     .join("");
+  const atsStem = `${nameSlug}-resume${suffix}-ats`;
   return {
     designed: join(outputDir, `${nameSlug}-resume${suffix}.pdf`),
-    ats: join(outputDir, `${nameSlug}-resume${suffix}-ats.pdf`),
+    ats: join(outputDir, `${atsStem}.pdf`),
+    atsHtml: join(outputDir, `${atsStem}.html`),
+    atsTxt: join(outputDir, `${atsStem}.txt`),
+    atsMd: join(outputDir, `${atsStem}.md`),
   };
 }
 
@@ -367,7 +375,7 @@ function designedHtmlTemplate(data: ResumeData, opts: DesignedOpts = {}): string
 // No tables, no images, no color, no @import
 // ---------------------------------------------------------------------------
 
-function atsHtmlTemplate(data: ResumeData): string {
+export function atsHtmlTemplate(data: ResumeData): string {
   const {
     contact,
     summary,

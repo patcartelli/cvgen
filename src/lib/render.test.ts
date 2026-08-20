@@ -16,6 +16,7 @@ import puppeteer from "puppeteer";
 import type { ResumeData } from "../schema/resume.js";
 import { ResumeSchema } from "../schema/resume.js";
 import {
+  atsHtmlTemplate,
   renderAts,
   renderDesigned,
   resolveOutputPaths,
@@ -59,6 +60,9 @@ describe("resolveOutputPaths", () => {
       "/some/output/dir/pat_cartelli-resume-ats.pdf",
       "ats path must use name slug with -resume-ats.pdf suffix",
     );
+    assert.equal(paths.atsHtml, "/some/output/dir/pat_cartelli-resume-ats.html");
+    assert.equal(paths.atsTxt, "/some/output/dir/pat_cartelli-resume-ats.txt");
+    assert.equal(paths.atsMd, "/some/output/dir/pat_cartelli-resume-ats.md");
   });
 
   // Test 2: with company slug appended to filename
@@ -74,11 +78,17 @@ describe("resolveOutputPaths", () => {
       "alex_rivera-resume-Acme-Corp-ats.pdf",
       "ats basename must include name and company slug",
     );
+    assert.equal(basename(paths.atsHtml), "alex_rivera-resume-Acme-Corp-ats.html");
+    assert.equal(basename(paths.atsTxt), "alex_rivera-resume-Acme-Corp-ats.txt");
+    assert.equal(basename(paths.atsMd), "alex_rivera-resume-Acme-Corp-ats.md");
     assert.equal(
       dirname(paths.designed),
       dirname(paths.ats),
       "designed and ats must be in the same directory",
     );
+    assert.equal(dirname(paths.atsHtml), dirname(paths.designed));
+    assert.equal(dirname(paths.atsTxt), dirname(paths.designed));
+    assert.equal(dirname(paths.atsMd), dirname(paths.designed));
   });
 
   // Test 3: multi-word name with special chars
@@ -90,6 +100,9 @@ describe("resolveOutputPaths", () => {
       "dots become underscores, hyphens preserved",
     );
     assert.equal(paths.ats, "/out/j_smith-jones-resume-ats.pdf", "ats path uses same slug");
+    assert.equal(paths.atsHtml, "/out/j_smith-jones-resume-ats.html");
+    assert.equal(paths.atsTxt, "/out/j_smith-jones-resume-ats.txt");
+    assert.equal(paths.atsMd, "/out/j_smith-jones-resume-ats.md");
   });
 
   // Test 4: date appended after company slug
@@ -97,6 +110,9 @@ describe("resolveOutputPaths", () => {
     const paths = resolveOutputPaths("Pat Cartelli", "/out/EZCater", "EZCater", "2026-07-31");
     assert.equal(basename(paths.designed), "pat_cartelli-resume-EZCater-2026-07-31.pdf");
     assert.equal(basename(paths.ats), "pat_cartelli-resume-EZCater-2026-07-31-ats.pdf");
+    assert.equal(basename(paths.atsHtml), "pat_cartelli-resume-EZCater-2026-07-31-ats.html");
+    assert.equal(basename(paths.atsTxt), "pat_cartelli-resume-EZCater-2026-07-31-ats.txt");
+    assert.equal(basename(paths.atsMd), "pat_cartelli-resume-EZCater-2026-07-31-ats.md");
   });
 
   // Test 5: date only, no company
@@ -104,6 +120,35 @@ describe("resolveOutputPaths", () => {
     const paths = resolveOutputPaths("Pat Cartelli", "/out", undefined, "2026-07-31");
     assert.equal(basename(paths.designed), "pat_cartelli-resume-2026-07-31.pdf");
     assert.equal(basename(paths.ats), "pat_cartelli-resume-2026-07-31-ats.pdf");
+    assert.equal(basename(paths.atsHtml), "pat_cartelli-resume-2026-07-31-ats.html");
+    assert.equal(basename(paths.atsTxt), "pat_cartelli-resume-2026-07-31-ats.txt");
+    assert.equal(basename(paths.atsMd), "pat_cartelli-resume-2026-07-31-ats.md");
+  });
+});
+
+describe("atsHtmlTemplate persist shape", () => {
+  it("renders all three fixtures without tables or images", async () => {
+    const fixtures = [
+      "sample-resume.json",
+      "ez-cater-tailored.json",
+      "two-column-acceptance.json",
+    ] as const;
+    for (const name of fixtures) {
+      const raw = await readFile(resolve(root, `fixtures/${name}`), "utf8");
+      const data = ResumeSchema.parse(JSON.parse(raw));
+      const html = atsHtmlTemplate(data);
+      assert.ok(html.includes(data.contact.name), `${name} HTML must include contact.name`);
+      assert.ok(!html.includes("&lt;table"), `${name} must not contain an escaped table tag`);
+      assert.ok(!html.includes("&lt;img"), `${name} must not contain an escaped img tag`);
+    }
+    const acceptanceRaw = await readFile(
+      resolve(root, "fixtures/two-column-acceptance.json"),
+      "utf8",
+    );
+    const acceptance = ResumeSchema.parse(JSON.parse(acceptanceRaw));
+    const html = atsHtmlTemplate(acceptance);
+    assert.ok(html.includes("Patrick Cartelli"));
+    assert.ok(html.includes("Senior Product Designer"));
   });
 });
 
