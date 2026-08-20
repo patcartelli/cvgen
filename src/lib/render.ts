@@ -19,6 +19,46 @@ export function toCompanySlug(company: string): string {
     .replace(/\s+/g, "-"); // D-01: collapse space runs to hyphens, preserve case
 }
 
+export type CompanyRouting =
+  | { kind: "company"; slug: string }
+  | { kind: "bare" }
+  | { kind: "prompt" }
+  | { kind: "error"; message: string };
+
+/**
+ * Pure helper: decides output routing from CLI flags + stdin TTY state.
+ * Order is the contract: conflict → --company slug (or empty-name error) →
+ * --no-company bare dir → TTY prompt → non-TTY fail-fast. Messages have no
+ * "error: " prefix and no trailing newline — the CLI caller owns both.
+ */
+export function resolveCompanyRouting(flags: {
+  company?: string;
+  noCompany: boolean;
+  stdinIsTty: boolean;
+}): CompanyRouting {
+  if (flags.company !== undefined && flags.noCompany) {
+    return { kind: "error", message: "--company and --no-company cannot be used together." };
+  }
+  if (flags.company !== undefined) {
+    const slug = toCompanySlug(flags.company);
+    if (!slug) {
+      return { kind: "error", message: "Company name must contain at least one letter or digit." };
+    }
+    return { kind: "company", slug };
+  }
+  if (flags.noCompany) {
+    return { kind: "bare" };
+  }
+  if (flags.stdinIsTty) {
+    return { kind: "prompt" };
+  }
+  return {
+    kind: "error",
+    message:
+      'Cannot prompt for company routing: stdin is not a terminal. Pass --company "Acme Corp" to route output to output/Acme-Corp/, or --no-company to write to output/.',
+  };
+}
+
 /**
  * Pure helper: converts a candidate name to a lowercase underscore file slug.
  * "Pat Cartelli" → "pat_cartelli", "J. Smith-Jones" → "j_smith-jones"

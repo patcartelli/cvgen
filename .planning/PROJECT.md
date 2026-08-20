@@ -59,7 +59,7 @@ Known tech debt being resolved in v1.1:
 
 ### Active (v1.2 — candidates)
 
-- [ ] Non-interactive mode flag (`--company "Acme"`) to skip prompts in CI/scripts
+- [x] Non-interactive mode flag (`--company "Acme"`) to skip prompts in CI/scripts — quick 260820-mct / STC-230 (2026-08-20)
 - [ ] Self-hosted Inter font (remove Google Fonts CDN dependency)
 - [ ] `npm publish` to npm registry so `npx cvgen` works without cloning
 

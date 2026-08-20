@@ -18,6 +18,7 @@ import { ResumeSchema } from "../schema/resume.js";
 import {
   renderAts,
   renderDesigned,
+  resolveCompanyRouting,
   resolveOutputPaths,
   toCompanySlug,
   toNameSlug,
@@ -130,6 +131,102 @@ describe("toCompanySlug", () => {
   it("returns empty string for all-special or empty input (guard case)", () => {
     assert.equal(toCompanySlug("!!!"), "");
     assert.equal(toCompanySlug(""), "");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// resolveCompanyRouting unit tests — pure function, no I/O
+// ---------------------------------------------------------------------------
+
+describe("resolveCompanyRouting", () => {
+  it("routes --company to a company slug", () => {
+    assert.deepEqual(
+      resolveCompanyRouting({ company: "Acme Corp", noCompany: false, stdinIsTty: false }),
+      { kind: "company", slug: "Acme-Corp" },
+    );
+  });
+
+  it("strips special characters from --company before slugging", () => {
+    assert.deepEqual(
+      resolveCompanyRouting({ company: "AT&T", noCompany: false, stdinIsTty: false }),
+      { kind: "company", slug: "ATT" },
+    );
+  });
+
+  it("trims whitespace from --company before slugging", () => {
+    assert.deepEqual(
+      resolveCompanyRouting({ company: "  Acme Corp  ", noCompany: false, stdinIsTty: false }),
+      { kind: "company", slug: "Acme-Corp" },
+    );
+  });
+
+  it("rejects an empty --company value", () => {
+    const result = resolveCompanyRouting({ company: "", noCompany: false, stdinIsTty: false });
+    assert.equal(result.kind, "error");
+    assert.ok(
+      result.kind === "error" && result.message.includes("at least one letter or digit"),
+      `empty-name error must mention letter or digit — got: ${JSON.stringify(result)}`,
+    );
+  });
+
+  it("rejects an all-special --company value with the same empty-name error", () => {
+    const result = resolveCompanyRouting({ company: "!!!", noCompany: false, stdinIsTty: false });
+    assert.equal(result.kind, "error");
+    assert.ok(
+      result.kind === "error" && result.message.includes("at least one letter or digit"),
+      `all-special error must mention letter or digit — got: ${JSON.stringify(result)}`,
+    );
+  });
+
+  it("conflict wins when both flags are present", () => {
+    const result = resolveCompanyRouting({ company: "Acme", noCompany: true, stdinIsTty: false });
+    assert.equal(result.kind, "error");
+    assert.ok(
+      result.kind === "error" && result.message.includes("cannot be used together"),
+      `conflict error must mention cannot be used together — got: ${JSON.stringify(result)}`,
+    );
+  });
+
+  it("conflict wins over the empty-name error when --company is empty and --no-company is set", () => {
+    const result = resolveCompanyRouting({ company: "", noCompany: true, stdinIsTty: false });
+    assert.equal(result.kind, "error");
+    assert.ok(
+      result.kind === "error" && result.message.includes("cannot be used together"),
+      `conflict must win over empty-name — got: ${JSON.stringify(result)}`,
+    );
+    assert.ok(
+      result.kind === "error" && !result.message.includes("at least one letter or digit"),
+      `empty-name wording must not appear on conflict — got: ${JSON.stringify(result)}`,
+    );
+  });
+
+  it("routes --no-company to bare output/", () => {
+    assert.deepEqual(
+      resolveCompanyRouting({ company: undefined, noCompany: true, stdinIsTty: false }),
+      { kind: "bare" },
+    );
+  });
+
+  it("falls through to prompt when neither flag is set and stdin is a TTY", () => {
+    assert.deepEqual(
+      resolveCompanyRouting({ company: undefined, noCompany: false, stdinIsTty: true }),
+      { kind: "prompt" },
+    );
+  });
+
+  it("fails fast when neither flag is set and stdin is not a TTY", () => {
+    const result = resolveCompanyRouting({
+      company: undefined,
+      noCompany: false,
+      stdinIsTty: false,
+    });
+    assert.equal(result.kind, "error");
+    assert.ok(
+      result.kind === "error" &&
+        result.message.includes("--company") &&
+        result.message.includes("--no-company"),
+      `non-TTY error must name both flags — got: ${JSON.stringify(result)}`,
+    );
   });
 });
 

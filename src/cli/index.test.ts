@@ -7,7 +7,7 @@
 
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { afterEach, describe, it } from "node:test";
@@ -188,42 +188,115 @@ describe("CLI entry point (src/cli/index.ts)", () => {
   });
 
   // ---------------------------------------------------------------------------
-  // Step D.5 interactive prompt tests
+  // Step D.5 company routing flags
   // ---------------------------------------------------------------------------
-  describe("Step D.5 interactive prompt", () => {
-    // Test 9: "n" answer passes through prompt; failure is at Step E (API), not Step B (key guard)
-    it("Test 9: 'n' answer at prompt routes to Step E — failure is API rejection, not missing-key error", () => {
-      // Use a temp cwd so mkdir(output/) lands there, not in the project root
+  describe("Step D.5 company routing flags", () => {
+    it('Test 9: --company "Acme Corp" writes to output/Acme-Corp/ with no prompt', () => {
       const tmpCwd = mkdtempSync(join(tmpdir(), "cvgen-test-"));
-      const { stderr, status } = runCli([fixturePath], envWithDummyKey(), tmpCwd, "n\n");
+      const { stdout, stderr, status } = runCli(
+        [fixturePath, "--company", "Acme Corp"],
+        envWithDummyKey(),
+        tmpCwd,
+      );
       assert.notEqual(
         status,
         0,
         `expected non-zero exit (API will reject dummy key) — got ${status}`,
       );
       assert.ok(
+        existsSync(join(tmpCwd, "output", "Acme-Corp")),
+        "must mkdir output/Acme-Corp/ before the API call",
+      );
+      assert.ok(
+        !stdout.includes("tailored for a specific company"),
+        `stdout must not contain the prompt — got: ${stdout}`,
+      );
+      assert.ok(
         !stderr.includes("ANTHROPIC_API_KEY is not set"),
-        `stderr must NOT contain key-guard message — prompt was reached. stderr: ${stderr}`,
+        `stderr must NOT contain key-guard message — routing was reached. stderr: ${stderr}`,
       );
     });
 
-    // Test 10: "y" then all-special company name triggers the empty-slug guard before any API call
-    it("Test 10: 'y' then all-special company name triggers empty-slug guard exit", () => {
+    it("Test 10: --no-company writes to bare output/ with no prompt", () => {
+      const tmpCwd = mkdtempSync(join(tmpdir(), "cvgen-test-"));
+      const { stdout, status } = runCli([fixturePath, "--no-company"], envWithDummyKey(), tmpCwd);
+      assert.notEqual(
+        status,
+        0,
+        `expected non-zero exit (API will reject dummy key) — got ${status}`,
+      );
+      assert.ok(existsSync(join(tmpCwd, "output")), "must mkdir bare output/ before the API call");
+      assert.ok(
+        !existsSync(join(tmpCwd, "output", "Acme-Corp")),
+        "must not create a company subdirectory",
+      );
+      assert.ok(
+        !stdout.includes("tailored for a specific company"),
+        `stdout must not contain the prompt — got: ${stdout}`,
+      );
+    });
+
+    it('Test 11: --company "" exits 1 with letter-or-digit error and creates no output/', () => {
       const tmpCwd = mkdtempSync(join(tmpdir(), "cvgen-test-"));
       const { stdout, stderr, status } = runCli(
-        [fixturePath],
+        [fixturePath, "--company", ""],
         envWithDummyKey(),
         tmpCwd,
-        "y\n!!!\n",
       );
-      assert.notEqual(status, 0, `expected non-zero exit from slug guard — got ${status}`);
-      // Commander may route the error via process.exit (losing async stderr flush) so check
-      // both streams — the message must appear somewhere in the combined output.
+      assert.equal(
+        status,
+        1,
+        `expected exit 1 — got ${status}. stdout: ${stdout} stderr: ${stderr}`,
+      );
       const output = stdout + stderr;
       assert.ok(
-        output.includes("Company name must contain at least one letter or digit"),
-        `output must contain slug-guard message — got stdout: ${stdout} | stderr: ${stderr}`,
+        output.includes("at least one letter or digit"),
+        `output must contain empty-name error — got stdout: ${stdout} | stderr: ${stderr}`,
       );
+      assert.ok(!existsSync(join(tmpCwd, "output")), "must not mkdir output/ on empty-name error");
+    });
+
+    it("Test 12: --company and --no-company together exit 1 with conflict error", () => {
+      const tmpCwd = mkdtempSync(join(tmpdir(), "cvgen-test-"));
+      const { stdout, stderr, status } = runCli(
+        [fixturePath, "--company", "Acme", "--no-company"],
+        envWithDummyKey(),
+        tmpCwd,
+      );
+      assert.equal(
+        status,
+        1,
+        `expected exit 1 — got ${status}. stdout: ${stdout} stderr: ${stderr}`,
+      );
+      const output = stdout + stderr;
+      assert.ok(
+        output.includes("cannot be used together"),
+        `output must contain conflict error — got stdout: ${stdout} | stderr: ${stderr}`,
+      );
+      assert.ok(!existsSync(join(tmpCwd, "output")), "must not mkdir output/ on conflict");
+    });
+
+    it("Test 13: no routing flag and non-TTY stdin exits 1 naming both flags", () => {
+      const tmpCwd = mkdtempSync(join(tmpdir(), "cvgen-test-"));
+      const { stdout, stderr, status } = runCli([fixturePath], envWithDummyKey(), tmpCwd);
+      assert.equal(
+        status,
+        1,
+        `expected exit 1 — got ${status}. stdout: ${stdout} stderr: ${stderr}`,
+      );
+      const output = stdout + stderr;
+      assert.ok(
+        output.includes("--company") && output.includes("--no-company"),
+        `output must name both flags — got stdout: ${stdout} | stderr: ${stderr}`,
+      );
+      assert.ok(!existsSync(join(tmpCwd, "output")), "must not mkdir output/ on non-TTY guard");
+    });
+
+    it("Test 14 (source-level): v1.1 pre-buffering queue is still present", () => {
+      const src = readFileSync(cliSrcPath, "utf8");
+      assert.ok(src.includes("lineBuffer"), "must retain lineBuffer pre-buffering queue");
+      assert.ok(src.includes("waitingResolver"), "must retain waitingResolver");
+      assert.ok(src.includes('rl.on("line"'), 'must retain rl.on("line" listener');
     });
   });
 });

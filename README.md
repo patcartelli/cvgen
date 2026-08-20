@@ -29,15 +29,23 @@ cvgen path/to/resume.md --verbose
 # Extract and validate JSON without rendering any PDFs
 cvgen path/to/resume.md --validate-only
 
+# Route PDFs to output/<Company-Slug>/ without prompting
+cvgen path/to/resume.md --company "Acme Corp"
+
+# Write PDFs to bare output/ without prompting
+cvgen path/to/resume.md --no-company
+
 # Scaffold a starter resume note
 cvgen init
 cvgen init path/to/my-resume.md   # write to a specific path
 ```
 
-cvgen prompts whether the resume is tailored for a specific company:
+On an interactive terminal, cvgen prompts whether the resume is tailored for a specific company:
 
 - Answering **n** → both PDFs written to `output/` relative to the current directory
 - Answering **y** → prompts for a company name; PDFs written to `output/<Company-Slug>/` relative to the current directory
+
+`--company "Acme Corp"` and `--no-company` skip those prompts. A non-interactive run (piped or CI) without either flag exits 1 with an error rather than hanging on a question nobody can answer.
 
 The output directory is created automatically if it does not exist.
 
