@@ -4,8 +4,8 @@ milestone: v1.1
 milestone_name: Typography & Workflow Improvements
 status: Awaiting next milestone
 stopped_at: Phase 6 context gathered
-last_updated: "2026-08-19T20:15:00.000Z"
-last_activity: 2026-08-19 - Completed quick task 260819-ky9: extraction working end to end; handoff steps 1-5 all done
+last_updated: "2026-08-20T19:50:00.000Z"
+last_activity: 2026-08-20 - Completed quick task 260820-kyb: emit ATS .html/.txt/.md outputs (STC-144)
 progress:
   total_phases: 3
   completed_phases: 3
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-07-30)
 Phase: Milestone v1.1 complete
 Plan: —
 Status: Awaiting next milestone
-Last activity: 2026-08-19 - Completed quick task 260819-ky9: extraction working end to end; handoff steps 1-5 all done
+Last activity: 2026-08-20 - Completed quick task 260820-kyb: emit ATS .html/.txt/.md outputs (STC-144)
 
 ## Performance Metrics
 
@@ -96,6 +96,7 @@ None.
 | 260819-i5h | Nested engagements, selectedWork header, en dashes, 2-page designed PDF | 2026-08-19 | 8a0ae62 | [260819-i5h-schema-template-nested-engagements-under](./quick/260819-i5h-schema-template-nested-engagements-under/) |
 | 260819-kkx | Port approved two-column designed template + schema fields (handoff steps 1-2) | 2026-08-19 | e963756 | [260819-kkx-port-approved-two-column-designed-templa](./quick/260819-kkx-port-approved-two-column-designed-templa/) |
 | 260819-ky9 | Master markdown conventions, extraction fixes, full run (handoff steps 3-5) | 2026-08-19 | b3c47f4 | [260819-ky9-master-markdown-industry-via-convention-](./quick/260819-ky9-master-markdown-industry-via-convention-/) |
+| 260820-kyb | Emit ATS text outputs (.html, .txt, .md) — persist atsHtmlTemplate, add ResumeData serializers, route through resolveOutputPaths, unit tests against existing fixtures (STC-144) | 2026-08-20 | 489dac8 | [260820-kyb-emit-ats-text-outputs-html-txt-md-persis](./quick/260820-kyb-emit-ats-text-outputs-html-txt-md-persis/) |
 
 ## Deferred Items
 
@@ -112,8 +113,8 @@ Items acknowledged and deferred at milestone close on 2026-07-28:
 
 ## Session Continuity
 
-Last session: 2026-08-19
-Stopped at: Completed quick task 260819-ky9: all five handoff steps done; open items are copy decisions listed in the 260819-ky9 summary
+Last session: 2026-08-20
+Stopped at: Completed quick task 260820-kyb: ATS HTML/TXT/MD persist on the Linear branch accounts/stc-144-emit-ats-text-outputs-html-txt-md-close-the-gap-vs-the-stc
 
 ## Operator Next Steps
 
