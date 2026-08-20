@@ -39,8 +39,12 @@ function assertNoDanglingSeparators(serialized: string, label: string): void {
     assert.ok(!/^\s*\|\s*$/.test(line), `${label}: line is only a pipe: ${JSON.stringify(line)}`);
     assert.ok(!/ \|$/.test(line), `${label}: trailing dangling " |": ${JSON.stringify(line)}`);
     assert.ok(!/^\| /.test(line), `${label}: leading dangling "| ": ${JSON.stringify(line)}`);
+    // Per-line so consecutive **heading** blocks (`**\n\n**`) are not false positives.
+    assert.ok(
+      !/\*\*[ \t]*\*\*/.test(line),
+      `${label}: empty bold fragment on line ${JSON.stringify(line)}`,
+    );
   }
-  assert.ok(!/\*\*\s*\*\*/.test(serialized), `${label}: empty bold fragment ** **`);
 }
 
 function assertSingleTrailingNewline(serialized: string, label: string): void {
@@ -147,8 +151,12 @@ describe("serializeAtsTxt / serializeAtsMd", () => {
       assert.ok(serialized.includes("Remote"), "location");
       assert.ok(serialized.includes("Selected work: studiocartelli.com/work"), "selected work url");
       assert.ok(serialized.includes("(password: fixture-password)"), "selected work password");
-      const studioIdx = serialized.indexOf("Studio Cartelli");
-      const bluefishIdx = serialized.indexOf("Bluefish AI");
+      const expStart = Math.max(
+        serialized.indexOf("EXPERIENCE"),
+        serialized.indexOf("## Experience"),
+      );
+      const studioIdx = serialized.indexOf("Studio Cartelli", expStart);
+      const bluefishIdx = serialized.indexOf("Bluefish AI", studioIdx);
       assert.ok(
         studioIdx >= 0 && bluefishIdx > studioIdx,
         "Bluefish AI nests after Studio Cartelli",
@@ -182,7 +190,7 @@ describe("serializeAtsTxt / serializeAtsMd", () => {
           `${name}: line must not start with empty role separator`,
         );
         assert.ok(!/^\*\*\s*\|/.test(line), `${name}: no empty bold then pipe`);
-        assert.ok(!/\*\*\s*\*\*/.test(serialized), `${name}: no empty bold fragment`);
+        assert.ok(!/\*\*[ \t]*\*\*/.test(line), `${name}: no empty bold fragment`);
         const next = lineAfter(serialized, "Parental Leave");
         assert.ok(
           next === "" || (next !== undefined && next !== "- " && !/^-\s*$/.test(next)),
