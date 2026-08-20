@@ -187,6 +187,19 @@ describe("CLI entry point (src/cli/index.ts)", () => {
     assert.ok(!src.includes("yargs"), "must not import yargs");
   });
 
+  it("source-level: Step H writes ATS html/txt/md and logs all five Written paths", () => {
+    const src = readFileSync(cliSrcPath, "utf8");
+    assert.ok(src.includes("serializeAtsTxt"), "must call serializeAtsTxt");
+    assert.ok(src.includes("serializeAtsMd"), "must call serializeAtsMd");
+    assert.ok(src.includes("atsHtmlTemplate"), "must call atsHtmlTemplate");
+    assert.ok(src.includes("writeFile(paths.atsHtml,"), "must write ATS HTML");
+    assert.ok(src.includes("writeFile(paths.atsTxt,"), "must write ATS TXT");
+    assert.ok(src.includes("writeFile(paths.atsMd,"), "must write ATS MD");
+    assert.ok(src.includes(`Written: \${paths.atsHtml}`), "must log ATS HTML path");
+    assert.ok(src.includes(`Written: \${paths.atsTxt}`), "must log ATS TXT path");
+    assert.ok(src.includes(`Written: \${paths.atsMd}`), "must log ATS MD path");
+  });
+
   // ---------------------------------------------------------------------------
   // Step D.5 interactive prompt tests
   // ---------------------------------------------------------------------------

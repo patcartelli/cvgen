@@ -6,9 +6,16 @@ import { join, resolve } from "node:path";
 import { createInterface } from "node:readline";
 import { Command } from "commander";
 import puppeteer from "puppeteer";
+import { serializeAtsMd, serializeAtsTxt } from "../lib/ats-text.js";
 import { extractResume } from "../lib/extract.js";
 import { preflightCheck } from "../lib/preflight.js";
-import { renderAts, renderDesigned, resolveOutputPaths, toCompanySlug } from "../lib/render.js";
+import {
+  atsHtmlTemplate,
+  renderAts,
+  renderDesigned,
+  resolveOutputPaths,
+  toCompanySlug,
+} from "../lib/render.js";
 
 const INIT_TEMPLATE = `---
 name: Your Name
@@ -192,7 +199,7 @@ Examples:
         process.exit(0);
       }
 
-      // Step H — render both PDFs
+      // Step H — render both PDFs and write ATS text outputs
       const today = new Date().toISOString().split("T")[0];
       const paths = resolveOutputPaths(data.contact.name, outputDir, companySlug, today);
       console.error("Rendering...");
@@ -204,8 +211,15 @@ Examples:
         await browser.close();
       }
 
+      await writeFile(paths.atsHtml, atsHtmlTemplate(data), "utf8");
+      await writeFile(paths.atsTxt, serializeAtsTxt(data), "utf8");
+      await writeFile(paths.atsMd, serializeAtsMd(data), "utf8");
+
       console.log(`Written: ${paths.designed}`);
       console.log(`Written: ${paths.ats}`);
+      console.log(`Written: ${paths.atsHtml}`);
+      console.log(`Written: ${paths.atsTxt}`);
+      console.log(`Written: ${paths.atsMd}`);
     },
   );
 
